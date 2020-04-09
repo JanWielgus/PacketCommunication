@@ -1,2 +1,3 @@
 # FC_SerialCommunication
-Modified and enhanced serial communication library based on the Christopher Baker's PacketSerial
+Arduino base Serial communication library. Based on the Christopher Baker [PacketSerial](https://github.com/bakercp/PacketSerial) library
+
