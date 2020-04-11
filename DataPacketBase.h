@@ -9,6 +9,7 @@
 
 #include "arduino.h"
 #include <FC_GrowingArray.h>
+#include <FC_CustomDataTypes.h>
 
 
 class DataPacketBase: public ITransferable
@@ -19,16 +20,17 @@ private:
     
 public:
     DataPacketBase(uint8_t id);
-    virtual ~DataPacketBase() = 0;
+    virtual ~DataPacketBase();
 
     void add_int8_t(int8_t& toAdd);
     void add_uint8_t(uint8_t& toAdd);
     void addByteType(ByteType& toAdd);
 
     // implementation of inherited methods from ITransferable
-    uint8_t getPacketID() override;
-    uint8_t getPacketSize() override; // ! this is also size of array below
+    uint8_t getPacketID() const override;
+    uint8_t getPacketSize() const override; // ! this is also size of array below
     uint8_t** getBytePointersArray() override;  // array of uint8_t*
+    const uint8_t** getBytePointersArray() const override; // array of uint8_t*
 };
 
 

@@ -38,19 +38,25 @@ void DataPacketBase::addByteType(ByteType& toAdd)
 }
 
 
-uint8_t DataPacketBase::getPacketID()
+uint8_t DataPacketBase::getPacketID() const
 {
     return ID;
 }
 
 
-uint8_t DataPacketBase::getPacketSize()
+uint8_t DataPacketBase::getPacketSize() const
 {
     return bytePointersArray.getSize();
 }
 
 
 uint8_t** DataPacketBase::getBytePointersArray()
+{
+    return bytePointersArray.getArray();
+}
+
+
+const uint8_t** DataPacketBase::getBytePointersArray() const
 {
     return bytePointersArray.getArray();
 }
