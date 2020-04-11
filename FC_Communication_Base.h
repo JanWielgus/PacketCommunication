@@ -33,7 +33,7 @@ typedef uint8 size_t;
 
 class FC_Communication_Base
 {
- private:
+public:
 	struct dataPacket
 	{
 		uint8_t* buffer;
@@ -41,7 +41,7 @@ class FC_Communication_Base
 	};
 	
 	
- public:
+public:
 	const size_t BufferSize; // MAX: 256
 	//typedef void (*PacketHandlerFunction)(const uint8_t* buffer, size_t size);
 
@@ -66,7 +66,7 @@ class FC_Communication_Base
 	uint8_t calcChecksum();
 	
 
- private:
+private:
 	uint8_t* receiveBuffer;
 	uint8_t* decodeBuffer;
 	size_t receiveBufferIndex = 0;
