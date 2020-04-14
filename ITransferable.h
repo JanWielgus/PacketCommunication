@@ -14,7 +14,7 @@
 class ITransferable
 {
 public:
-	virtual ~ITransferable() = 0 {}
+	virtual ~ITransferable() {}
 	virtual uint8_t getPacketID() const = 0;
 	virtual uint8_t getPacketSize() const = 0;
 	virtual uint8_t** getBytePointersArray() = 0; // array of uint8_t*

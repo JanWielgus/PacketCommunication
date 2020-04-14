@@ -10,6 +10,7 @@
 #include "arduino.h"
 #include <FC_GrowingArray.h>
 #include <FC_CustomDataTypes.h>
+#include <ITransferable.h>
 
 
 class DataPacketBase: public ITransferable
