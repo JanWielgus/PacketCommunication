@@ -34,7 +34,7 @@ void DataPacketBase::add_uint8_t(uint8_t& toAdd)
 void DataPacketBase::addByteType(ByteType& toAdd)
 {
     for (int i = 0; i < toAdd.AmtOfBytes; i++)
-        bytePointersArray.add(&toAdd.byteArr()[i]);
+        bytePointersArray.add(&(toAdd.byteArr()[i]));
 }
 
 
