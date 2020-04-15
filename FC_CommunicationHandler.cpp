@@ -130,6 +130,13 @@ bool FC_CommunicationHandler::receivePacketsToQueue()
         // and if so, do not allocate new memory and store data directly to the receive packet
 
 
+        // To speed up, create queue pointer
+        dataPacketQueue* curQueue = receiveDataPacketsPointersArray[currentPacketIndex].queuePtr;
+
+        // If the queue is full, free memory allocated by the oldest buffer copy
+        if (curQueue->isFull())
+            delete[] curQueue->dequeue().buffer;
+
         // Make a deep copy of recived buffer
         dataBufferType receivedPacket;
         receivedPacket.size = comBase.dpReceived.size;
@@ -138,7 +145,7 @@ bool FC_CommunicationHandler::receivePacketsToQueue()
             receivedPacket.buffer[i] = comBase.dpReceived.buffer[i];
 
         // Add copied buffer to the queue of this packet type
-        receiveDataPacketsPointersArray[currentPacketIndex].queuePtr->enqueue(receivedPacket);
+        curQueue->enqueue(receivedPacket);
     }
 
     return receivedSomeDataFlag;
