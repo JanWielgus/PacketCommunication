@@ -65,6 +65,10 @@ class updateSentData : public FC_Task
         toSendDataPacket.var3 = toSendDataPacket.var1 + 11;
         toSendDataPacket.var4 = toSendDataPacket.var2 -5;
         toSendDataPacket.var5 = toSendDataPacket.var4;
+
+        static bool bol;
+        digitalWrite(LED_BUILTIN, bol);
+        bol = !bol;
     }
 };
 
@@ -82,6 +86,8 @@ void setup()
     // Debug serial port
     Serial.begin(115200);
     Serial.println("Program has just started");
+
+    pinMode(LED_BUILTIN, OUTPUT);
 
     // Begin software serial
     mySerial.begin(9600);
