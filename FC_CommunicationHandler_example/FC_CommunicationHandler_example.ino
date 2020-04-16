@@ -7,6 +7,7 @@
 #include <FC_ObjectTasker.h>
 #include <FC_CustomDataTypes.h>
 #include <FC_Task.h>
+#include <FC_EVA_Filter.h>
 #include <FC_SinkingQueue.h>
 #include <FC_GrowingArray.h>
 #include <ITransferable.h>
@@ -55,7 +56,9 @@ class showReceiveData : public FC_Task
         Serial.print("\t4: ");
         Serial.print(receiveDataPacket.var4);
         Serial.print("\t5: ");
-        Serial.println(receiveDataPacket.var5);
+        Serial.print(receiveDataPacket.var5);
+        Serial.print("\tStability: ");
+        Serial.println(comHandler.getConnectionStability());
     }
 };
 
@@ -99,11 +102,14 @@ void setup()
     // Receives all data to queues (each packet has its own one)
     // If queue is full and there are new data of that type, the oldest data of that type is removed
     // Updates values in the previously added receive data packet only with the oldest data in queues
-    tasker.addTask(&comHandler, 500000L, 0); // 20Hz (receiving)
+    tasker.addTask(&comHandler, 500000L, 0); // 2Hz (receiving)
 
     // Add other tasks
     tasker.addTask(new sendData, 2000000L, 0);// 0.5Hz (sending)
     tasker.addTask(new showReceiveData, 500000L, 0);
+
+    // Used only when using Tasker. Makes that time has not influence connection stability value.
+    comHandler.adaptConStabFilterToInterval();
 
 
     // Add all pointers to data packets that will be received during communication

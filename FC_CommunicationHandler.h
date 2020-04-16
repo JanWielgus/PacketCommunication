@@ -14,6 +14,7 @@
 #include <FC_GrowingArray.h>
 #include <FC_SinkingQueue.h>
 #include <FC_Task.h>
+#include <FC_EVA_Filter.h>
 
 
 class FC_CommunicationHandler : public FC_Task
@@ -31,6 +32,8 @@ private:
     FC_Communication_Base comBase; // low-level communication instance
     FC_GrowingArray<receiveDataPacketBundle> receiveDataPacketsPointersArray; // array of packets to put received data (added at startup)
 
+    FC_EVA_Filter conStabFilter = FC_EVA_Filter(0.73);
+
 public:
     FC_CommunicationHandler(Stream* serial, uint8_t bufSize = 255);
         // serial - serial port. For example Serial
@@ -39,10 +42,14 @@ public:
     bool addRaceiveDataPacketPointer(ITransferable* recDPptr, uint8_t queuedPacketsAmount = 3); // add pointer to packet where received data will be stored (with regard of pckt ID)
     void execute() override; // Receive all data to queue, update receive packets with oldest data from queue
     bool sendDataPacket(const ITransferable* packetToSend); // immediately sends passed data packet
+    uint8_t getConnectionStability(); // 0 - connection lost, 100 - uninterrupted connection (can be between)
+    void adaptConStabFilterToInterval(); // if using execute() periodically by tasker, use this after adding this to the tasker
 
 private:
     bool receivePacketsToQueue(); // false - there was no data to receive
     void dequeueOldestPacketOfEachType();
+
+    void updateConnectionStability(bool receivedDataFlag);
 };
 
 

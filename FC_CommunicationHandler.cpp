@@ -58,8 +58,9 @@ bool FC_CommunicationHandler::addRaceiveDataPacketPointer(ITransferable* recDPpt
 
 void FC_CommunicationHandler::execute()
 {
-    // This method returns bool, (but to connection stability calculate in a different way
-    receivePacketsToQueue();
+    // Put all incoming data to the proper queues
+    bool ifReceivedAnyData = receivePacketsToQueue();
+    updateConnectionStability(ifReceivedAnyData);
 
     // Update receive data packets first came data
     dequeueOldestPacketOfEachType();
@@ -90,6 +91,22 @@ bool FC_CommunicationHandler::sendDataPacket(const ITransferable* packetToSend)
     comBase.sendData();
 
     return true; // I don't know what could went wrong, so return always true
+}
+
+
+uint8_t FC_CommunicationHandler::getConnectionStability()
+{
+    return (uint8_t)(conStabFilter.getLastValue() + 0.5);
+}
+
+
+void FC_CommunicationHandler::adaptConStabFilterToInterval()
+{
+    // Thanks to this, filtering is not dependent of receiving time interval
+    // Just a linear funciton that for 20000 interval return 0.85 and for 500000 return 0.5 and so on
+    // Calculated using reglinp function in Excel for this two points
+    float temp = constrain(-7.3e-7 * (float)getInterval() + 0.86f, 0.2f, 0.95f);
+    conStabFilter.setFilterBeta(temp);
 }
 
 
@@ -176,4 +193,10 @@ void FC_CommunicationHandler::dequeueOldestPacketOfEachType()
         // Delete the memory allocated for the buffer
         delete[] sourceDataBuffer.buffer;
     }
+}
+
+
+void FC_CommunicationHandler::updateConnectionStability(bool receivedDataFlag)
+{
+    conStabFilter.updateFilter(receivedDataFlag ? 100.0f : 0.0f);
 }
