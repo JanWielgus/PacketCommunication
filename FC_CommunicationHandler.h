@@ -35,7 +35,6 @@ public:
     FC_CommunicationHandler(Stream* serial, uint8_t bufSize = 255);
         // serial - serial port. For example Serial
         // bufSize - limit of the biggest packet size in uint8_t
-        // receivedPacketsQueueSize - amount of maximum received packets stored in the queue
     ~FC_CommunicationHandler();
     bool addRaceiveDataPacketPointer(ITransferable* recDPptr, uint8_t queuedPacketsAmount = 3); // add pointer to packet where received data will be stored (with regard of pckt ID)
     void execute() override; // Receive all data to queue, update receive packets with oldest data from queue
