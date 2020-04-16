@@ -37,10 +37,13 @@ FC_CommunicationHandler comHandler(&mySerial, 30); // 30 is maximum amount of pa
 
 class showReceiveData : public FC_Task
 {
-    uint8_t number = 0;
+    uint16_t number = 0; // showed data counter
 
     void execute() override
     {
+        // Data can be always accessed.
+        // Its values changes when comHandler is executed by tasker or executed manually
+
         Serial.print(number++);
         Serial.print(" Data: ");
         Serial.print("\t1: ");
@@ -56,26 +59,25 @@ class showReceiveData : public FC_Task
     }
 };
 
-class updateSentData : public FC_Task
-{
-    void execute() override
-    {
-        toSendDataPacket.var1 += 2;
-        toSendDataPacket.var2 -= 6;
-        toSendDataPacket.var3 = toSendDataPacket.var1 + 11;
-        toSendDataPacket.var4 = toSendDataPacket.var2 -5;
-        toSendDataPacket.var5 = toSendDataPacket.var4;
-
-        static bool bol;
-        digitalWrite(LED_BUILTIN, bol);
-        bol = !bol;
-    }
-};
-
 class sendData : public FC_Task
 {
     void execute() override
     {
+        // Update data that will be sent (just for testing changes it a little bit)
+        toSendDataPacket.var1 += 2;
+        toSendDataPacket.var2 -= 6;
+        toSendDataPacket.var3 = toSendDataPacket.var1 + 11;
+        toSendDataPacket.var4 = toSendDataPacket.var2 - 5;
+        toSendDataPacket.var5 = toSendDataPacket.var4;
+
+        // Blink a diode to indicate sending (if program got stuck this diode will not blink any more)
+        static bool bol;
+        digitalWrite(LED_BUILTIN, bol);
+        bol = !bol;
+
+
+        // Pass pointer to the class that inherits from ITransferable interface
+        // It is immediately sent
         comHandler.sendDataPacket(&toSendDataPacket);
     }
 };
@@ -87,16 +89,21 @@ void setup()
     Serial.begin(115200);
     Serial.println("Program has just started");
 
+    // Set builting diode as output (indicate sending)
     pinMode(LED_BUILTIN, OUTPUT);
 
-    // Begin software serial
+    // Begin software serial (used by CommunicationHandler)
     mySerial.begin(9600);
 
     // Add communication handler to the tasker to update receiving
+    // Receives all data to queues (each packet has its own one)
+    // If queue is full and there are new data of that type, the oldest data of that type is removed
+    // Updates values in the previously added receive data packet only with the oldest data in queues
     tasker.addTask(&comHandler, 500000L, 0); // 20Hz (receiving)
+
+    // Add other tasks
     tasker.addTask(new sendData, 2000000L, 0);// 0.5Hz (sending)
     tasker.addTask(new showReceiveData, 500000L, 0);
-    tasker.addTask(new updateSentData, 1000000L, 0);
 
 
     // Add all pointers to data packets that will be received during communication
@@ -106,7 +113,7 @@ void setup()
     // .. other data packets that will be received
 
 
-    // Assign startup values
+    // Assign startup values (testing)
     toSendDataPacket.var1 = 3;
     toSendDataPacket.var2 = 4;
     toSendDataPacket.var3 = 5;
