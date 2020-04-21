@@ -106,7 +106,10 @@ void setup()
 
     // Add other tasks
     tasker.addTask(new sendData, 2000000L, 0);// 0.5Hz (sending)
-    tasker.addTask(new showReceiveData, 500000L, 0);
+    // ...
+
+    // Showing received data will be a packet event (automatically called when new data will be received)
+    receiveDataPacket.setPacketEvent(new showReceiveData);
 
     // Used only when using Tasker. Makes that time has not influence connection stability value.
     comHandler.adaptConStabFilterToInterval();
