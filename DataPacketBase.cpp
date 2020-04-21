@@ -60,3 +60,15 @@ const uint8_t** DataPacketBase::getBytePointersArray() const
 {
     return (const uint8_t**)bytePointersArray.getArray();
 }
+
+
+void DataPacketBase::setPacketEvent(FC_Task* packetEvent)
+{
+    this->packetEvent = packetEvent;
+}
+
+
+FC_Task* DataPacketBase::getPacketEvent()
+{
+    return packetEvent;
+}

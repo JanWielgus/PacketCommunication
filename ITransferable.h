@@ -9,6 +9,7 @@
 
 #include "arduino.h"
 #include <FC_GrowingArray.h>
+#include <FC_Task.h>
 
 
 class ITransferable
@@ -19,6 +20,10 @@ public:
 	virtual uint8_t getPacketSize() const = 0;
 	virtual uint8_t** getBytePointersArray() = 0; // array of uint8_t*
 	virtual const uint8_t** getBytePointersArray() const = 0; // array of uint8_t*
+	
+	// packet event
+	virtual void setPacketEvent(FC_Task*) = 0; // optional event called by communication
+	virtual FC_Task* getPacketEvent() = 0;
 };
 
 

@@ -190,6 +190,11 @@ void FC_CommunicationHandler::dequeueOldestPacketOfEachType()
         for (int i = 0; i < sizeOfData; i++)
             *(outputDataBytePointers[i]) = sourceDataBuffer.buffer[i + 2];
 
+        // Call packet event if exist
+        FC_Task* packetEvent;
+        if ( (packetEvent = currentBundle.packetPtr->getPacketEvent()) != nullptr)
+            packetEvent->execute();
+
         // Delete the memory allocated for the buffer
         delete[] sourceDataBuffer.buffer;
     }
