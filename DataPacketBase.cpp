@@ -58,5 +58,5 @@ uint8_t** DataPacketBase::getBytePointersArray()
 
 const uint8_t** DataPacketBase::getBytePointersArray() const
 {
-    return bytePointersArray.getArray();
+    return (const uint8_t**)bytePointersArray.getArray();
 }
