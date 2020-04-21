@@ -11,6 +11,7 @@
 #include <FC_GrowingArray.h>
 #include <FC_CustomDataTypes.h>
 #include <ITransferable.h>
+#include <FC_Task.h>
 
 
 class DataPacketBase: public ITransferable
@@ -18,6 +19,7 @@ class DataPacketBase: public ITransferable
 private:
     const uint8_t ID;
     FC_GrowingArray<uint8_t*> bytePointersArray;
+    FC_Task* packetEvent = nullptr; // no packet event by default
     
 public:
     DataPacketBase(uint8_t id);
@@ -32,6 +34,8 @@ public:
     uint8_t getPacketSize() const override; // ! this is also size of array below
     uint8_t** getBytePointersArray() override;  // array of uint8_t*
     const uint8_t** getBytePointersArray() const override; // array of uint8_t*
+    void setPacketEvent(FC_Task* packetEvent) override; // optional event called by communication
+    FC_Task* getPacketEvent() override;
 };
 
 
