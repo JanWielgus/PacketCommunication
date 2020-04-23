@@ -109,6 +109,13 @@ void FC_CommunicationHandler::adaptConStabFilterToInterval()
 }
 
 
+void FC_CommunicationHandler::setConStabFilterIntensity(float filterIntensity)
+{
+    filterIntensity = constrain(filterIntensity, 0.1f, 0.99f);
+    conStabFilter.setFilterBeta(filterIntensity);
+}
+
+
 /*
     Returns true if at least one packet was received
     All packets in the queue have valid checksum (which is currentlyChecked before enqueuing)

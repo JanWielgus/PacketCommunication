@@ -113,6 +113,7 @@ void setup()
 
     // Used only when using Tasker. Makes that time has not influence connection stability value.
     comHandler.adaptConStabFilterToInterval();
+    comHandler.setConStabFilterIntensity(0.5); // other way to set up conneciton stability manually (if want smoothness other than from method above)
 
 
     // Add all pointers to data packets that will be received during communication

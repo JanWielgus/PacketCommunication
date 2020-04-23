@@ -42,8 +42,10 @@ public:
     bool addRaceiveDataPacketPointer(ITransferable* recDPptr, uint8_t queuedPacketsAmount = 3); // add pointer to packet where received data will be stored (with regard of pckt ID)
     void execute() override; // Receive all data to queue, update receive packets with oldest data from queue
     bool sendDataPacket(const ITransferable* packetToSend); // immediately sends passed data packet
+
     uint8_t getConnectionStability(); // 0 - connection lost, 100 - uninterrupted connection (can be between)
     void adaptConStabFilterToInterval(); // if using execute() periodically by tasker, use this after adding this to the tasker
+    void setConStabFilterIntensity(float filterIntensity); // 0.1 : 0.99 (0.99 is the most smooth)
 
 private:
     bool receivePacketsToQueue(); // false - there was no data to receive
