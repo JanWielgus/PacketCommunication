@@ -59,8 +59,7 @@ bool FC_CommunicationHandler::addRaceiveDataPacketPointer(ITransferable* recDPpt
 void FC_CommunicationHandler::execute()
 {
     // Put all incoming data to the proper queues
-    bool ifReceivedAnyData = receivePacketsToQueue();
-    updateConnectionStability(ifReceivedAnyData);
+    /*bool ifReceivedAnyData =*/ receivePacketsToQueue();
 
     // Update receive data packets first came data
     dequeueOldestPacketOfEachType();
@@ -172,6 +171,7 @@ bool FC_CommunicationHandler::receivePacketsToQueue()
 void FC_CommunicationHandler::dequeueOldestPacketOfEachType()
 {
     receiveDataPacketBundle currentBundle;
+    bool unpackedSomeDataFlag = false;
 
     for (int i = 0; i < receiveDataPacketsPointersArray.getSize(); i++)
     {
@@ -197,7 +197,13 @@ void FC_CommunicationHandler::dequeueOldestPacketOfEachType()
 
         // Delete the memory allocated for the buffer
         delete[] sourceDataBuffer.buffer;
+
+        // Set flag to true to calculate connection stability further
+        unpackedSomeDataFlag = true;
     }
+
+    // If at least one data packet was unpacked from it's queue, there is communication
+    updateConnectionStability(unpackedSomeDataFlag);
 }
 
 
