@@ -9,8 +9,7 @@
 #define _FC_COMMUNICATIONHANDLER_h
 
 #include "arduino.h"
-#include <ITransferable.h>
-#include <FC_Communication_Base.h>
+#include <Interfaces/ITransferable.h>
 #include <FC_GrowingArray.h>
 #include <FC_SinkingQueue.h>
 #include <FC_Task.h>
