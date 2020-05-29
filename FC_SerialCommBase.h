@@ -20,27 +20,14 @@
 
 #include "arduino.h"
 #include <Arduino.h>
+#include <Interfaces/DataBuffer.h>
 #include <Encoding/COBS.h>
 //#include <Encoding/SLIP.h> // alternative
-
-/*
-typedef uint8 uint8_t;
-typedef uint16 uint16_t;
-typedef uint8 size_t;
-*/
 
 
 
 class FC_SerialCommBase
 {
-public:
-	struct dataBuffer
-	{
-		uint8_t* buffer;
-		size_t size;
-	};
-	
-	
 public:
 	const size_t BufferSize; // MAX: 256
 	//typedef void (*PacketHandlerFunction)(const uint8_t* buffer, size_t size);
@@ -53,8 +40,8 @@ public:
 	//bool isAvailable(); // receiveData() return true if was available and false if not
 	
 	// dataBuffers to transfer data between class and outside
-	dataBuffer dpToSend; // data packet used to send data (filled outside)
-	dataBuffer dpReceived; // data packet with received data (used outside to unpack data)
+	DataBuffer dpToSend; // data packet used to send data (filled outside)
+	DataBuffer dpReceived; // data packet with received data (used outside to unpack data)
 
 	/*
 		How to use checksums:
