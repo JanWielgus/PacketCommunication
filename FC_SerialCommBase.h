@@ -42,7 +42,7 @@ public:
 	size_t available() override; // return false if there is no data or data packet is incomplete
 	
 private:
-	DataBuffer receivedData;
+	DataBuffer decodedData; // received and decoded data, returned by receive method
 
 
 	// checksum value is placed at the buffer end (last thing in buffer)
