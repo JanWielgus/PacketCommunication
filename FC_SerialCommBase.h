@@ -15,8 +15,8 @@
 //
 //
 
-#ifndef _FC_COMMUNICATION_BASE_h
-#define _FC_COMMUNICATION_BASE_h
+#ifndef _FC_SERIALCOMMBASE_h
+#define _FC_SERIALCOMMBASE_h
 
 #include "arduino.h"
 #include <Arduino.h>
@@ -31,10 +31,10 @@ typedef uint8 size_t;
 
 
 
-class FC_Communication_Base
+class FC_SerialCommBase
 {
 public:
-	struct dataPacket
+	struct dataBuffer
 	{
 		uint8_t* buffer;
 		size_t size;
@@ -45,22 +45,22 @@ public:
 	const size_t BufferSize; // MAX: 256
 	//typedef void (*PacketHandlerFunction)(const uint8_t* buffer, size_t size);
 
-	FC_Communication_Base(Stream* serial, uint8_t bufSize=255); // serial, packetToPrepare - packet used outside to send data (there memory is allocated), bufSize - max buffer size
-	~FC_Communication_Base();
+	FC_SerialCommBase(Stream* serial, uint8_t bufSize=255); // serial, packetToPrepare - packet used outside to send data (there memory is allocated), bufSize - max buffer size
+	~FC_SerialCommBase();
 	
 	void sendData(); // data to send packet before to dpToSend
 	bool receiveData(); // receive AT MOST ONE data packet. HAVE TO be called until returns false (data packet was incomplete or no data)
 	//bool isAvailable(); // receiveData() return true if was available and false if not
 	
-	// dataPackets to transfer data between class and outside
-	dataPacket dpToSend; // data packet used to send data (filled outside)
-	dataPacket dpReceived; // data packet with received data (used outside to unpack data)
+	// dataBuffers to transfer data between class and outside
+	dataBuffer dpToSend; // data packet used to send data (filled outside)
+	dataBuffer dpReceived; // data packet with received data (used outside to unpack data)
 
 	/*
 		How to use checksums:
-		- buffer[0] in dataPacket is reserved for the checksum value
+		- buffer[0] in dataBuffer is reserved for the checksum value
 		- if you are calculating the checksum, store it in the buffer[0]
-		  (calculate it after packing data to dataPacket!)
+		  (calculate it after packing data to dataBuffer!)
 	*/
 	bool checkChecksum(); // xor'owanie
 	uint8_t calcChecksum();

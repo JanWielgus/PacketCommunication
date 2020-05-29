@@ -2,10 +2,10 @@
 // Date: 29.01.2019
 //
 
-#include <FC_Communication_Base.h>
+#include <FC_SerialCommBase.h>
 
 
-FC_Communication_Base::FC_Communication_Base(Stream* serial, uint8_t bufSize): BufferSize(bufSize)
+FC_SerialCommBase::FC_SerialCommBase(Stream* serial, uint8_t bufSize): BufferSize(bufSize)
 {
 	this->serial = serial;
 	
@@ -18,7 +18,7 @@ FC_Communication_Base::FC_Communication_Base(Stream* serial, uint8_t bufSize): B
 	decodeBuffer = new uint8_t[BufferSize];
 }
 
-FC_Communication_Base::~FC_Communication_Base()
+FC_SerialCommBase::~FC_SerialCommBase()
 {
 	delete [] dpToSend.buffer;
 	delete [] receiveBuffer;
@@ -27,7 +27,7 @@ FC_Communication_Base::~FC_Communication_Base()
 
 
 // send data from dpToSend filled before outside the com class
-void FC_Communication_Base::sendData()
+void FC_SerialCommBase::sendData()
 {
 	if (dpToSend.buffer==0 || dpToSend.size==0)
 		return;
@@ -44,7 +44,7 @@ void FC_Communication_Base::sendData()
 
 
 
-bool FC_Communication_Base::receiveData()
+bool FC_SerialCommBase::receiveData()
 {
 	while (serial->available() > 0)
 	{
@@ -82,7 +82,7 @@ bool FC_Communication_Base::receiveData()
 
 
 
-bool FC_Communication_Base::checkChecksum()
+bool FC_SerialCommBase::checkChecksum()
 {
 	uint8_t checksum = dpReceived.buffer[1];
 	for (int i=2; i<dpReceived.size; i++)
@@ -95,7 +95,7 @@ bool FC_Communication_Base::checkChecksum()
 
 
 
-uint8_t FC_Communication_Base::calcChecksum()
+uint8_t FC_SerialCommBase::calcChecksum()
 {
 	uint8_t checksum = dpToSend.buffer[1];
 	for (int i=2; i<dpToSend.size; i++)
