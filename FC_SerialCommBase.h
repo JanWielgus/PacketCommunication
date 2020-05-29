@@ -21,27 +21,28 @@
 #include "arduino.h"
 #include <Arduino.h>
 #include <Interfaces/DataBuffer.h>
+#include <Interfaces/IPacketTransceiver.h>
+
 #include <Encoding/COBS.h>
 //#include <Encoding/SLIP.h> // alternative
 
 
 
-class FC_SerialCommBase
+class FC_SerialCommBase : public IPacketTransceiver
 {
 public:
-	const size_t BufferSize; // MAX: 256
-	//typedef void (*PacketHandlerFunction)(const uint8_t* buffer, size_t size);
+	const size_t BufferSize;
 
-	FC_SerialCommBase(Stream* serial, uint8_t bufSize=255); // serial, packetToPrepare - packet used outside to send data (there memory is allocated), bufSize - max buffer size
+	FC_SerialCommBase(Stream* serial, size_t bufSize=255); // serial, bufSize - max size of one data packet
 	~FC_SerialCommBase();
 	
-	void sendData(); // data to send packet before to dpToSend
-	bool receiveData(); // receive AT MOST ONE data packet. HAVE TO be called until returns false (data packet was incomplete or no data)
-	//bool isAvailable(); // receiveData() return true if was available and false if not
+	// public interface methods
+	bool send(uint8_t* buffer, size_t size) override;
+	DataBuffer receiveNextData() override; // receive AT MOST ONE data packet. HAVE TO be called until available() return false (data packet was incomplete or no data)
+	bool available() override; // return false if there is no data or data packet is incomplete
 	
-	// dataBuffers to transfer data between class and outside
-	DataBuffer dpToSend; // data packet used to send data (filled outside)
-	DataBuffer dpReceived; // data packet with received data (used outside to unpack data)
+private:
+	DataBuffer receivedData;
 
 	/*
 		How to use checksums:
@@ -53,7 +54,6 @@ public:
 	uint8_t calcChecksum();
 	
 
-private:
 	uint8_t* receiveBuffer;
 	uint8_t* decodeBuffer;
 	size_t receiveBufferIndex = 0;
