@@ -1,16 +1,14 @@
-// Author: Jan Wielgus
+	// Author: Jan Wielgus
 // Date: 29.01.2019
 //
 
 #include <FC_SerialCommBase.h>
 
 
-FC_SerialCommBase::FC_SerialCommBase(Stream* serial, uint8_t bufSize): BufferSize(bufSize)
+FC_SerialCommBase::FC_SerialCommBase(Stream* serial, size_t bufSize): BufferSize(bufSize)
 {
 	this->serial = serial;
-	
-	// packet to prepare is used outside the class to pack there data to send
-	dpToSend.buffer = new uint8_t[bufSize];
+
 	dpReceived.buffer = nullptr; // pointer to this array is set after successful receiving
 	
 	// allocate memory for receive and decode buffer
@@ -20,7 +18,6 @@ FC_SerialCommBase::FC_SerialCommBase(Stream* serial, uint8_t bufSize): BufferSiz
 
 FC_SerialCommBase::~FC_SerialCommBase()
 {
-	delete [] dpToSend.buffer;
 	delete [] receiveBuffer;
 	delete [] decodeBuffer;
 }
@@ -82,24 +79,19 @@ bool FC_SerialCommBase::receiveData()
 
 
 
-bool FC_SerialCommBase::checkChecksum()
+bool FC_SerialCommBase::checkChecksum(const uint8_t* buffer, size_t size)
 {
-	uint8_t checksum = dpReceived.buffer[1];
-	for (int i=2; i<dpReceived.size; i++)
-		checksum ^= dpReceived.buffer[i]; // xor'owanie kolejnych bajtow
-		
-	if (checksum == dpReceived.buffer[0])
-		return true;
-	return false;
+	uint8_t checksum = calcChecksum(buffer, size);
+	return checksum == buffer[size - 1]; // checksum is stored at the last place in buffer
 }
 
 
 
-uint8_t FC_SerialCommBase::calcChecksum()
+uint8_t FC_SerialCommBase::calcChecksum(const uint8_t* buffer, size_t size)
 {
-	uint8_t checksum = dpToSend.buffer[1];
-	for (int i=2; i<dpToSend.size; i++)
-		checksum ^= dpToSend.buffer[i]; // xor'owanie kolejnych bajtow
+	uint8_t checksum = buffer[0];
+	for (int i = 1; i < size - 1; i++) // checksum value is the last thing in buffer
+		checksum ^= buffer[i]; // xor'owanie kolejnych bajtow
 	
 	return checksum;
 }

@@ -39,19 +39,15 @@ public:
 	// public interface methods
 	bool send(uint8_t* buffer, size_t size) override;
 	DataBuffer receiveNextData() override; // receive AT MOST ONE data packet. HAVE TO be called until available() return false (data packet was incomplete or no data)
-	bool available() override; // return false if there is no data or data packet is incomplete
+	size_t available() override; // return false if there is no data or data packet is incomplete
 	
 private:
 	DataBuffer receivedData;
 
-	/*
-		How to use checksums:
-		- buffer[0] in dataBuffer is reserved for the checksum value
-		- if you are calculating the checksum, store it in the buffer[0]
-		  (calculate it after packing data to dataBuffer!)
-	*/
-	bool checkChecksum(); // xor'owanie
-	uint8_t calcChecksum();
+
+	// checksum value is placed at the buffer end (last thing in buffer)
+	static bool checkChecksum(const uint8_t* buffer, size_t size); // xor'owanie
+	static uint8_t calcChecksum(const uint8_t* buffer, size_t size);
 	
 
 	uint8_t* receiveBuffer;
