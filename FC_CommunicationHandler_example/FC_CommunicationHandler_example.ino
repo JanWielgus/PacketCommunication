@@ -10,8 +10,10 @@
 #include <FC_EVA_Filter.h>
 #include <FC_SinkingQueue.h>
 #include <FC_GrowingArray.h>
-#include <ITransferable.h>
-#include <FC_Communication_Base.h>
+#include <Interfaces/ITransferable.h>
+#include <Interfaces/DataBuffer.h>
+#include <Interfaces/IPacketTransceiver.h>
+#include <FC_SerialCommBase.h>
 #include <DataPacketBase.h>
 #include <FC_CommunicationHandler.h>
 #include "ExampleDataPackets.h"
