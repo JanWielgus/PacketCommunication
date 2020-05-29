@@ -6,8 +6,8 @@
 	Just a dataBuffer structure
 */
 
-#ifndef _IPACKETTRANSCEIVER_h
-#define _IPACKETTRANSCEIVER_h
+#ifndef _DATABUFFER_h
+#define _DATABUFFER_h
 
 #include "arduino.h"
 
