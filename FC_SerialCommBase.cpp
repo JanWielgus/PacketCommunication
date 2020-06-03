@@ -31,20 +31,26 @@ bool FC_SerialCommBase::send(uint8_t* buffer, size_t size)
 
 	size++; // create room for the checksum
 	
-	uint8_t* encodeBuffer = new uint8_t[COBS::getEncodedBufferSize(size)];
-
-	// copy all data + checksum at the end to the encodeBuffer array
-	// to don't create separate array for data + checksum, because checksum cannot be added to the buffer directly
+	// create new buffer with checksum at the end
+	uint8_t* bufWithChecksum = new uint8_t[size];
+	// copy all data from buffer and add checksum at the end
 	for (int i = 0; i < size - 1; i++)
-		encodeBuffer[i] = buffer[i];
-	encodeBuffer[size - 1] = calcChecksum(buffer, size - 1);
+		bufWithChecksum[i] = buffer[i];
+	bufWithChecksum[size - 1] = calcChecksum(bufWithChecksum, size - 1);
 	
-	size_t numEncoded = COBS::encode(/*buffer*/ encodeBuffer, size, encodeBuffer);
+	// create buffer for encoded data
+	uint8_t* encodeBuffer = new uint8_t[COBS::getEncodedBufferSize(size)];
+	
+	size_t numEncoded = COBS::encode(/*buffer*/ bufWithChecksum, size, encodeBuffer);
 	
 	serial->write(encodeBuffer, numEncoded);
 	serial->write(PacketMarker);
 	
 	delete [] encodeBuffer;
+	
+	// delete temporarily created buffer with checksum
+	delete[] bufWithChecksum;
+	
 	return true;
 }
 
