@@ -10,6 +10,7 @@
 
 #include "arduino.h"
 #include <Interfaces/ITransferable.h>
+#include <Interfaces/IPacketTransceiver.h>
 #include <FC_GrowingArray.h>
 #include <FC_SinkingQueue.h>
 #include <FC_Task.h>
@@ -28,13 +29,13 @@ private:
         dataPacketQueue* queuePtr; // dynamically allocated inside, buffer copy queue for this packet type
     };
 
-    FC_Communication_Base comBase; // low-level communication instance
+    IPacketTransceiver* const commBase; // low-level communication instance
     FC_GrowingArray<receiveDataPacketBundle> receiveDataPacketsPointersArray; // array of packets to put received data (added at startup)
 
     FC_EVA_Filter conStabFilter = FC_EVA_Filter(0.73);
 
 public:
-    FC_CommunicationHandler(Stream* serial, uint8_t bufSize = 255);
+    FC_CommunicationHandler(IPacketTransceiver* communicationBase);
         // serial - serial port. For example Serial
         // bufSize - limit of the biggest packet size in uint8_t
     ~FC_CommunicationHandler();

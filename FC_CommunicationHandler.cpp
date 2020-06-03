@@ -6,8 +6,8 @@
 #include <FC_CommunicationHandler.h>
 
 
-FC_CommunicationHandler::FC_CommunicationHandler(Stream* serial, uint8_t bufSize)
-    : comBase(serial, bufSize)
+FC_CommunicationHandler::FC_CommunicationHandler(IPacketTransceiver* communicationBase)
+    : commBase(communicationBase)
 {
 }
 
@@ -68,28 +68,30 @@ void FC_CommunicationHandler::execute()
 
 bool FC_CommunicationHandler::sendDataPacket(const ITransferable* packetToSend)
 {
-    // buffer[0] - checksum
-    // buffer[1] - packet ID
-    // buffer[2, 3, ...] - data
+    // buffer[0] - packet ID
+    // buffer[1, 2, ...] - data
     
-    // copy values to speed up
-    uint8_t packetDataSize = packetToSend->getPacketSize();
+    // copy some values to speed up accessing time
+    uint8_t packetDataSize = packetToSend->getPacketSize(); // only size of data (without ID)
     const uint8_t** packetDataArray = packetToSend->getBytePointersArray();
-
-    // Set packet sizeOfData and packet ID
-    comBase.dpToSend.size = (size_t)(packetDataSize + 2); // two additional bytes for ID and checksum
-    comBase.dpToSend.buffer[1] = packetToSend->getPacketID();
+	
+	// Create array for sent data
+	size_t dataToSendSize = (size_t)(packetDataSize + 1); // one additional byte for ID
+	uint8_t* dataToSend = new uint8_t[dataToSendSize];
+	
+	// Put packet ID at index 0
+    dataToSend[0] = packetToSend->getPacketID();
 
     // Add all packet data bytes to the array that will be sent
     for (int i = 0; i < packetDataSize; i++)
-        comBase.dpToSend.buffer[i + 2] = *(packetDataArray[i]);
+        dataToSend[i + 1] = *(packetDataArray[i]);
 
-    // calculate checksum and add it to the data packet
-    comBase.dpToSend.buffer[0] = comBase.calcChecksum();
+    bool result = comBase->send(dataToSend, dataToSendSize);
+	
+	// delete temporary array for data to send
+	delete[] dataToSend;
 
-    comBase.sendData();
-
-    return true; // I don't know what could went wrong, so return always true
+    return result;
 }
 
 
