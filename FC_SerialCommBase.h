@@ -20,8 +20,8 @@
 
 #include "arduino.h"
 #include <Arduino.h>
-#include <Interfaces/DataBuffer.h>
-#include <Interfaces/IPacketTransceiver.h>
+#include <DataBuffer.h>
+#include <IPacketTransceiver.h>
 
 #include <Encoding/COBS.h>
 //#include <Encoding/SLIP.h> // alternative

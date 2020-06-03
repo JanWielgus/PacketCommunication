@@ -86,7 +86,7 @@ bool FC_CommunicationHandler::sendDataPacket(const ITransferable* packetToSend)
     for (int i = 0; i < packetDataSize; i++)
         dataToSend[i + 1] = *(packetDataArray[i]);
 
-    bool result = comBase->send(dataToSend, dataToSendSize);
+    bool result = commBase->send(dataToSend, dataToSendSize);
 	
 	// delete temporary array for data to send
 	delete[] dataToSend;

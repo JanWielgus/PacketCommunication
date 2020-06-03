@@ -10,7 +10,7 @@
 #define _IPACKETTRANSCEIVER_h
 
 #include "arduino.h"
-#include <Interfaces/DataBuffer.h>
+#include <DataBuffer.h>
 
 
 class IPacketTransceiver

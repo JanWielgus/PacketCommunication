@@ -9,8 +9,9 @@
 #define _FC_COMMUNICATIONHANDLER_h
 
 #include "arduino.h"
-#include <Interfaces/ITransferable.h>
-#include <Interfaces/IPacketTransceiver.h>
+#include <ITransferable.h>
+#include <IPacketTransceiver.h>
+#include <DataBuffer.h>
 #include <FC_GrowingArray.h>
 #include <FC_SinkingQueue.h>
 #include <FC_Task.h>
@@ -20,8 +21,7 @@
 class FC_CommunicationHandler : public FC_Task
 {
 private:
-    typedef FC_Communication_Base::dataPacket dataBufferType;
-    typedef FC_SinkingQueue<dataBufferType> dataPacketQueue;
+    typedef FC_SinkingQueue<DataBuffer> dataPacketQueue;
 
     struct receiveDataPacketBundle
     {
