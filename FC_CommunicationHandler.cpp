@@ -120,26 +120,33 @@ void FC_CommunicationHandler::setConStabFilterIntensity(float filterIntensity)
 
 /*
     Returns true if at least one packet was received
-    All packets in the queue have valid checksum (which is currentlyChecked before enqueuing)
+    All packets in the queue have valid checksum (which is currentlyCheckedPacket before enqueuing)
 */
 bool FC_CommunicationHandler::receivePacketsToQueue()
 {
     bool receivedSomeDataFlag = false;
 
-    while (comBase.receiveData()) // while there are new data packets
+    while (commBase->available())
     {
-        // Check if packet is valid (calculate the checksum)
-        if (!comBase.checkChecksum())
-            continue;
-
+		// get received data
+		DataBuffer dataReceived = commBase->receiveNextData();
+		
+		// check if received data buffer is not empty
+		if (dataReceived.size == 0)
+			continue;
+		
+		
         // Check the packet type
         uint8_t currentPacketIndex = 255;
         for (int i = 0; i < receiveDataPacketsPointersArray.getSize(); i++)
         {
-            ITransferable* currentlyChecked = receiveDataPacketsPointersArray[i].packetPtr;
-            if (currentlyChecked->getPacketID() == comBase.dpReceived.buffer[1]
-                && currentlyChecked->getPacketSize() == (comBase.dpReceived.size - 2) ) // excluding packet ID and checksum
-                currentPacketIndex = i;
+            ITransferable* currentlyCheckedPacket = receiveDataPacketsPointersArray[i].packetPtr;
+            if (currentlyCheckedPacket->getPacketID() == dataReceived.buffer[0]
+                && currentlyCheckedPacket->getPacketSize() == (dataReceived.size - 1) ) // excluding packet ID
+			{
+				currentPacketIndex = i;
+				break;
+			}
         }
 
         // If didn't found such a receive data packet in the array
@@ -163,11 +170,11 @@ bool FC_CommunicationHandler::receivePacketsToQueue()
             delete[] curQueue->dequeue().buffer;
 
         // Make a deep copy of recived buffer
-        dataBufferType receivedPacket;
-        receivedPacket.size = comBase.dpReceived.size;
+        DataBuffer receivedPacket;
+        receivedPacket.size = dataReceived.size;
         receivedPacket.buffer = new uint8_t[receivedPacket.size]; // dynamically allocate memory for buffer copy
         for (int i = 0; i < receivedPacket.size; i++)
-            receivedPacket.buffer[i] = comBase.dpReceived.buffer[i];
+            receivedPacket.buffer[i] = dataReceived.buffer[i];
 
         // Add copied buffer to the queue of this packet type
         curQueue->enqueue(receivedPacket);
@@ -192,7 +199,7 @@ void FC_CommunicationHandler::dequeueOldestPacketOfEachType()
             continue;
 
         uint8_t** outputDataBytePointers = currentBundle.packetPtr->getBytePointersArray(); // array of pointers to bytes where data will be stored
-        dataBufferType sourceDataBuffer = currentBundle.queuePtr->dequeue();
+        DataBuffer sourceDataBuffer = currentBundle.queuePtr->dequeue();
         uint8_t sizeOfData = sourceDataBuffer.size - 2; // excluding packet ID and packet checksum
         
         // Update data in the receive data packet
@@ -200,8 +207,8 @@ void FC_CommunicationHandler::dequeueOldestPacketOfEachType()
             *(outputDataBytePointers[i]) = sourceDataBuffer.buffer[i + 2];
 
         // Call packet event if exist
-        FC_Task* packetEvent;
-        if ( (packetEvent = currentBundle.packetPtr->getPacketEvent()) != nullptr)
+        FC_Task* packetEvent = currentBundle.packetPtr->getPacketEvent();
+        if (packetEvent != nullptr)
             packetEvent->execute();
 
         // Delete the memory allocated for the buffer
