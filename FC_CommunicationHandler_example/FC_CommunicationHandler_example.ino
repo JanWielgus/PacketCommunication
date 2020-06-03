@@ -10,9 +10,9 @@
 #include <FC_EVA_Filter.h>
 #include <FC_SinkingQueue.h>
 #include <FC_GrowingArray.h>
-#include <Interfaces/ITransferable.h>
-#include <Interfaces/DataBuffer.h>
-#include <Interfaces/IPacketTransceiver.h>
+#include <ITransferable.h>
+#include <DataBuffer.h>
+#include <IPacketTransceiver.h>
 #include <FC_SerialCommBase.h>
 #include <DataPacketBase.h>
 #include <FC_CommunicationHandler.h>
@@ -32,8 +32,11 @@ FC_ObjectTasker tasker(5);
 RecDP_TestReceivePacket1 receiveDataPacket;
 SenDP_TestToSendPacket1 toSendDataPacket;
 
+// Create low-level communicaiton (which implement IPacketTransceiver interface)
+FC_SerialCommBase serialCommBase(&mySerial, 30); // 30 is maximum packet size (size of uint8_t array)
+
 // Create communication handler
-FC_CommunicationHandler comHandler(&mySerial, 30); // 30 is maximum amount of packet variables in bytes
+FC_CommunicationHandler comHandler(&serialCommBase);
 // For example uint32_t is 4 bytes, int16_t is 2 bytes
 //(calculate the sum of all variables size in bytes and add a little for margin of error)
 
@@ -125,7 +128,7 @@ void setup()
     // .. other data packets that will be received
 
 
-    // Assign startup values (testing)
+    // Assign initial values (testing)
     toSendDataPacket.var1 = 3;
     toSendDataPacket.var2 = 4;
     toSendDataPacket.var3 = 5;
