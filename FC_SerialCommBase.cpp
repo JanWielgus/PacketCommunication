@@ -37,7 +37,7 @@ FC_SerialCommBase::~FC_SerialCommBase()
 bool FC_SerialCommBase::send(uint8_t* buffer, size_t size)
 {
 	if (buffer==0 || size==0)
-		return;
+		return false;
 
 	size++; // create room for the checksum
 	
