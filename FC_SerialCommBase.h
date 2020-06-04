@@ -43,6 +43,8 @@ public:
 	
 private:
 	DataBuffer decodedData; // received and decoded data, returned by receive method
+	uint8_t* bufWithChecksum; // buffer with send data with checksum value at the end
+	uint8_t* encodeBuffer; // buffer with data after encoding
 
 
 	// checksum value is placed at the buffer end (last thing in buffer)

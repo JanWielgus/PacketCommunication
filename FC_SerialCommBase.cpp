@@ -14,13 +14,23 @@ FC_SerialCommBase::FC_SerialCommBase(Stream* serial, size_t bufSize): BufferSize
 	// allocate memory for receive and decode buffer
 	receiveBuffer = new uint8_t[BufferSize];
 	decodeBuffer = new uint8_t[BufferSize];
+	
+	
+	// allocate memory for buffer with checksum value at the end
+	bufWithChecksum = new uint8_t[BufferSize + 1];
+	
+	// allocate memory for buffer for endoced data
+	encodeBuffer = new uint8_t[COBS::getEncodedBufferSize(BufferSize)]; // maximum size of encoded data
 }
 
 
 FC_SerialCommBase::~FC_SerialCommBase()
 {
-	delete [] receiveBuffer;
-	delete [] decodeBuffer;
+	delete[] receiveBuffer;
+	delete[] decodeBuffer;
+	
+	delete[] bufWithChecksum;
+	delete[] encodeBuffer;
 }
 
 
@@ -31,25 +41,15 @@ bool FC_SerialCommBase::send(uint8_t* buffer, size_t size)
 
 	size++; // create room for the checksum
 	
-	// create new buffer with checksum at the end
-	uint8_t* bufWithChecksum = new uint8_t[size];
 	// copy all data from buffer and add checksum at the end
 	for (int i = 0; i < size - 1; i++)
 		bufWithChecksum[i] = buffer[i];
 	bufWithChecksum[size - 1] = calcChecksum(bufWithChecksum, size - 1);
 	
-	// create buffer for encoded data
-	uint8_t* encodeBuffer = new uint8_t[COBS::getEncodedBufferSize(size)];
-	
 	size_t numEncoded = COBS::encode(/*buffer*/ bufWithChecksum, size, encodeBuffer);
 	
 	serial->write(encodeBuffer, numEncoded);
 	serial->write(PacketMarker);
-	
-	delete [] encodeBuffer;
-	
-	// delete temporarily created buffer with checksum
-	delete[] bufWithChecksum;
 	
 	return true;
 }
