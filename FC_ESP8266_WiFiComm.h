@@ -31,7 +31,7 @@ public:
 	// config methods
 	void setTargetIPAddress(IPAddress ipAddress);
 	void setTargetIPAddress(uint8_t first_octet, uint8_t second_octet, uint8_t third_octet, uint8_t fourth_octet);
-	void setTargetIPAddrToLastSender(); // should be called every time before sending, set targetIPAddress to udp.remoteIP()
+	void setTargetIPAddrAlwaysToLastSender(); // always before sending set targetIPAddress to udp.remoteIP()
 	
 	// public interface methods
 	bool send(const uint8_t* buffer, size_t size) override;
@@ -44,6 +44,7 @@ private: // methods
 
 private: // data
 	bool udpBeginnedFlag = false; // set after successful wifi connection
+	bool sendToRemoteIPFlag = true; // before every sending, set target IP to udp.remoteIP()
 	
 	WiFiUDP udp;
 	IPAddress localIPAddress;

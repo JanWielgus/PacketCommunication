@@ -34,18 +34,20 @@ bool FC_ESP8266_WiFiComm::isConnected()
 void FC_ESP8266_WiFiComm::setTargetIPAddress(IPAddress ipAddress)
 {
 	targetIPAddress = ipAddress;
+	sendToRemoteIPFlag = false;
 }
 
 
 void FC_ESP8266_WiFiComm::setTargetIPAddress(uint8_t first_octet, uint8_t second_octet, uint8_t third_octet, uint8_t fourth_octet)
 {
 	targetIPAddress = IPAddress(first_octet, second_octet, third_octet, fourth_octet);
+	sendToRemoteIPFlag = false;
 }
 
 
-void FC_ESP8266_WiFiComm::setTargetIPAddrToLastSender()
+void FC_ESP8266_WiFiComm::setTargetIPAddrAlwaysToLastSender()
 {
-	targetIPAddress = udp.remoteIP();
+	sendToRemoteIPFlag = true;
 }
 
 
@@ -55,6 +57,8 @@ bool FC_ESP8266_WiFiComm::send(const uint8_t* buffer, size_t size)
 	if (checkIfUdpBeginned() == false)
 		return false;
 	
+	if (sendToRemoteIPFlag)
+		targetIPAddress = udp.remoteIP();
 	
 	udp.beginPacket(targetIPAddress, Port);
 	udp.write(buffer, size);
