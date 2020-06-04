@@ -25,7 +25,6 @@ public:
 	
 	
 	// setup methods
-	void begin(); // called in setup()
 	bool isConnected();
 	
 	// config methods
@@ -34,6 +33,7 @@ public:
 	void setTargetIPAddrAlwaysToLastSender(); // always before sending set targetIPAddress to udp.remoteIP()
 	
 	// public interface methods
+	void begin() override;
 	bool send(const uint8_t* buffer, size_t size) override;
 	const DataBuffer receiveNextData() override; // receive AT MOST ONE data packet. HAVE TO be called until available() return false (data packet was incomplete or no data)
 	size_t available() override; // return false if there is no data or data packet is incomplete

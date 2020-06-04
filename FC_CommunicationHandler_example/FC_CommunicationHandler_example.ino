@@ -102,6 +102,9 @@ void setup()
 
     // Begin software serial (used by CommunicationHandler)
     mySerial.begin(9600);
+	
+	// Begin base communication
+	serialCommBase.begin();
 
     // Add communication handler to the tasker to update receiving
     // Receives all data to queues (each packet has its own one)

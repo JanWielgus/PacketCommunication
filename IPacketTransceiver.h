@@ -18,6 +18,7 @@ class IPacketTransceiver
 public:
 	virtual ~IPacketTransceiver() {}
 	
+	virtual void begin() = 0;
 	virtual bool send(const uint8_t* buffer, size_t size) = 0;
 	virtual size_t available() = 0;
 	virtual const DataBuffer receiveNextData() = 0;
