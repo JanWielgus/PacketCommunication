@@ -171,13 +171,13 @@ bool FC_CommunicationHandler::receivePacketsToQueue()
 
         // Make a deep copy of recived buffer
         DataBuffer receivedPacket;
-        receivedPacket.size = dataReceived.size;
+        receivedPacket.size = dataReceived.size - 1; // without ID
         receivedPacket.buffer = new uint8_t[receivedPacket.size]; // dynamically allocate memory for buffer copy
         for (int i = 0; i < receivedPacket.size; i++)
-            receivedPacket.buffer[i] = dataReceived.buffer[i];
+            receivedPacket.buffer[i] = dataReceived.buffer[i+1]; // copy data starting at index 1 (0 is packet ID)
 
         // Add copied buffer to the queue of this packet type
-        curQueue->enqueue(receivedPacket);
+        curQueue->enqueue(receivedPacket); // Store only data (without packet ID)
     }
 
     return receivedSomeDataFlag;
@@ -200,18 +200,17 @@ void FC_CommunicationHandler::dequeueOldestPacketOfEachType()
 
         uint8_t** outputDataBytePointers = currentBundle.packetPtr->getBytePointersArray(); // array of pointers to bytes where data will be stored
         DataBuffer sourceDataBuffer = currentBundle.queuePtr->dequeue();
-        uint8_t sizeOfData = sourceDataBuffer.size - 2; // excluding packet ID and packet checksum
         
         // Update data in the receive data packet
-        for (int i = 0; i < sizeOfData; i++)
-            *(outputDataBytePointers[i]) = sourceDataBuffer.buffer[i + 2];
+        for (int i = 0; i < sourceDataBuffer.size; i++)
+            *(outputDataBytePointers[i]) = sourceDataBuffer.buffer[i];
 
         // Call packet event if exist
         FC_Task* packetEvent = currentBundle.packetPtr->getPacketEvent();
         if (packetEvent != nullptr)
             packetEvent->execute();
 
-        // Delete the memory allocated for the buffer
+        // Delete the memory allocated for the buffer (in receivePacketsToQueue() method)
         delete[] sourceDataBuffer.buffer;
 
         // Set flag to true to calculate connection stability further

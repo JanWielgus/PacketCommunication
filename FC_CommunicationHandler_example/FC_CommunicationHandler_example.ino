@@ -79,7 +79,7 @@ class sendData : public FC_Task
         toSendDataPacket.var5 = toSendDataPacket.var4;
 
         // Blink a diode to indicate sending (if program got stuck this diode will not blink any more)
-        static bool bol;
+        static bool bol = true;
         digitalWrite(LED_BUILTIN, bol);
         bol = !bol;
 
@@ -118,7 +118,7 @@ void setup()
 
     // Used only when using Tasker. Makes that time has not influence connection stability value.
     comHandler.adaptConStabFilterToInterval();
-    comHandler.setConStabFilterIntensity(0.5); // other way to set up conneciton stability manually (if want smoothness other than from method above)
+    //comHandler.setConStabFilterIntensity(0.5); // other way to set up conneciton stability manually (if want smoothness other than from method above)
 
 
     // Add all pointers to data packets that will be received during communication
@@ -133,7 +133,7 @@ void setup()
     toSendDataPacket.var2 = 4;
     toSendDataPacket.var3 = 5;
     toSendDataPacket.var4 = 6;
-    toSendDataPacket.var5 = 7;
+    toSendDataPacket.var5 = 7.0f;
 }
 
 void loop()
