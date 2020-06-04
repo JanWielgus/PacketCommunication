@@ -65,10 +65,13 @@ bool FC_ESP8266_WiFiComm::send(const uint8_t* buffer, size_t size)
 
 
 
-DataBuffer FC_ESP8266_WiFiComm::receiveNextData()
+const DataBuffer FC_ESP8266_WiFiComm::receiveNextData()
 {
 	if (checkIfUdpBeginned() == false)
-		return false;
+	{
+		receiveBuffer.size = 0;
+		return receiveBuffer;
+	}
 	
 	int packetSize = udp.parsePacket();
 	
@@ -100,7 +103,7 @@ bool FC_ESP8266_WiFiComm::checkIfUdpBeginned()
 	if (WiFi.status() == WL_CONNECTED)
 	{
 		localIPAddress = WiFi.localIP();
-		udp.begin(port);
+		udp.begin(Port);
 		
 		udpBeginnedFlag = true;
 		
