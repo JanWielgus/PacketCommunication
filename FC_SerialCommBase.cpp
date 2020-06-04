@@ -56,7 +56,7 @@ bool FC_SerialCommBase::send(const uint8_t* buffer, size_t size)
 
 
 
-DataBuffer FC_SerialCommBase::receiveNextData()
+const DataBuffer FC_SerialCommBase::receiveNextData()
 {
 	while (serial->available() > 0)
 	{

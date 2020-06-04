@@ -20,7 +20,7 @@ public:
 	
 	virtual bool send(const uint8_t* buffer, size_t size) = 0;
 	virtual size_t available() = 0;
-	virtual DataBuffer receiveNextData() = 0;
+	virtual const DataBuffer receiveNextData() = 0;
 };
 
 
