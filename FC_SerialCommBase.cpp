@@ -34,7 +34,7 @@ FC_SerialCommBase::~FC_SerialCommBase()
 }
 
 
-bool FC_SerialCommBase::send(uint8_t* buffer, size_t size)
+bool FC_SerialCommBase::send(const uint8_t* buffer, size_t size)
 {
 	if (buffer==0 || size==0)
 		return false;

@@ -37,7 +37,7 @@ public:
 	~FC_SerialCommBase();
 	
 	// public interface methods
-	bool send(uint8_t* buffer, size_t size) override;
+	bool send(const uint8_t* buffer, size_t size) override;
 	DataBuffer receiveNextData() override; // receive AT MOST ONE data packet. HAVE TO be called until available() return false (data packet was incomplete or no data)
 	size_t available() override; // return false if there is no data or data packet is incomplete
 	
