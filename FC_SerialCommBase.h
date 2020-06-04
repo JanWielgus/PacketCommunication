@@ -43,7 +43,6 @@ public:
 	size_t available() override; // return false if there is no data or data packet is incomplete
 	
 private:
-	DataBuffer decodedData; // received and decoded data, returned by receive method
 	uint8_t* bufWithChecksum; // buffer with send data with checksum value at the end
 	uint8_t* encodeBuffer; // buffer with data after encoding
 
@@ -54,7 +53,7 @@ private:
 	
 
 	uint8_t* receiveBuffer;
-	uint8_t* decodeBuffer;
+	DataBuffer decodedData; // received and decoded data, returned by receive method
 	size_t receiveBufferIndex = 0;
 	uint8_t PacketMarker = 0;
 	Stream* serial;
