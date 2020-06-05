@@ -62,14 +62,14 @@ bool FC_ESP8266_WiFiComm::send(const uint8_t* buffer, size_t size)
 	
 	udp.beginPacket(targetIPAddress, Port);
 	udp.write(buffer, size);
-	udp.endPacket();
+	bool result = udp.endPacket();
 	
-	return true;
+	return result;
 }
 
 
 
-const DataBuffer FC_ESP8266_WiFiComm::receiveNextData()
+DataBuffer FC_ESP8266_WiFiComm::receiveNextData()
 {
 	if (checkIfUdpBeginned() == false)
 	{

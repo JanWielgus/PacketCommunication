@@ -59,7 +59,7 @@ bool FC_SerialCommBase::send(const uint8_t* buffer, size_t size)
 
 
 
-const DataBuffer FC_SerialCommBase::receiveNextData()
+DataBuffer FC_SerialCommBase::receiveNextData()
 {
 	while (serial->available() > 0)
 	{
@@ -111,7 +111,11 @@ size_t FC_SerialCommBase::available()
 // size - all data + 1 for checksum (assuming that checksum value is after data in buffer)
 bool FC_SerialCommBase::checkChecksum(const uint8_t* buffer, size_t size)
 {
+	if (size == 0)
+		return false;
+
 	uint8_t checksum = calcChecksum(buffer, size - 1);
+
 	return checksum == buffer[size - 1]; // checksum is stored at the last place in buffer
 }
 
