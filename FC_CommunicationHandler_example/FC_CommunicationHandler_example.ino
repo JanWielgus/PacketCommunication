@@ -11,7 +11,9 @@
 #include <FC_SinkingQueue.h>
 #include <FC_GrowingArray.h>
 #include <ITransferable.h>
-#include <FC_Communication_Base.h>
+#include <DataBuffer.h>
+#include <IPacketTransceiver.h>
+#include <FC_SerialCommBase.h>
 #include <DataPacketBase.h>
 #include <FC_CommunicationHandler.h>
 #include "ExampleDataPackets.h"
@@ -30,8 +32,11 @@ FC_ObjectTasker tasker(5);
 RecDP_TestReceivePacket1 receiveDataPacket;
 SenDP_TestToSendPacket1 toSendDataPacket;
 
+// Create low-level communicaiton (which implement IPacketTransceiver interface)
+FC_SerialCommBase serialCommBase(&mySerial, 30); // 30 is maximum packet size (size of uint8_t array)
+
 // Create communication handler
-FC_CommunicationHandler comHandler(&mySerial, 30); // 30 is maximum amount of packet variables in bytes
+FC_CommunicationHandler comHandler(&serialCommBase);
 // For example uint32_t is 4 bytes, int16_t is 2 bytes
 //(calculate the sum of all variables size in bytes and add a little for margin of error)
 
@@ -74,7 +79,7 @@ class sendData : public FC_Task
         toSendDataPacket.var5 = toSendDataPacket.var4;
 
         // Blink a diode to indicate sending (if program got stuck this diode will not blink any more)
-        static bool bol;
+        static bool bol = true;
         digitalWrite(LED_BUILTIN, bol);
         bol = !bol;
 
@@ -97,6 +102,9 @@ void setup()
 
     // Begin software serial (used by CommunicationHandler)
     mySerial.begin(9600);
+	
+	// Begin base communication
+	serialCommBase.begin();
 
     // Add communication handler to the tasker to update receiving
     // Receives all data to queues (each packet has its own one)
@@ -113,7 +121,7 @@ void setup()
 
     // Used only when using Tasker. Makes that time has not influence connection stability value.
     comHandler.adaptConStabFilterToInterval();
-    comHandler.setConStabFilterIntensity(0.5); // other way to set up conneciton stability manually (if want smoothness other than from method above)
+    //comHandler.setConStabFilterIntensity(0.5); // other way to set up conneciton stability manually (if want smoothness other than from method above)
 
 
     // Add all pointers to data packets that will be received during communication
@@ -123,12 +131,12 @@ void setup()
     // .. other data packets that will be received
 
 
-    // Assign startup values (testing)
+    // Assign initial values (testing)
     toSendDataPacket.var1 = 3;
     toSendDataPacket.var2 = 4;
     toSendDataPacket.var3 = 5;
     toSendDataPacket.var4 = 6;
-    toSendDataPacket.var5 = 7;
+    toSendDataPacket.var5 = 7.0f;
 }
 
 void loop()
