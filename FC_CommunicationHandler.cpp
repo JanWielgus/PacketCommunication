@@ -125,17 +125,11 @@ void FC_CommunicationHandler::setConStabFilterIntensity(float filterIntensity)
 bool FC_CommunicationHandler::receivePacketsToQueue()
 {
     bool receivedSomeDataFlag = false;
+	
+	DataBuffer dataReceived;
 
-    while (commBase->available())
+    while ( (dataReceived = commBase->receiveNextData()).size > 0)
     {
-		// get received data
-		DataBuffer dataReceived = commBase->receiveNextData();
-		
-		// check if received data buffer is not empty
-		if (dataReceived.size == 0)
-			continue;
-		
-		
         // Check the packet type
         uint8_t currentPacketIndex = 255;
         for (int i = 0; i < receiveDataPacketsPointersArray.getSize(); i++)

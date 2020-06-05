@@ -37,12 +37,12 @@ public:
 	~FC_SerialCommBase();
 	
 	// public interface methods
-	bool send(uint8_t* buffer, size_t size) override;
-	DataBuffer receiveNextData() override; // receive AT MOST ONE data packet. HAVE TO be called until available() return false (data packet was incomplete or no data)
+	void begin() override;
+	bool send(const uint8_t* buffer, size_t size) override;
+	const DataBuffer receiveNextData() override; // receive AT MOST ONE data packet. HAVE TO be called until available() return false (data packet was incomplete or no data)
 	size_t available() override; // return false if there is no data or data packet is incomplete
 	
 private:
-	DataBuffer decodedData; // received and decoded data, returned by receive method
 	uint8_t* bufWithChecksum; // buffer with send data with checksum value at the end
 	uint8_t* encodeBuffer; // buffer with data after encoding
 
@@ -53,7 +53,7 @@ private:
 	
 
 	uint8_t* receiveBuffer;
-	uint8_t* decodeBuffer;
+	DataBuffer decodedData; // received and decoded data, returned by receive method
 	size_t receiveBufferIndex = 0;
 	uint8_t PacketMarker = 0;
 	Stream* serial;

@@ -8,12 +8,10 @@
 FC_SerialCommBase::FC_SerialCommBase(Stream* serial, size_t bufSize): BufferSize(bufSize)
 {
 	this->serial = serial;
-
-	decodedData.buffer = nullptr; // pointer to this array is set after successful receiving
 	
 	// allocate memory for receive and decode buffer
 	receiveBuffer = new uint8_t[BufferSize];
-	decodeBuffer = new uint8_t[BufferSize];
+	decodedData.buffer = new uint8_t[BufferSize];
 	
 	
 	// allocate memory for buffer with checksum value at the end
@@ -27,14 +25,19 @@ FC_SerialCommBase::FC_SerialCommBase(Stream* serial, size_t bufSize): BufferSize
 FC_SerialCommBase::~FC_SerialCommBase()
 {
 	delete[] receiveBuffer;
-	delete[] decodeBuffer;
+	delete[] decodedData.buffer;
 	
 	delete[] bufWithChecksum;
 	delete[] encodeBuffer;
 }
 
 
-bool FC_SerialCommBase::send(uint8_t* buffer, size_t size)
+void FC_SerialCommBase::begin()
+{
+}
+
+
+bool FC_SerialCommBase::send(const uint8_t* buffer, size_t size)
 {
 	if (buffer==0 || size==0)
 		return false;
@@ -56,7 +59,7 @@ bool FC_SerialCommBase::send(uint8_t* buffer, size_t size)
 
 
 
-DataBuffer FC_SerialCommBase::receiveNextData()
+const DataBuffer FC_SerialCommBase::receiveNextData()
 {
 	while (serial->available() > 0)
 	{
@@ -64,10 +67,8 @@ DataBuffer FC_SerialCommBase::receiveNextData()
 		
 		if (data == PacketMarker)
 		{
-			size_t numDecoded = COBS::decode(receiveBuffer, receiveBufferIndex, decodeBuffer);
-			
-			decodedData.buffer = decodeBuffer;
-			decodedData.size = numDecoded;
+			// decode data
+			decodedData.size = COBS::decode(receiveBuffer, receiveBufferIndex, decodedData.buffer);
 
 			// reset index in the received data buffer
 			receiveBufferIndex = 0;

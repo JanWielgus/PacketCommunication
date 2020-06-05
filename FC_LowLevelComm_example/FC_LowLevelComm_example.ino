@@ -33,6 +33,8 @@ IPacketTransceiver& comm = serialCommunicaiton; // There can be put any class th
 void setup()
 {
 	Serial.begin(9600);
+	
+	serialCommunicaiton.begin();
 }
 
 
