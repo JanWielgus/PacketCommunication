@@ -93,7 +93,8 @@ const DataBuffer FC_ESP8266_WiFiComm::receiveNextData()
 
 size_t FC_ESP8266_WiFiComm::available()
 {
-	return udp.available();
+	//return udp.available();
+	return true;
 }
 
 
