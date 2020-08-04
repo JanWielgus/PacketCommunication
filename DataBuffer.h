@@ -9,8 +9,6 @@
 #ifndef _DATABUFFER_h
 #define _DATABUFFER_h
 
-#include "arduino.h"
-
 
 struct DataBuffer
 {
