@@ -5,8 +5,6 @@
  * 
  */
 
-// FIXME: move this file to the communication library
-
 #ifndef ICONNECTIONSTATUS_H
 #define ICONNECTIONSTATUS_H
 
