@@ -22,7 +22,7 @@ private:
     EVAFilter connectionStabilityFilter;
 
 protected:
-    ITransceiver* const lowLevelComm;
+    ITransceiver* const LowLevelComm;
 
 public:
     /**
