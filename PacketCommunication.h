@@ -53,6 +53,7 @@ public:
     /**
      * @brief Adds pointer to the data packet that may be received during communication.
      * There can be added only one receive data packet pointer of each ID.
+     * Have to be overriden.
      * 
      * @param receiveDataPacketPtr pointer to the data packet that may be received.
      * @return false if packet was not successfully added (eg. there was already added data packet with the same ID)
@@ -61,6 +62,7 @@ public:
 
     /**
      * @brief Send data packet passed in a parameter.
+     * Have to be overriden.
      * 
      * @param packetToSend Pointer to the data packet that need to be sent.
      * @return false if data packet was not sent because of any reason.
@@ -71,12 +73,14 @@ public:
      * @brief Receive all available data and automatically update previously added
      * receive data packets (added through addReceiveDataPacketPointer() method).
      * Method from Task class extension.
+     * Have to be overriden.
      */
     virtual void execute() override = 0;
 
     /**
      * @brief Return conneciton stability in percents.
      * Method from IConnectionStatus interface.
+     * Have to be overriden.
      * 
      * @return connection stability in range from 0% (no connection) to 100% (uninterrupted connection)
      */
