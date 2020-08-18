@@ -18,19 +18,77 @@
 
 class PacketCommunication : public IConnectionStatus, public Task
 {
-protected:
-    ITransceiver* const lowLevelComm;
+private:
     EVAFilter connectionStabilityFilter;
 
+protected:
+    ITransceiver* const lowLevelComm;
+
 public:
+    /**
+     * @brief Construct a new Packet Communication object.
+     * 
+     * @param lowLevelComm pointer to the low level communication instance.
+     */
     PacketCommunication(ITransceiver* lowLevelComm);
+
+    /**
+     * @brief Use after adding this object to the Tasker.
+     * Configure filters automatically to give smooth changes in
+     * connection stability return value
+     * (to make changes to be not too fast and not too slow).
+     */
     void adaptConnectionStabilityToInterval();
+
+    /**
+     * @brief Alternative to adaptConnectionStabilityToInterval() method.
+     * Used to set filters manually.
+     * 
+     * @param changeRate [0.0 < changeRate < 1.0]
+     * (close to 0 - connection stability value changes quickly,
+     * close to 1 - connection stability value changes slowly)
+     */
     void setConnectionStabilityChangeRate(float changeRate);
 
+    /**
+     * @brief Adds pointer to the data packet that may be received during communication.
+     * There can be added only one receive data packet pointer of each ID.
+     * 
+     * @param receiveDataPacketPtr pointer to the data packet that may be received.
+     * @return false if packet was not successfully added (eg. there was already added data packet with the same ID)
+     */
     virtual bool addReceiveDataPacketPointer(IDataPacket* receiveDataPacketPtr) = 0;
+
+    /**
+     * @brief Send data packet passed in a parameter.
+     * 
+     * @param packetToSend Pointer to the data packet that need to be sent.
+     * @return false if data packet was not sent because of any reason.
+     */
     virtual bool sendDataPacket(const IDataPacket* packetToSend) = 0;
 
+    /**
+     * @brief Receive all available data and automatically update previously added
+     * receive data packets (added through addReceiveDataPacketPointer() method).
+     * Method from Task class extension.
+     */
+    virtual void execute() override = 0;
+
+    /**
+     * @brief Return conneciton stability in percents.
+     * Method from IConnectionStatus interface.
+     * 
+     * @return connection stability in range from 0% (no connection) to 100% (uninterrupted connection)
+     */
+    virtual uint8_t getConnectionStability() override = 0;
+
 protected:
+    /**
+     * @brief Use after receiving (execute() method) to update conneciton stability value.
+     * 
+     * @param receivedPercent assessment of received data [0 <= receivedPercent <= 100]
+     * (0 - no data received, 100 - all data received)
+     */
     void updateConnectionStability(uint8_t receivedPercent);
 };
 
