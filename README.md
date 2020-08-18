@@ -1,7 +1,7 @@
-# FC_Communication
+# PacketCommunication
 Arduino communication library. 
 
-SerialCommBase class is based on the Christopher Baker [PacketSerial](https://github.com/bakercp/PacketSerial) library
+SerialComm class is based on the Christopher Baker [PacketSerial](https://github.com/bakercp/PacketSerial) library.
 
 
 
