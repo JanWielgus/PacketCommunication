@@ -9,17 +9,14 @@
 #define ICONNECTIONSTATUS_H
 
 
-namespace Interfaces
+class IConnectionStatus
 {
-    class IConnectionStatus
-    {
-    public:
-        virtual ~IConnectionStatus() {}
+public:
+    virtual ~IConnectionStatus() {}
 
-        virtual uint8_t getConnectionStability() = 0;
-        // TODO: think about other connection statuses (maybe boolean equivalent of method above)
-    };
-}
+    virtual uint8_t getConnectionStability() = 0;
+    // TODO: think about other connection statuses (maybe boolean equivalent of method above)
+};
 
 
 #endif
