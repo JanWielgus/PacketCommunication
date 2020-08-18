@@ -12,7 +12,7 @@
 DataPacket::DataPacket(uint8_t packetID)
     : PacketID(packetID)
 {
-    bytePointersArray = new SimpleGrowingArray();
+    bytePointersArray = new SimpleGrowingArray(); // default array type
     packetEvent = nullptr;
 }
 

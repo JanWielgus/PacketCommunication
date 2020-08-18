@@ -11,7 +11,7 @@
 #define DATAPACKET_H
 
 #include "IDataPacket.h"
-#include <C:\Users\janwi\Documents\Arduino\libraries\DataStructures\IArray.h>
+#include <IArray.h>
 
 
 class DataPacket : public IDataPacket
