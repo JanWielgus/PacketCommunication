@@ -31,6 +31,12 @@ void PacketCommunication::setConnectionStabilityChangeRate(float changeRate)
 }
 
 
+uint8_t PacketCommunication::getConnectionStability()
+{
+    return connectionStabilityFilter.getFilteredValue() + 0.5;
+}
+
+
 void PacketCommunication::updateConnectionStability(uint8_t receivedPercent)
 {
     receivedPercent = constrain(receivedPercent, 0, 100);

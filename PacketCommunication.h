@@ -51,6 +51,14 @@ public:
     void setConnectionStabilityChangeRate(float changeRate);
 
     /**
+     * @brief Return conneciton stability in percents.
+     * Method from IConnectionStatus interface.
+     * 
+     * @return connection stability in range from 0% (no connection) to 100% (uninterrupted connection)
+     */
+    uint8_t getConnectionStability() override;
+
+    /**
      * @brief Adds pointer to the data packet that may be received during communication.
      * There can be added only one receive data packet pointer of each ID.
      * Have to be overriden.
@@ -76,15 +84,6 @@ public:
      * Have to be overriden.
      */
     virtual void execute() override = 0;
-
-    /**
-     * @brief Return conneciton stability in percents.
-     * Method from IConnectionStatus interface.
-     * Have to be overriden.
-     * 
-     * @return connection stability in range from 0% (no connection) to 100% (uninterrupted connection)
-     */
-    virtual uint8_t getConnectionStability() override = 0;
 
 protected:
     /**
