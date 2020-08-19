@@ -38,7 +38,7 @@ public:
      * @param streamPtr Pointer to object that its class implement Arduino Stream interface.
      * @param bufSize Max size of one data packet (in bytes)
      */
-    StreamComm(Stream* streamPtr, size_t bufferSize);
+    StreamComm(Stream* streamPtr, size_t bufferSize = 255);
 
     ~StreamComm();
     void begin() override;

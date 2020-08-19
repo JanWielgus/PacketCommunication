@@ -6,6 +6,7 @@
  */
 
 #include "StreamComm.h"
+
 #include "Encoding/COBS.h"
 //#include "Encoding/SLIP.h" // alternative
 

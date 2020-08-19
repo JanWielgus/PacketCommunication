@@ -47,7 +47,8 @@ public:
 
     /**
      * @return DataBuffer with received data or empty buffer if no data were received.
-     * Make your own copy of data in the buffer or just use them.
+     * Make your own copy of data in the buffer or just use it.
+     * After calling this method, some data could still wait for receiving.
      */
     virtual DataBuffer receiveNextData() = 0;
 };
