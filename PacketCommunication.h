@@ -32,6 +32,8 @@ public:
      */
     PacketCommunication(ITransceiver* lowLevelComm);
 
+    virtual ~PacketCommunication();
+
     /**
      * @brief Use after adding this object to the Tasker.
      * Configure filters automatically to give smooth changes in

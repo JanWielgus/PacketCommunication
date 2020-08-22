@@ -14,6 +14,11 @@ PacketCommunication::PacketCommunication(ITransceiver* lowLevelComm)
 }
 
 
+PacketCommunication::~PacketCommunication()
+{
+}
+
+
 void PacketCommunication::adaptConnectionStabilityToInterval()
 {
     // Thanks to this, filtering is not dependent of receiving time interval

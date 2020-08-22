@@ -24,7 +24,7 @@ protected:
 
 public:
     NoQueuePacketCommunication(ITransceiver* lowLevelComm);
-    ~NoQueuePacketCommunication();
+    virtual ~NoQueuePacketCommunication();
     virtual bool addReceiveDataPacketPointer(IDataPacket* receiveDataPacketPtr) override;
     virtual bool sendDataPacket(const IDataPacket* packetToSend) override;
     virtual void execute() override;
