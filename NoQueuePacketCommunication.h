@@ -30,6 +30,9 @@ public:
     virtual void execute() override;
 
 
+private:
+    void receiveDataAndUpdateReceiveDataPackets();
+
 protected:
     /**
      * @brief Checks if data packet with this ID was already added

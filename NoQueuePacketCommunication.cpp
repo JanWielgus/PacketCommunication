@@ -58,6 +58,13 @@ bool NoQueuePacketCommunication::sendDataPacket(const IDataPacket* packetToSend)
 
 void NoQueuePacketCommunication::execute()
 {
+    receiveDataAndUpdateReceiveDataPackets();
+}
+
+
+
+void NoQueuePacketCommunication::receiveDataAndUpdateReceiveDataPackets()
+{
     bool someDataReceivedFlag = false;
 
     while (LowLevelComm->available())
@@ -78,7 +85,6 @@ void NoQueuePacketCommunication::execute()
 
     updateConnectionStability(someDataReceivedFlag * 100); // 100 when true, 0 when false
 }
-
 
 
 bool NoQueuePacketCommunication::checkIfAlreadyAdded(IDataPacket* toCheck)
