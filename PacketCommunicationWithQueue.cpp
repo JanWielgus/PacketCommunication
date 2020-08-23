@@ -18,7 +18,7 @@ PacketCommunicationWithQueue::PacketCommunicationWithQueue(ITransceiver* lowLeve
 
 PacketCommunicationWithQueue::~PacketCommunicationWithQueue()
 {
-    // TODO: release memory for allocated buffers left in queue!
+    clearQueueAndFreeBuffersMemory();
     delete queuedBuffers;
 }
 
@@ -65,4 +65,11 @@ void PacketCommunicationWithQueue::enqueueBuffer(DataBuffer buffer)
         delete[] queuedBuffers->dequeue().buffer;
     
     queuedBuffers->enqueue(buffer);
+}
+
+
+void PacketCommunicationWithQueue::clearQueueAndFreeBuffersMemory()
+{
+    while (queuedBuffers->getQueueLength() > 0)
+        delete[] queuedBuffers->dequeue().buffer;
 }

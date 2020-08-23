@@ -42,6 +42,11 @@ private:
      * @param buffer Buffer to put in the queue.
      */
     void enqueueBuffer(DataBuffer buffer);
+
+    /**
+     * @brief Dequeue all elements in the queue and release dynamically allocated memory for stored buffers.
+     */
+    void clearQueueAndFreeBufferMemory();
 };
 
 
