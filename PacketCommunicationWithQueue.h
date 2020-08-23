@@ -46,7 +46,7 @@ private:
     /**
      * @brief Dequeue all elements in the queue and release dynamically allocated memory for stored buffers.
      */
-    void clearQueueAndFreeBufferMemory();
+    void clearQueueAndFreeBuffersMemory();
 };
 
 

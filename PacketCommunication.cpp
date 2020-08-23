@@ -70,7 +70,7 @@ bool PacketCommunication::copyBufferContents(const DataBuffer& source, DataBuffe
 }
 
 
-bool PacketCommunication::updateDataInDataPacket(IDataPacket* dataPacket, DataBuffer sourceDataBuffer)
+bool PacketCommunication::updateDataPacketFromBuffer(IDataPacket* dataPacket, DataBuffer sourceDataBuffer)
 {
     if (dataPacket->getPacketID() != sourceDataBuffer.buffer[0] ||
         dataPacket->getPacketSize() != sourceDataBuffer.size - 1)

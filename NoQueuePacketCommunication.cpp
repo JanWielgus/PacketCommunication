@@ -34,8 +34,7 @@ bool NoQueuePacketCommunication::addReceiveDataPacketPointer(IDataPacket* receiv
 
 bool NoQueuePacketCommunication::sendDataPacket(const IDataPacket* packetToSend)
 {
-    DataBuffer bufferToSend;
-    bufferToSend = createNewBufferAndAllocateMemory(packetToSend->getPacketSize() + 1);
+    DataBuffer bufferToSend = createNewBufferAndAllocateMemory(packetToSend->getPacketSize() + 1);
 
     updateBufferFromDataPacket(bufferToSend, packetToSend);
 
@@ -66,7 +65,7 @@ void NoQueuePacketCommunication::receiveDataAndUpdateReceiveDataPackets()
         if (destinationDataPacket == nullptr)
             continue; // any previously added receive data packets match received data
 
-        updateDataInDataPacket(destinationDataPacket, receivedBuffer);
+        updateDataPacketFromBuffer(destinationDataPacket, receivedBuffer);
         callPacketEvent(destinationDataPacket);
 
         someDataReceivedFlag = true;

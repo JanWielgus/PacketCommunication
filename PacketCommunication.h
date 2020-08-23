@@ -127,7 +127,7 @@ protected:
      * @return false if packet ID or size doesn't match buffer, or something else went wrong.
      * Returns true otherwise.
      */
-    bool updateDataInDataPacket(IDataPacket* dataPacket, DataBuffer sourceDataBuffer);
+    bool updateDataPacketFromBuffer(IDataPacket* dataPacket, DataBuffer sourceDataBuffer);
 
     /**
      * @brief Updates data in buffer from data in data packet.
