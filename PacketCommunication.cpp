@@ -49,4 +49,59 @@ void PacketCommunication::updateConnectionStability(uint8_t receivedPercent)
 }
 
 
+DataBuffer PacketCommunication::createNewBufferAndAllocateMemory(size_t bufferSize)
+{
+    DataBuffer newBuffer;
+    newBuffer.size = bufferSize;
+    newBuffer.buffer = new uint8_t[bufferSize];
+    return newBuffer;
+}
 
+
+bool PacketCommunication::copyBufferContents(const DataBuffer& source, DataBuffer& destination)
+{
+    if (source.size != destination.size)
+        return false;
+    
+    size_t sizeToCopy = source.size;
+    for (size_t i = 0; i < sizeToCopy; i++)
+        destination.buffer[i] = source.buffer[i];
+    return true;
+}
+
+
+bool PacketCommunication::updateDataInDataPacket(IDataPacket* dataPacket, DataBuffer sourceDataBuffer)
+{
+    if (dataPacket->getPacketID() != sourceDataBuffer.buffer[0] ||
+        dataPacket->getPacketSize() != sourceDataBuffer.size - 1)
+        return false;
+
+    uint8_t** destinationBytePointers = dataPacket->getBytePointersArray();
+    for (int i = 1; i < sourceDataBuffer.size; i++)
+        *(destinationBytePointers[i - 1]) = sourceDataBuffer.buffer[i];
+    
+    return true;
+}
+
+
+bool PacketCommunication::updateBufferFromDataPacket(DataBuffer bufferToUpdate, const IDataPacket* sourceDataPacket)
+{
+    if (sourceDataPacket->getPacketSize() != bufferToUpdate.size - 1)
+        return false;
+    
+    bufferToUpdate.buffer[0] = sourceDataPacket->getPacketID();
+
+    const uint8_t** packetDataPointersArray = sourceDataPacket->getBytePointersArray();
+    for (int i = 1; i < bufferToUpdate.size; i++)
+        bufferToUpdate.buffer[i] = *(packetDataPointersArray[i - 1]);
+    
+    return true;
+}
+
+
+void PacketCommunication::callPacketEvent(IDataPacket* dataPacket)
+{
+    IExecutable* packetEvent = dataPacket->getPacketEventPtr();
+    if (packetEvent != nullptr)
+        packetEvent->execute();
+}

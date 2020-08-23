@@ -55,22 +55,6 @@ protected:
      * or nullptr if any matching packet was found.
      */
     IDataPacket* getReceiveDataPacketPointer(uint8_t packetID, size_t packetSize);
-
-    /**
-     * @brief Updates bytes in the dataPacket from dataBuffer (data buffer with packet ID)
-     * 
-     * @param dataPacket Data packet which data will be updated.
-     * @param dataBuffer Source of data to update data packet.
-     * Passed data buffer should have packet ID in the buffer[0].
-     */
-    void updateDataInDataPacket(IDataPacket* dataPacket, DataBuffer sourceDataBuffer);
-
-    /**
-     * @brief Calls packet event if exist.
-     * 
-     * @param dataPacket Pointer to data packet which packet event need to be called.
-     */
-    void callPacketEvent(IDataPacket* dataPacket);
 };
 
 

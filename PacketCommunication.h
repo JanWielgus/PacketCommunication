@@ -15,6 +15,8 @@
 #include <EVAFilter.h>
 #include "IDataPacket.h"
 
+// buffer[0] - packet ID
+// buffer[1, 2, ...] - data
 
 class PacketCommunication : public IConnectionStatus, public Task
 {
@@ -95,6 +97,56 @@ protected:
      * (0 - no data received, 100 - all data received)
      */
     void updateConnectionStability(uint8_t receivedPercent);
+
+    /**
+     * @brief Create new buffer object and dynamically allocate memory for its buffer inside.
+     * Don't forget to release this memory later using: delete[] thisBuffer.buffer;.
+     * This method do not release the memory later!!
+     * 
+     * @param bufferSize Size of the created buffer.
+     * @return Pointer to the created buffer and its size.
+     */
+    DataBuffer createNewBufferAndAllocateMemory(size_t bufferSize);
+
+    /**
+     * @brief Copy contents of source buffer to the destination buffer.
+     * Memory have to be allocated before using this function.
+     * 
+     * @param source Source buffer.
+     * @param destination Destination buffer.
+     * @return false if buffers size is not the same.
+     */
+    bool copyBufferContents(const DataBuffer& source, DataBuffer& destination);
+
+    /**
+     * @brief Updates bytes in the dataPacket from dataBuffer (data buffer with packet ID)
+     * 
+     * @param dataPacket Data packet which data will be updated.
+     * @param sourceDataBuffer Source of data to update data packet.
+     * Passed data buffer should have packet ID in the buffer[0].
+     * @return false if packet ID or size doesn't match buffer, or something else went wrong.
+     * Returns true otherwise.
+     */
+    bool updateDataInDataPacket(IDataPacket* dataPacket, DataBuffer sourceDataBuffer);
+
+    /**
+     * @brief Updates data in buffer from data in data packet.
+     * Buffer size have to be data packet size + 1 (for packet ID)!
+     * 
+     * @param bufferToUpdate Buffer that will be filled with data from data packet byte pointers.
+     * Buffer size have to be dataPacket size + 1.
+     * @param sourceDataPacket Pointer to data packet.
+     * @return false if buffer size doesn't match packet size (bufferSize = packetSize + 1),
+     * or something else went wrong. Returns true otherwise.
+     */
+    bool updateBufferFromDataPacket(DataBuffer bufferToUpdate, const IDataPacket* sourceDataPacket);
+
+    /**
+     * @brief Calls packet event if exist.
+     * 
+     * @param dataPacket Pointer to data packet which packet event need to be called.
+     */
+    void callPacketEvent(IDataPacket* dataPacket);
 };
 
 

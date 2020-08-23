@@ -34,24 +34,13 @@ bool NoQueuePacketCommunication::addReceiveDataPacketPointer(IDataPacket* receiv
 
 bool NoQueuePacketCommunication::sendDataPacket(const IDataPacket* packetToSend)
 {
-    // buffer[0] - packet ID
-    // buffer[1, 2, ...] - data
+    DataBuffer bufferToSend;
+    bufferToSend = createNewBufferAndAllocateMemory(packetToSend->getPacketSize() + 1);
 
-    // create buffer
-    DataBuffer dataToSend;
-    dataToSend.size = packetToSend->getPacketSize() + 1; // data + packet ID
-    dataToSend.buffer = new uint8_t[dataToSend.size];
+    updateBufferFromDataPacket(bufferToSend, packetToSend);
 
-    // add packet ID
-    dataToSend.buffer[0] = packetToSend->getPacketID();
-
-    // copy data
-    const uint8_t** packetDataPointersArray = packetToSend->getBytePointersArray();
-    for (int i = 1; i < dataToSend.size; i++)
-        dataToSend.buffer[i] = *(packetDataPointersArray[i - 1]);
-
-    bool sendingResult = LowLevelComm->send(dataToSend);
-    delete[] dataToSend.buffer;
+    bool sendingResult = LowLevelComm->send(bufferToSend);
+    delete[] bufferToSend.buffer;
     return sendingResult;
 }
 
@@ -108,20 +97,4 @@ IDataPacket* NoQueuePacketCommunication::getReceiveDataPacketPointer(uint8_t pac
     }
 
     return nullptr;
-}
-
-
-void NoQueuePacketCommunication::updateDataInDataPacket(IDataPacket* dataPacket, DataBuffer sourceDataBuffer)
-{
-    uint8_t** destinationBytePointers = dataPacket->getBytePointersArray();
-    for (int i = 1; i < sourceDataBuffer.size; i++)
-        *(destinationBytePointers[i - 1]) = sourceDataBuffer.buffer[i];
-}
-
-
-void NoQueuePacketCommunication::callPacketEvent(IDataPacket* dataPacket)
-{
-    IExecutable* packetEvent = dataPacket->getPacketEventPtr();
-    if (packetEvent != nullptr)
-        packetEvent->execute();
 }
