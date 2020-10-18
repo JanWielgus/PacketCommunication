@@ -37,7 +37,7 @@ public:
     virtual ~PacketCommunication();
 
     /**
-     * @brief Use after adding this object to the Tasker.
+     * @brief Use after adding this object to the Tasker!
      * Configure filters automatically to give smooth changes in
      * connection stability return value
      * (to make changes to be not too fast and not too slow).

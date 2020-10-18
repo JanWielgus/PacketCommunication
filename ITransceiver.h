@@ -24,7 +24,6 @@ public:
 
     /**
      * @brief Send data from the buffer with provided size.
-     * 
      * @param buffer Pointer to the data buffer.
      * @param size Amount of data to send (size of the buffer).
      * @return false if somethind went wrong and data were not sent, true otherwise.
@@ -33,7 +32,6 @@ public:
 
     /**
      * @brief Send data from provided data buffer.
-     * 
      * @param buffer Data buffer with data to send.
      * @return false if somethind went wrong and data were not sent, true otherwise.
      */
@@ -42,12 +40,14 @@ public:
     /**
      * @return amount of bytes that are waiting to receive
      * (or just positive value indicate, that there are some data to receive).
+     * This don't assure that receiveNextData() method will return new packet -
+     * data waiting at the input buffer may be corrupted.
      */
     virtual size_t available() = 0;
 
     /**
      * @return DataBuffer with received data or empty buffer if no data were received.
-     * Make your own copy of data in the buffer or just use it.
+     * Make your own copy of data in the buffer or just use returned buffer.
      * After calling this method, some data could still wait for receiving.
      */
     virtual DataBuffer receiveNextData() = 0;
