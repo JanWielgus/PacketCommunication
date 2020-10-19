@@ -128,9 +128,3 @@ uint8_t StreamComm::calculateChecksum(const uint8_t* buffer, size_t size)
     return checksum;
 }
 
-
-void StreamComm::copyArray(const uint8_t* source, uint8_t* destination, size_t size)
-{
-    for (size_t i = 0; i < size; i++)
-        destination[i] = source[i];
-}

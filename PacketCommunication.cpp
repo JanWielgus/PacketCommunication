@@ -58,14 +58,19 @@ DataBuffer PacketCommunication::createNewBufferAndAllocateMemory(size_t bufferSi
 }
 
 
+void PacketCommunication::copyArray(const uint8_t* source, uint8_t* destination, size_t size)
+{
+    for (size_t i = 0; i < size; i++)
+        destination[i] = source[i];
+}
+
+
 bool PacketCommunication::copyBufferContents(const DataBuffer& source, DataBuffer& destination)
 {
     if (source.size != destination.size)
         return false;
     
-    size_t sizeToCopy = source.size;
-    for (size_t i = 0; i < sizeToCopy; i++)
-        destination.buffer[i] = source.buffer[i];
+    copyArray(source.buffer, destination.buffer, source.size);
     return true;
 }
 

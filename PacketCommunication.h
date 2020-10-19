@@ -109,6 +109,14 @@ protected:
     DataBuffer createNewBufferAndAllocateMemory(size_t bufferSize);
 
     /**
+     * @brief Copy contents of one array to another.
+     * @param source Pointer to the source array.
+     * @param destination Pointer to the destination array.
+     * @param size Amount of bytes to copy.
+     */
+    void copyArray(const uint8_t* source, uint8_t* destination, size_t size);
+
+    /**
      * @brief Copy contents of source buffer to the destination buffer.
      * Buffers have to be allocated before using this function in both DataBuffers
      * and have the same size.
