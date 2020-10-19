@@ -8,8 +8,6 @@
  * 
  */
 
-// TODO: This interface could be needless (think about that). Just leave concrete DataPacket class.
-
 #ifndef IDATAPACKET_H
 #define IDATAPACKET_H
 

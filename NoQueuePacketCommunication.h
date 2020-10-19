@@ -13,7 +13,7 @@
 #define NOQUEUEPACKETCOMMUNICATION_H
 
 #include "PacketCommunication.h"
-#include <C:\Users\janwi\Documents\Arduino\libraries\DataStructures\IArray.h> // FIXME: remove full path
+#include <IArray.h>
 
 
 class NoQueuePacketCommunication : public PacketCommunication

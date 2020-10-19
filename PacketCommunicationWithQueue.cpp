@@ -6,7 +6,7 @@
  */
 
 #include "PacketCommunicationWithQueue.h"
-#include "C:\Users\janwi\Documents\Arduino\libraries\DataStructures\SinkingQueue.h" // FIXME: remove full path
+#include <StaticSinkingQueue.h> // TODO: change queue to linked list (the same todo is in .h file)
 
 
 PacketCommunicationWithQueue::PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers)

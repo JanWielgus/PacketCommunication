@@ -5,8 +5,10 @@
  * 
  */
 
+// FIXME: REVIEW THIS FILE
+
 #include "NoQueuePacketCommunication.h"
-#include "C:\Users\janwi\Documents\Arduino\libraries\DataStructures\SimpleGrowingArray.h" // FIXME: remove full path
+#include <GrowingArray.h>
 
 
 NoQueuePacketCommunication::NoQueuePacketCommunication(ITransceiver* lowLevelComm)

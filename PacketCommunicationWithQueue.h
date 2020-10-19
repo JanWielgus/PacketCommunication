@@ -17,7 +17,7 @@
 #define PACKETCOMMUNICATIONWITHQUEUE_H
 
 #include "NoQueuePacketCommunication.h"
-#include "C:\Users\janwi\Documents\Arduino\libraries\DataStructures\IQueue.h"
+#include <IQueue.h> // FIXME: change queue probably to linked list (linked list has iterator)
 
 
 class PacketCommunicationWithQueue : public NoQueuePacketCommunication
@@ -27,8 +27,8 @@ protected:
 
 public:
     PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers);
-    virtual ~PacketCommunicationWithQueue();
-    virtual void execute() override;
+    ~PacketCommunicationWithQueue();
+    void execute() override;
 
 protected:
     void receiveIncomingBuffersToQueue();

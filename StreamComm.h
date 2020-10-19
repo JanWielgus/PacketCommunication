@@ -39,18 +39,18 @@ public:
      * @param bufSize Max size of one data packet (in bytes)
      */
     StreamComm(Stream* streamPtr, size_t bufferSize = 255);
-
+    // TODO: think about allowing copying instances of this class
+    StreamComm(const StreamComm& other) = delete;
     ~StreamComm();
+
+    StreamComm& operator=(const StreamComm& other) = delete;
+
+    // public interface
     void begin() override;
     bool send(const uint8_t* buffer, size_t size) override;
     bool send(const DataBuffer& buffer) override;
     size_t available() override;
     DataBuffer receiveNextData() override;
-
-    // by now, prevent from copying objects of this class
-    // TODO: think about that
-    StreamComm(const StreamComm& other) = delete;
-    StreamComm& operator=(const StreamComm& other) = delete;
 
 
 private:
@@ -82,7 +82,7 @@ private:
      * @param destination Pointer to the destination array.
      * @param size Amount of bytes to copy.
      */
-    void copyArray(const uint8_t* source, const uint8_t* destination, size_t size);
+    void copyArray(const uint8_t* source, uint8_t* destination, size_t size);
 };
 
 

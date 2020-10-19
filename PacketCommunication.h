@@ -110,11 +110,12 @@ protected:
 
     /**
      * @brief Copy contents of source buffer to the destination buffer.
-     * Memory have to be allocated before using this function.
+     * Buffers have to be allocated before using this function in both DataBuffers
+     * and have the same size.
      * 
      * @param source Source buffer.
      * @param destination Destination buffer.
-     * @return false if buffers size is not the same.
+     * @return false if buffers are not the same size.
      */
     bool copyBufferContents(const DataBuffer& source, DataBuffer& destination);
 
