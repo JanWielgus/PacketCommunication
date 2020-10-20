@@ -10,10 +10,66 @@
 #define _DATABUFFER_h
 
 
-struct DataBuffer
+/**
+ * @brief This structure is used to store buffer pointer and it's used
+ * size in pair.
+ */
+struct DataBufferPointerPair
 {
 	uint8_t* buffer;
 	size_t size;
+};
+
+
+/**
+ * @brief This class represents DataBuffer, has built-in dynamic memory allocation.
+ * Allocated memory do not change later. There is additional variable to
+ * store used size of the buffer. This enables zero cost buffer size changing.
+ * To store just buffer pointer and size used by this buffer, use DataBufferPointerPair struct.
+ */
+class DataBuffer
+{
+public:
+	// public access to components for faseter use
+	uint8_t* buffer;
+	size_t size; // used bytes of the array (at most AllocatedSize)
+	const size_t AllocatedSize; // size of the allocated buffer array
+
+	DataBuffer(size_t bytesToAllocate)
+		: AllocatedSize(bytesToAllocate)
+	{
+		buffer = new uint8_t[bytesToAllocate];
+		size = 0;
+	}
+
+
+	DataBuffer(const DataBuffer& other)
+		: AllocatedSize(other.AllocatedSize)
+	{
+		buffer = new uint8_t[other.AllocatedSize];
+		for (size_t i = 0; i < other.size; i++) // copy only used part
+			buffer[i] = other.buffer[i];
+		
+		size = other.size;
+	}
+
+
+	~DataBuffer()
+	{
+		delete[] buffer;
+	}
+
+
+	DataBufferPointerPair getBufferPointerPairStruct()
+	{
+		DataBufferPointerPair bufferPair;
+		bufferPair.buffer = this->buffer;
+		bufferPair.size = this->size;
+		return bufferPair;
+	}
+
+
+	DataBuffer& operator=(const DataBuffer& other) = delete;
 };
 
 
