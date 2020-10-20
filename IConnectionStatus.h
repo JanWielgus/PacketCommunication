@@ -9,6 +9,9 @@
 #define ICONNECTIONSTATUS_H
 
 
+/**
+ * @brief // TODO: fill the brief
+ */
 class IConnectionStatus
 {
 public:
