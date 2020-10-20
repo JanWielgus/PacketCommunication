@@ -14,7 +14,7 @@
  * @brief This class is used to store buffer pointer and it's used
  * size in pair.
  */
-class DataBufferPointerPair
+class DataBufferBase
 {
 public:
 	// public access to components for faseter use
@@ -27,10 +27,10 @@ public:
  * @brief This class represents DataBuffer, has built-in dynamic memory allocation.
  * Allocated memory do not change later. There is additional variable to
  * store used size of the buffer. This enables zero cost buffer size changing.
- * To store just buffer pointer and size used by this buffer, use DataBufferPointerPair struct.
+ * To store just buffer pointer and size used by this buffer, use DataBufferBase struct.
  * Remember to set buffer size (this is 0 by default)!
  */
-class DataBuffer : public DataBufferPointerPair
+class DataBuffer : public DataBufferBase
 {
 public:
 	// inherited size varibale contain amount of used bytes in the array (at most AllocatedSize)
