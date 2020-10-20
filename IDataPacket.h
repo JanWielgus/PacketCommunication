@@ -30,22 +30,26 @@ public:
 
     /**
      * @return ID od this data packet.
+     * Packet ID is not included in getPacketSize() and getBytePointersArray() methods!
      */
     virtual uint8_t getPacketID() const = 0;
 
     /**
      * @return Size of this packet in bytes (amount of bytes that
      * this packet consists of).
+     * Do not include packet ID.
      */
     virtual size_t getPacketSize() const = 0;
 
     /**
      * @return Array of pointers to all bytes that this data packet consists of.
+     * Do not include packet ID.
      */
     virtual uint8_t** getBytePointersArray() = 0;
 
     /**
      * @return Array of pointers to all bytes that this data packet consists of.
+     * Do not include packet ID.
      */
     virtual const uint8_t** getBytePointersArray() const = 0;
 
