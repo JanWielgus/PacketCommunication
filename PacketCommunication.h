@@ -14,10 +14,14 @@
 #include "ITransceiver.h"
 #include <EVAFilter.h>
 #include "IDataPacket.h"
+#include <IArray.h>
 
 // buffer[0] - packet ID
 // buffer[1, 2, ...] - data
 
+/**
+ * @brief // TODO: fill the brief
+ */
 class PacketCommunication : public IConnectionStatus, public Task
 {
 private:
@@ -25,11 +29,11 @@ private:
 
 protected:
     ITransceiver* const LowLevelComm;
+    IArray<IDataPacket*>& receiveDataPacketsPointers;
 
 public:
     /**
      * @brief Construct a new Packet Communication object.
-     * 
      * @param lowLevelComm pointer to the low level communication instance.
      */
     PacketCommunication(ITransceiver* lowLevelComm);
@@ -46,8 +50,8 @@ public:
 
     /**
      * @brief Alternative to adaptConnectionStabilityToInterval() method.
-     * Used to set filters manually.
-     * 
+     * Used to set filters manually. This value depend on update frequency
+     * (the bigger frequency the bigger changeRate value)
      * @param changeRate [0.0 < changeRate < 1.0]
      * (close to 0 - connection stability value changes quickly,
      * close to 1 - connection stability value changes slowly)
@@ -55,27 +59,26 @@ public:
     void setConnectionStabilityChangeRate(float changeRate);
 
     /**
-     * @brief Return conneciton stability in percents.
-     * Method from IConnectionStatus interface.
-     * 
-     * @return connection stability in range from 0% (no connection) to 100% (uninterrupted connection)
-     */
-    uint8_t getConnectionStability() override;
-
-    /**
      * @brief Adds pointer to the data packet that may be received during communication.
      * There can be added only one receive data packet pointer of each ID.
      * Have to be overriden.
-     * 
      * @param receiveDataPacketPtr pointer to the data packet that may be received.
      * @return false if packet was not successfully added (eg. there was already added data packet with the same ID)
      */
-    virtual bool addReceiveDataPacketPointer(IDataPacket* receiveDataPacketPtr) = 0;
+    bool addReceiveDataPacketPointer(IDataPacket* receiveDataPacketPtr);
+
+    /**
+     * @brief Return conneciton stability in percents.
+     * Method from IConnectionStatus interface.
+     * @return connection stability in range from 0 (no connection) to 100 (uninterrupted connection).
+     */
+    uint8_t getConnectionStability() override;
+
+
 
     /**
      * @brief Send data packet passed in a parameter.
      * Have to be overriden.
-     * 
      * @param packetToSend Pointer to the data packet that need to be sent.
      * @return false if data packet was not sent because of any reason.
      */
@@ -89,24 +92,15 @@ public:
      */
     virtual void execute() override = 0;
 
+
+
 protected:
     /**
      * @brief Use after receiving (execute() method) to update conneciton stability value.
-     * 
      * @param receivedPercent assessment of received data [0 <= receivedPercent <= 100]
-     * (0 - no data received, 100 - all data received)
+     * (0 - no data received, 100 - all data received).
      */
     void updateConnectionStability(uint8_t receivedPercent);
-
-    /**
-     * @brief Create new buffer object and dynamically allocate memory for its buffer inside.
-     * Don't forget to release this memory later using: delete[] thisBuffer.buffer;.
-     * This method do not release the memory later!!
-     * 
-     * @param bufferSize Size of the created buffer.
-     * @return Pointer to the created buffer and its size.
-     */
-    DataBuffer createNewBufferAndAllocateMemory(size_t bufferSize);
 
     /**
      * @brief Copy contents of one array to another.
@@ -114,48 +108,68 @@ protected:
      * @param destination Pointer to the destination array.
      * @param size Amount of bytes to copy.
      */
-    void copyArray(const uint8_t* source, uint8_t* destination, size_t size);
+    void copyUint8Array(uint8_t* destination, const uint8_t* source, size_t size);
 
     /**
      * @brief Copy contents of source buffer to the destination buffer.
      * Buffers have to be allocated before using this function in both DataBuffers
      * and have the same size.
-     * 
      * @param source Source buffer.
      * @param destination Destination buffer.
      * @return false if buffers are not the same size.
      */
-    bool copyBufferContents(const DataBuffer& source, DataBuffer& destination);
+    bool copyBufferData(DataBuffer& destination, const DataBuffer& source);
 
     /**
      * @brief Updates bytes in the dataPacket from dataBuffer (data buffer with packet ID)
-     * 
      * @param dataPacket Data packet which data will be updated.
      * @param sourceDataBuffer Source of data to update data packet.
      * Passed data buffer should have packet ID in the buffer[0].
      * @return false if packet ID or size doesn't match buffer, or something else went wrong.
      * Returns true otherwise.
      */
-    bool updateDataPacketFromBuffer(IDataPacket* dataPacket, DataBuffer sourceDataBuffer);
+    bool updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBuffer& sourceDataBuffer);
 
     /**
      * @brief Updates data in buffer from data in data packet.
-     * Buffer size have to be data packet size + 1 (for packet ID)!
-     * 
+     * Buffer AllocatedSize have to be at least data packet size + 1 (for packet ID)!
+     * If AllocatedSize is sufficient, buffer size will be set to the DataBuffer + 1 quantity,
+     * first element in array will be packetID, next all data will be copied to the buffer array.
      * @param bufferToUpdate Buffer that will be filled with data from data packet byte pointers.
-     * Buffer size have to be dataPacket size + 1.
-     * @param sourceDataPacket Pointer to data packet.
-     * @return false if buffer size doesn't match packet size (bufferSize = packetSize + 1),
+     * Buffer AllocatedSize have to be at least dataPacket size + 1.
+     * @param sourceDataPacket Pointer to data packet to copy data from.
+     * @return false if buffer AllocatedSize is too small (buffer AllocatedSize >= packetSize + 1),
      * or something else went wrong. Returns true otherwise.
      */
-    bool updateBufferFromDataPacket(DataBuffer bufferToUpdate, const IDataPacket* sourceDataPacket);
+    bool updateBufferFromDataPacket(DataBuffer& bufferToUpdate, const IDataPacket* sourceDataPacket);
 
     /**
      * @brief Calls packet event if exist.
-     * 
      * @param dataPacket Pointer to data packet which packet event need to be called.
      */
     void callPacketEvent(IDataPacket* dataPacket);
+
+    /**
+     * @brief Search for data packet in the receiveDataPacketsPointers array
+     * by packet id and size.
+     * @param packetID ID of packet to be found.
+     * @param packetSize Size of packet to be found.
+     * @return pointer to one of the data packets in receiveDataPacketsPointers array,
+     * or nullptr if any matching packet was found.
+     */
+    IDataPacket* getReceiveDataPacketPointer(uint8_t packetID, size_t packetSize);
+
+
+private:
+    /**
+     * @brief Checks if data packet with this ID was already added
+     * to the packet communication (only one data packet of each ID
+     * can be added at the same time).
+     * @param toCheck Pointer to the data packet to check.
+     * @return true if there was already added a data packet with the same packet ID,
+     * false if this packet still can be added.
+     */
+    bool checkIfAlreadyAdded(IDataPacket* toCheck);
 };
 
 

@@ -6,10 +6,11 @@
  */
 
 #include "PacketCommunication.h"
+#include <GrowingArray.h>
 
 
 PacketCommunication::PacketCommunication(ITransceiver* lowLevelComm)
-    : LowLevelComm(lowLevelComm)
+    : LowLevelComm(lowLevelComm), receiveDataPacketsPointers(GrowingArray<IDataPacket*>())
 {
 }
 
@@ -24,22 +25,36 @@ void PacketCommunication::adaptConnectionStabilityToInterval()
     // Thanks to this, filtering is not dependent of receiving time interval
     // Just a linear funciton that for 20000 interval return 0.85 and for 500000 return 0.5 and so on
     // Calculated using reglinp function in Excel for this two points
-    float filterBeta = constrain(-7.3e-7 * (float)getInterval() + 0.86f, 0.2f, 0.95f);
+    float filterBeta = -7.3e-7 * (float)getInterval_us() + 0.86f;
+    filterBeta = constrain(filterBeta, 0.2f, 0.95f);
     connectionStabilityFilter.setFilterBeta(filterBeta);
 }
 
 
 void PacketCommunication::setConnectionStabilityChangeRate(float changeRate)
 {
-    changeRate = constrain(changeRate, 0.0f, 0.99f);
+    changeRate = constrain(changeRate, 0.0f, 0.995f);
     connectionStabilityFilter.setFilterBeta(changeRate);
+}
+
+
+bool PacketCommunication::addReceiveDataPacketPointer(IDataPacket* receiveDataPacketPtr)
+{
+    if (checkIfAlreadyAdded(receiveDataPacketPtr))
+        return false;
+    
+    if (!receiveDataPacketsPointers.add(receiveDataPacketPtr))
+        return false;
+    return true;
 }
 
 
 uint8_t PacketCommunication::getConnectionStability()
 {
-    return connectionStabilityFilter.getFilteredValue() + 0.5;
+    return uint8_t(connectionStabilityFilter.getFilteredValue() + 0.5f);
 }
+
+
 
 
 void PacketCommunication::updateConnectionStability(uint8_t receivedPercent)
@@ -49,36 +64,27 @@ void PacketCommunication::updateConnectionStability(uint8_t receivedPercent)
 }
 
 
-DataBuffer PacketCommunication::createNewBufferAndAllocateMemory(size_t bufferSize)
-{
-    DataBuffer newBuffer;
-    newBuffer.size = bufferSize;
-    newBuffer.buffer = new uint8_t[bufferSize];
-    return newBuffer;
-}
-
-
-void PacketCommunication::copyArray(const uint8_t* source, uint8_t* destination, size_t size)
+void PacketCommunication::copyUint8Array(uint8_t* destination, const uint8_t* source, size_t size)
 {
     for (size_t i = 0; i < size; i++)
         destination[i] = source[i];
 }
 
 
-bool PacketCommunication::copyBufferContents(const DataBuffer& source, DataBuffer& destination)
+bool PacketCommunication::copyBufferData(DataBuffer& destination, const DataBuffer& source)
 {
     if (source.size != destination.size)
         return false;
     
-    copyArray(source.buffer, destination.buffer, source.size);
+    copyUint8Array(source.buffer, destination.buffer, source.size);
     return true;
 }
 
 
-bool PacketCommunication::updateDataPacketFromBuffer(IDataPacket* dataPacket, DataBuffer sourceDataBuffer)
+bool PacketCommunication::updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBuffer& sourceDataBuffer)
 {
     if (dataPacket->getPacketID() != sourceDataBuffer.buffer[0] ||
-        dataPacket->getPacketSize() != sourceDataBuffer.size - 1)
+        dataPacket->getPacketSize() + 1 != sourceDataBuffer.size) // buffer include packet ID, but dataPacket array don't
         return false;
 
     uint8_t** destinationBytePointers = dataPacket->getBytePointersArray();
@@ -89,11 +95,12 @@ bool PacketCommunication::updateDataPacketFromBuffer(IDataPacket* dataPacket, Da
 }
 
 
-bool PacketCommunication::updateBufferFromDataPacket(DataBuffer bufferToUpdate, const IDataPacket* sourceDataPacket)
+bool PacketCommunication::updateBufferFromDataPacket(DataBuffer& bufferToUpdate, const IDataPacket* sourceDataPacket)
 {
-    if (sourceDataPacket->getPacketSize() != bufferToUpdate.size - 1)
+    if (bufferToUpdate.AllocatedSize < sourceDataPacket->getPacketSize() + 1)
         return false;
-    
+
+    bufferToUpdate.size = sourceDataPacket->getPacketSize() + 1;
     bufferToUpdate.buffer[0] = sourceDataPacket->getPacketID();
 
     const uint8_t** packetDataPointersArray = sourceDataPacket->getBytePointersArray();
@@ -109,4 +116,30 @@ void PacketCommunication::callPacketEvent(IDataPacket* dataPacket)
     IExecutable* packetEvent = dataPacket->getPacketEventPtr();
     if (packetEvent != nullptr)
         packetEvent->execute();
+}
+
+
+
+
+bool PacketCommunication::checkIfAlreadyAdded(IDataPacket* toCheck)
+{
+    uint8_t toCheckID = toCheck->getPacketID();
+    for (int i = 0; i < receiveDataPacketsPointers.getSize(); i++)
+        if (receiveDataPacketsPointers[i]->getPacketID() == toCheckID)
+            return true;
+    return false;
+}
+
+
+IDataPacket* PacketCommunication::getReceiveDataPacketPointer(uint8_t packetID, size_t packetSize)
+{
+    for (int i = 0; i < receiveDataPacketsPointers.getSize(); i++)
+    {
+        IDataPacket* currentlyCheckedPacket = receiveDataPacketsPointers[i];
+        if (currentlyCheckedPacket->getPacketID() == packetID &&
+            currentlyCheckedPacket->getPacketSize() == packetSize)
+            return currentlyCheckedPacket;
+    }
+
+    return nullptr;
 }
