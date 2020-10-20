@@ -11,11 +11,13 @@
 
 
 /**
- * @brief This structure is used to store buffer pointer and it's used
+ * @brief This class is used to store buffer pointer and it's used
  * size in pair.
  */
-struct DataBufferPointerPair
+class DataBufferPointerPair
 {
+public:
+	// public access to components for faseter use
 	uint8_t* buffer;
 	size_t size;
 };
@@ -26,13 +28,12 @@ struct DataBufferPointerPair
  * Allocated memory do not change later. There is additional variable to
  * store used size of the buffer. This enables zero cost buffer size changing.
  * To store just buffer pointer and size used by this buffer, use DataBufferPointerPair struct.
+ * Remember to set buffer size (this is 0 by default)!
  */
-class DataBuffer
+class DataBuffer : public DataBufferPointerPair
 {
 public:
-	// public access to components for faseter use
-	uint8_t* buffer;
-	size_t size; // used bytes of the array (at most AllocatedSize)
+	// inherited size varibale contain amount of used bytes in the array (at most AllocatedSize)
 	const size_t AllocatedSize; // size of the allocated buffer array
 
 	DataBuffer(size_t bytesToAllocate)
@@ -57,15 +58,6 @@ public:
 	~DataBuffer()
 	{
 		delete[] buffer;
-	}
-
-
-	DataBufferPointerPair getBufferPointerPairStruct()
-	{
-		DataBufferPointerPair bufferPair;
-		bufferPair.buffer = this->buffer;
-		bufferPair.size = this->size;
-		return bufferPair;
 	}
 
 
