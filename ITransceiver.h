@@ -12,6 +12,9 @@
 #include "DataBuffer.h"
 
 
+/**
+ * @brief // TODO: make a brief
+ */
 class ITransceiver
 {
 public:
@@ -35,7 +38,7 @@ public:
      * @param buffer Data buffer with data to send.
      * @return false if somethind went wrong and data were not sent, true otherwise.
      */
-    virtual bool send(const DataBuffer& buffer) = 0;
+    virtual bool send(const DataBufferBase& buffer) = 0;
 
     /**
      * @return amount of bytes that are waiting to receive
@@ -50,7 +53,7 @@ public:
      * Make your own copy of data in the buffer or just use returned buffer.
      * After calling this method, some data could still wait for receiving.
      */
-    virtual DataBuffer receiveNextData() = 0;
+    virtual DataBufferBase receiveNextData() = 0;
 };
 
 

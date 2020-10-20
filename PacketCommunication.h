@@ -104,8 +104,8 @@ protected:
 
     /**
      * @brief Copy contents of one array to another.
-     * @param source Pointer to the source array.
      * @param destination Pointer to the destination array.
+     * @param source Pointer to the source array.
      * @param size Amount of bytes to copy.
      */
     void copyUint8Array(uint8_t* destination, const uint8_t* source, size_t size);
@@ -114,11 +114,11 @@ protected:
      * @brief Copy contents of source buffer to the destination buffer.
      * Buffers have to be allocated before using this function in both DataBuffers
      * and have the same size.
-     * @param source Source buffer.
      * @param destination Destination buffer.
+     * @param source Source buffer.
      * @return false if buffers are not the same size.
      */
-    bool copyBufferData(DataBuffer& destination, const DataBuffer& source);
+    bool copyBufferData(DataBufferBase& destination, const DataBufferBase& source);
 
     /**
      * @brief Updates bytes in the dataPacket from dataBuffer (data buffer with packet ID)
@@ -128,7 +128,7 @@ protected:
      * @return false if packet ID or size doesn't match buffer, or something else went wrong.
      * Returns true otherwise.
      */
-    bool updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBuffer& sourceDataBuffer);
+    bool updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBufferBase& sourceDataBuffer);
 
     /**
      * @brief Updates data in buffer from data in data packet.
