@@ -20,15 +20,17 @@
 class StreamComm : public ITransceiver
 {
 private:
-    const uint8_t PacketMarker = 0;
-    const size_t BufferSize;
-    uint8_t* receiveBuffer;
-    DataBuffer decodedData; // received and decoded data, returned by receive method
-    size_t receiveBufferIndex = 0;
+    static const uint8_t PacketMarker; // definition in cpp
+    const size_t MaxBufferSize;
     Stream* stream;
 
-    uint8_t* bufferWithChecksum; // buffer with send data with checksum value at the end
-    uint8_t* encodeBuffer; // buffer with data after encoding
+    // sending helper variables
+    uint8_t* encodeBuffer; // buffer with data after encoding, used by sending methods
+
+    // receiving helper variables
+    uint8_t* receiveBuffer; // accumulate received bytes into array
+    size_t receiveBufferIndex = 0; // amount of data in receiveBuffer
+    DataBuffer decodedData; // received and decoded data
 
 
 public:
@@ -36,21 +38,23 @@ public:
      * @brief Construct a new Stream Comm object
      * 
      * @param streamPtr Pointer to object that its class implement Arduino Stream interface.
-     * @param bufSize Max size of one data packet (in bytes)
+     * Initialize the stream manually outside this class.
+     * @param bufSize Maximum size of one data packet in bytes (don't forget about place for packet ID).
+     * Default size is 255.
      */
     StreamComm(Stream* streamPtr, size_t bufferSize = 255);
-    // TODO: think about allowing copying instances of this class
-    StreamComm(const StreamComm& other) = delete;
     ~StreamComm();
 
+    StreamComm(const StreamComm& other) = delete; // TODO: think about allowing copying instances of this class
     StreamComm& operator=(const StreamComm& other) = delete;
 
     // public interface
     void begin() override;
     bool send(const uint8_t* buffer, size_t size) override;
+    bool send(const DataBufferBase& buffer) override;
     bool send(const DataBuffer& buffer) override;
     size_t available() override;
-    DataBuffer receiveNextData() override;
+    DataBufferBase receiveNextData() override;
 
 
 private:

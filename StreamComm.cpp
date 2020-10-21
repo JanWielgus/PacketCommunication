@@ -11,23 +11,22 @@
 //#include "Encoding/SLIP.h" // alternative
 
 
+const uint8_t StreamComm::PacketMarker = 0;
+
+
 StreamComm::StreamComm(Stream* streamPtr, size_t bufferSize)
-    : BufferSize(bufferSize)
+    : MaxBufferSize(bufferSize), decodedData(MaxBufferSize)
 {
     this->stream = streamPtr;
 
-    receiveBuffer = new uint8_t[BufferSize];
-    decodedData.buffer = new uint8_t[BufferSize];
-    bufferWithChecksum = new uint8_t[BufferSize + 1]; // checksum value at the end
-    encodeBuffer = new uint8_t[COBS::getEncodedBufferSize(BufferSize)]; // maximum size of encoded data
+    encodeBuffer = new uint8_t[COBS::getEncodedBufferSize(MaxBufferSize)]; // maximum size of encoded data
+    receiveBuffer = new uint8_t[MaxBufferSize];
 }
 
 
 StreamComm::~StreamComm()
 {
     delete[] receiveBuffer;
-    delete[] decodedData.buffer;
-    delete[] bufferWithChecksum;
     delete[] encodeBuffer;
 }
 
@@ -39,13 +38,15 @@ void StreamComm::begin()
 
 bool StreamComm::send(const uint8_t* buffer, size_t size)
 {
-    if (buffer == 0 || size == 0)
+    if (buffer == nullptr || size == 0 || size > MaxBufferSize)
         return false;
     
-    copyArray(buffer, bufferWithChecksum, size);
-    bufferWithChecksum[size] = calculateChecksum(buffer, size); // add checksum at the end
+    static DataBuffer bufferWithChecksum(MaxBufferSize + 1);
 
-    size_t numEncoded = COBS::encode(bufferWithChecksum, size + 1, encodeBuffer);
+    copyUint8Array(bufferWithChecksum.buffer, buffer, size);
+    bufferWithChecksum.buffer[size] = calculateChecksum(buffer, size); // add checksum after the last byte
+
+    size_t numEncoded = COBS::encode(bufferWithChecksum.buffer, size + 1, encodeBuffer);
 
     stream->write(encodeBuffer, numEncoded);
     stream->write(PacketMarker);
@@ -54,9 +55,29 @@ bool StreamComm::send(const uint8_t* buffer, size_t size)
 }
 
 
-bool StreamComm::send(const DataBuffer& buffer)
+bool StreamComm::send(const DataBufferBase& buffer)
 {
     return send(buffer.buffer, buffer.size);
+}
+
+
+bool StreamComm::send(const DataBuffer& buffer)
+{
+    if (buffer.size == 0 || buffer.size > MaxBufferSize)
+        return false;
+    
+    if (buffer.size == buffer.AllocatedSize)
+        return send(buffer.buffer, buffer.size);
+    
+    if (buffer.size > buffer.AllocatedSize) // in this case data packet is corrupted - memory used is bigger than allocated memory
+        return false;
+    
+    buffer.buffer[buffer.size] = calculateChecksum(buffer.buffer, buffer.size); // add checksum after the last byte
+
+    size_t numEncoded = COBS::encode(buffer.buffer, buffer.size + 1, encodeBuffer);
+
+    stream->write(encodeBuffer, numEncoded);
+    stream->write(PacketMarker);
 }
 
 
@@ -66,7 +87,7 @@ size_t StreamComm::available()
 }
 
 
-DataBuffer StreamComm::receiveNextData()
+DataBufferBase StreamComm::receiveNextData()
 {
     while (available() > 0)
     {
@@ -92,11 +113,19 @@ DataBuffer StreamComm::receiveNextData()
         }
         else
         {
-            if (receiveBufferIndex + 1 < BufferSize)
+            if (receiveBufferIndex + 1 < MaxBufferSize)
                 receiveBuffer[receiveBufferIndex++] = data;
             else
             {
                 // ERROR, buffer overflow if we write.
+                // Received packet that is too big to decode (increase MaxBufferSize).
+                
+                // Finnish receiving this packet and reset the receiveBuffer
+                receiveBufferIndex = 0;
+                while (available() && stream->read() != PacketMarker);
+
+                decodedData.size = 0;
+                return decodedData;
             }
             
         }
@@ -126,5 +155,14 @@ uint8_t StreamComm::calculateChecksum(const uint8_t* buffer, size_t size)
         checksum ^= buffer[i]; // xor'owanie kolejnych bajtow
     
     return checksum;
+}
+
+
+
+
+void copyUint8Array(uint8_t* destination, const uint8_t* source, size_t size)
+{
+    for (size_t i = 0; i < size; i++)
+        destination[i] = source[i];
 }
 
