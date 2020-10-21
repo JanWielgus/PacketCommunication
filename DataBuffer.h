@@ -27,13 +27,15 @@ public:
  * @brief This class represents DataBuffer, has built-in dynamic memory allocation.
  * Allocated memory do not change later. There is additional variable to
  * store used size of the buffer. This enables zero cost buffer size changing.
- * To store just buffer pointer and size used by this buffer, use DataBufferBase struct.
- * Remember to set buffer size (this is 0 by default)!
+ * To store just buffer pointer and size used by this buffer, use DataBufferBase class
+ * (this class inherits from it).
+ * Remember to set buffer size (size is 0 by default)!
  */
 class DataBuffer : public DataBufferBase
 {
 public:
 	// inherited size varibale contain amount of used bytes in the array (at most AllocatedSize)
+	
 	const size_t AllocatedSize; // size of the allocated buffer array
 
 	DataBuffer(size_t bytesToAllocate)
