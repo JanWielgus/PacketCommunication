@@ -8,41 +8,24 @@
 // FIXME: REVIEW THIS FILE
 
 #include "NoQueuePacketCommunication.h"
-#include <GrowingArray.h>
 
 
 NoQueuePacketCommunication::NoQueuePacketCommunication(ITransceiver* lowLevelComm)
     : PacketCommunication(lowLevelComm)
 {
-    receiveDataPacketsPointers = new SimpleGrowingArray<IDataPacket*>();
 }
 
 
 NoQueuePacketCommunication::~NoQueuePacketCommunication()
 {
-    delete receiveDataPacketsPointers;
-}
-
-
-bool NoQueuePacketCommunication::addReceiveDataPacketPointer(IDataPacket* receiveDataPacketPtr)
-{
-    if (checkIfAlreadyAdded(receiveDataPacketPtr))
-        return false;
-    
-    receiveDataPacketsPointers->add(receiveDataPacketPtr);
-    return true;
 }
 
 
 bool NoQueuePacketCommunication::sendDataPacket(const IDataPacket* packetToSend)
 {
-    DataBuffer bufferToSend = createNewBufferAndAllocateMemory(packetToSend->getPacketSize() + 1);
-
-    updateBufferFromDataPacket(bufferToSend, packetToSend);
-
-    bool sendingResult = LowLevelComm->send(bufferToSend);
-    delete[] bufferToSend.buffer;
-    return sendingResult;
+    ensureSendingBufferCapacity(packetToSend->getPacketSize() + 1);
+    updateBufferFromDataPacket(sendingBuffer, packetToSend);
+    return LowLevelComm->send(sendingBuffer);
 }
 
 
@@ -53,6 +36,21 @@ void NoQueuePacketCommunication::execute()
 
 
 
+
+void NoQueuePacketCommunication::ensureSendingBufferCapacity(size_t minimumSize)
+{
+    if (minimumSize <= sendingBuffer.size)
+        return;
+
+    if (sendingBuffer.buffer != nullptr)
+        delete[] sendingBuffer.buffer;
+
+    sendingBuffer.buffer = new uint8_t[minimumSize];
+    sendingBuffer.size = minimumSize;
+}
+
+
+// XXX: the last method to review
 void NoQueuePacketCommunication::receiveDataAndUpdateReceiveDataPackets()
 {
     bool someDataReceivedFlag = false;
@@ -74,28 +72,4 @@ void NoQueuePacketCommunication::receiveDataAndUpdateReceiveDataPackets()
     }
 
     updateConnectionStability(someDataReceivedFlag * 100); // 100 when true, 0 when false
-}
-
-
-bool NoQueuePacketCommunication::checkIfAlreadyAdded(IDataPacket* toCheck)
-{
-    uint8_t toCheckID = toCheck->getPacketID();
-    for (int i = 0; i < receiveDataPacketsPointers->getSize(); i++)
-        if (receiveDataPacketsPointers[i]->getPacketID() == toCheckID)
-            return true;
-    return false;
-}
-
-
-IDataPacket* NoQueuePacketCommunication::getReceiveDataPacketPointer(uint8_t packetID, size_t packetSize)
-{
-    for (int i = 0; i < receiveDataPacketsPointers.getSize(); i++)
-    {
-        IDataPacket* currentlyCheckedPacket = receiveDataPacketsPointers[i];
-        if (currentlyCheckedPacket->getPacketID() == packetID &&
-            currentlyCheckedPacket->getPacketSize() == packetSize)
-            return currentlyCheckedPacket;
-    }
-
-    return nullptr;
 }
