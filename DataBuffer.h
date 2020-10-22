@@ -18,8 +18,8 @@ class DataBufferBase
 {
 public:
 	// public access to components for faseter use
-	uint8_t* buffer;
-	size_t size;
+	uint8_t* buffer = nullptr;
+	size_t size = 0;
 };
 
 
