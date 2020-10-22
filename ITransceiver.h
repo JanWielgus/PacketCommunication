@@ -42,9 +42,10 @@ public:
 
     /**
      * @brief Send data from provided data buffer.
-     * This method will work faster than other send(..) methods
+     * This method could work faster than other send(..) methods
      * if AllocatedSize will be at least bigger by one than size of the data in buffer
-     * (don't need to copy data to the bigger buffer to add checksum).
+     * (don't need to copy data to the bigger buffer to add checksum
+     * (faster only for libraries that use checksum)).
      * @param buffer Buffer to send.
      * @return false if data was not sent for some reason (eg. buffer is nullptr or size is 0)
      */
