@@ -18,6 +18,8 @@ NoQueuePacketCommunication::NoQueuePacketCommunication(ITransceiver* lowLevelCom
 
 NoQueuePacketCommunication::~NoQueuePacketCommunication()
 {
+    if (sendingBuffer.buffer != nullptr)
+        delete[] sendingBuffer.buffer;
 }
 
 
