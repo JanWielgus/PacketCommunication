@@ -143,6 +143,18 @@ protected:
      * @return false if buffer AllocatedSize is too small (buffer AllocatedSize >= packetSize + 1),
      * or something else went wrong. Returns true otherwise.
      */
+    bool updateBufferFromDataPacket(ExtendedDataBuffer& bufferToUpdate, const IDataPacket* sourceDataPacket);
+
+    /**
+     * @brief Updates data in buffer from data in data packet.
+     * bufferToUpdate have to has EXACTLY size of: data packet size + 1 (for packet ID)!
+     * First element in array will be packetID, next all data will be copied to the buffer array.
+     * @param bufferToUpdate Buffer that will be filled with data from data packet byte pointers.
+     * Buffer size have to be at least dataPacket size + 1.
+     * @param sourceDataPacket Pointer to data packet to copy data from.
+     * @return false if buffer size is not equal size of data packet + 1 (for packet ID).
+     * Returns true otherwise.
+     */
     bool updateBufferFromDataPacket(DataBuffer& bufferToUpdate, const IDataPacket* sourceDataPacket);
 
     /**

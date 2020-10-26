@@ -111,6 +111,22 @@ bool PacketCommunication::updateBufferFromDataPacket(ExtendedDataBuffer& bufferT
 }
 
 
+bool PacketCommunication::updateBufferFromDataPacket(DataBuffer& bufferToUpdate, const IDataPacket* sourceDataPacket)
+{
+    if (bufferToUpdate.size != sourceDataPacket->getPacketSize() + 1 ||
+        bufferToUpdate.buffer == nullptr)
+        return false;
+
+    bufferToUpdate.buffer[0] = sourceDataPacket->getPacketID();
+
+    const uint8_t** packetDataPointersArray = sourceDataPacket->getBytePointersArray();
+    for (int i = 1; i < bufferToUpdate.size; i++)
+        bufferToUpdate.buffer[i] = *(packetDataPointersArray[i - 1]);
+
+    return true;
+}
+
+
 void PacketCommunication::callPacketEvent(IDataPacket* dataPacket)
 {
     IExecutable* packetEvent = dataPacket->getPacketEventPtr();

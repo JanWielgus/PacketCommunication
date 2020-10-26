@@ -29,6 +29,8 @@ public:
  * store used size of the buffer. This enables zero cost buffer size changing.
  * To store just buffer pointer and size used by this buffer, use DataBuffer class.
  * Remember to set buffer size (size is 0 by default)!
+ * Cannot publicly extend DataBuffer, because will epose for many accidental bugs (
+ * but there is toDataBuffer() method)
  */
 class ExtendedDataBuffer
 {
