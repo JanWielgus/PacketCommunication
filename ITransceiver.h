@@ -38,7 +38,7 @@ public:
      * @param buffer Data buffer with data to send.
      * @return false if something went wrong and data were not sent, true otherwise.
      */
-    virtual bool send(const DataBufferBase& buffer) = 0;
+    virtual bool send(const DataBuffer& buffer) = 0;
 
     /**
      * @brief Send data from provided data buffer.
@@ -49,7 +49,7 @@ public:
      * @param buffer Buffer to send.
      * @return false if data was not sent for some reason (eg. buffer is nullptr or size is 0)
      */
-    virtual bool send(const DataBuffer& buffer) = 0;
+    virtual bool send(const ExtendedDataBuffer& buffer) = 0;
 
     /**
      * @return amount of bytes that are waiting to receive
@@ -64,7 +64,7 @@ public:
      * Make your own copy of data in the buffer or just use returned buffer.
      * After calling this method, some data could still wait for receiving.
      */
-    virtual DataBufferBase receiveNextData() = 0;
+    virtual DataBuffer receiveNextData() = 0;
 };
 
 

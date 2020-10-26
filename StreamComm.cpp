@@ -41,7 +41,7 @@ bool StreamComm::send(const uint8_t* buffer, size_t size)
     if (buffer == nullptr || size == 0 || size > MaxBufferSize)
         return false;
     
-    static DataBuffer bufferWithChecksum(MaxBufferSize + 1);
+    static ExtendedDataBuffer bufferWithChecksum(MaxBufferSize + 1);
 
     copyUint8Array(bufferWithChecksum.buffer, buffer, size);
     bufferWithChecksum.buffer[size] = calculateChecksum(buffer, size); // add checksum after the last byte
@@ -55,13 +55,13 @@ bool StreamComm::send(const uint8_t* buffer, size_t size)
 }
 
 
-bool StreamComm::send(const DataBufferBase& buffer)
+bool StreamComm::send(const DataBuffer& buffer)
 {
     return send(buffer.buffer, buffer.size);
 }
 
 
-bool StreamComm::send(const DataBuffer& buffer)
+bool StreamComm::send(const ExtendedDataBuffer& buffer)
 {
     if (buffer.size == 0 || buffer.size > MaxBufferSize)
         return false;
@@ -87,7 +87,7 @@ size_t StreamComm::available()
 }
 
 
-DataBufferBase StreamComm::receiveNextData()
+DataBuffer StreamComm::receiveNextData()
 {
     while (available() > 0)
     {
@@ -109,7 +109,7 @@ DataBufferBase StreamComm::receiveNextData()
                 decodedData.size = 0; // checksum failed, received buffer size is set to 0
             
             // Return decoded data packet (with zero size if checksum failed)
-            return decodedData;
+            return decodedData.toDataBuffer();
         }
         else
         {
@@ -125,7 +125,7 @@ DataBufferBase StreamComm::receiveNextData()
                 while (available() && stream->read() != PacketMarker);
 
                 decodedData.size = 0;
-                return decodedData;
+                return decodedData.toDataBuffer();
             }
             
         }
@@ -134,7 +134,7 @@ DataBufferBase StreamComm::receiveNextData()
 
     // Any complete data packet was received
     decodedData.size = 0;
-    return decodedData;
+    return decodedData.toDataBuffer();
 }
 
 

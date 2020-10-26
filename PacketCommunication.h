@@ -120,7 +120,7 @@ protected:
      * @param source Source buffer.
      * @return false if buffers are not the same size.
      */
-    bool copyBufferData(DataBufferBase& destination, const DataBufferBase& source);
+    bool copyBufferData(DataBuffer& destination, const DataBuffer& source);
 
     /**
      * @brief Updates bytes in the dataPacket from dataBuffer (data buffer with packet ID)
@@ -130,7 +130,7 @@ protected:
      * @return false if packet ID or size doesn't match buffer, or something else went wrong.
      * Returns true otherwise.
      */
-    bool updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBufferBase& sourceDataBuffer);
+    bool updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBuffer& sourceDataBuffer);
 
     /**
      * @brief Updates data in buffer from data in data packet.

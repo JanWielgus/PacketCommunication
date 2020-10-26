@@ -30,7 +30,7 @@ private:
     // receiving helper variables
     uint8_t* receiveBuffer; // accumulate received bytes into array
     size_t receiveBufferIndex = 0; // amount of data in receiveBuffer
-    DataBuffer decodedData; // received and decoded data
+    ExtendedDataBuffer decodedData; // received and decoded data
 
 
 public:
@@ -51,10 +51,10 @@ public:
     // public interface
     void begin() override;
     bool send(const uint8_t* buffer, size_t size) override;
-    bool send(const DataBufferBase& buffer) override;
     bool send(const DataBuffer& buffer) override;
+    bool send(const ExtendedDataBuffer& buffer) override;
     size_t available() override;
-    DataBufferBase receiveNextData() override;
+    DataBuffer receiveNextData() override;
 
 
 private:

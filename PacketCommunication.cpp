@@ -71,7 +71,7 @@ void PacketCommunication::copyUint8Array(uint8_t* destination, const uint8_t* so
 }
 
 
-bool PacketCommunication::copyBufferData(DataBufferBase& destination, const DataBufferBase& source)
+bool PacketCommunication::copyBufferData(DataBuffer& destination, const DataBuffer& source)
 {
     if (source.size != destination.size)
         return false;
@@ -81,7 +81,7 @@ bool PacketCommunication::copyBufferData(DataBufferBase& destination, const Data
 }
 
 
-bool PacketCommunication::updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBufferBase& sourceDataBuffer)
+bool PacketCommunication::updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBuffer& sourceDataBuffer)
 {
     if (dataPacket->getPacketID() != sourceDataBuffer.buffer[0] ||
         dataPacket->getPacketSize() + 1 != sourceDataBuffer.size) // buffer include packet ID, but dataPacket array don't
@@ -95,7 +95,7 @@ bool PacketCommunication::updateDataPacketFromBuffer(IDataPacket* dataPacket, co
 }
 
 
-bool PacketCommunication::updateBufferFromDataPacket(DataBuffer& bufferToUpdate, const IDataPacket* sourceDataPacket)
+bool PacketCommunication::updateBufferFromDataPacket(ExtendedDataBuffer& bufferToUpdate, const IDataPacket* sourceDataPacket)
 {
     if (bufferToUpdate.AllocatedSize < sourceDataPacket->getPacketSize() + 1)
         return false;

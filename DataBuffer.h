@@ -12,9 +12,9 @@
 
 /**
  * @brief This class is used to store buffer pointer and it's used
- * size in pair.
+ * size in pair. size contain the size of the allocated buffer.
  */
-class DataBufferBase
+class DataBuffer
 {
 public:
 	// public access to components for faseter use
@@ -24,46 +24,58 @@ public:
 
 
 /**
- * @brief This class represents DataBuffer, has built-in dynamic memory allocation.
- * Allocated memory do not change later. There is additional variable to
+ * @brief This class is DataBuffer with built-in dynamic memory allocation.
+ * Allocated memory size do not change later. There is additional variable to
  * store used size of the buffer. This enables zero cost buffer size changing.
- * To store just buffer pointer and size used by this buffer, use DataBufferBase class
- * (this class inherits from it).
+ * To store just buffer pointer and size used by this buffer, use DataBuffer class.
  * Remember to set buffer size (size is 0 by default)!
  */
-class DataBuffer : public DataBufferBase
+class ExtendedDataBuffer
 {
+private:
+	DataBuffer dataBuffer;
+
 public:
-	// inherited size varibale contain amount of used bytes in the array (at most AllocatedSize)
+	uint8_t*& buffer;
+	size_t& size; // contain amount of used bytes in the array (at most AllocatedSize)
 	
 	const size_t AllocatedSize; // size of the allocated buffer array
 
-	DataBuffer(size_t bytesToAllocate)
-		: AllocatedSize(bytesToAllocate)
+	explicit ExtendedDataBuffer(size_t bytesToAllocate)
+		: AllocatedSize(bytesToAllocate), buffer(dataBuffer.buffer), size(dataBuffer.size)
 	{
-		buffer = new uint8_t[bytesToAllocate];
-		size = 0;
+		dataBuffer.buffer = new uint8_t[bytesToAllocate];
+		dataBuffer.size = 0;
 	}
 
 
-	DataBuffer(const DataBuffer& other)
-		: AllocatedSize(other.AllocatedSize)
+	ExtendedDataBuffer(const ExtendedDataBuffer& other)
+		: AllocatedSize(other.AllocatedSize), buffer(dataBuffer.buffer), size(dataBuffer.size)
 	{
-		buffer = new uint8_t[other.AllocatedSize];
-		for (size_t i = 0; i < other.size; i++) // copy only used part
-			buffer[i] = other.buffer[i];
+		dataBuffer.buffer = new uint8_t[other.AllocatedSize];
+		for (size_t i = 0; i < other.dataBuffer.size; i++) // copy only used part
+			dataBuffer.buffer[i] = other.dataBuffer.buffer[i];
 		
-		size = other.size;
+		dataBuffer.size = other.dataBuffer.size;
 	}
 
 
-	~DataBuffer()
+	~ExtendedDataBuffer()
 	{
-		delete[] buffer;
+		delete[] dataBuffer.buffer;
 	}
 
 
-	DataBuffer& operator=(const DataBuffer& other) = delete;
+	ExtendedDataBuffer& operator=(const ExtendedDataBuffer& other) = delete;
+
+
+	/**
+	 * @brief Used when need to store DataBuffer type
+	 */
+	DataBuffer toDataBuffer()
+	{
+		return dataBuffer;
+	}
 };
 
 

@@ -20,7 +20,7 @@ class NoQueuePacketCommunication : public PacketCommunication
 protected:
     // Size of this buffer is size of the biggest sent packet (increased gradually).
     // If any packet was sent its size is 0 and buffer is nullptr. Used in sendDataPacket() method.
-    DataBufferBase sendingBuffer;
+    DataBuffer sendingBuffer;
 
 public:
     NoQueuePacketCommunication(ITransceiver* lowLevelComm);
