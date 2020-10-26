@@ -32,6 +32,8 @@ protected:
     IArray<IDataPacket*>& receiveDataPacketsPointers;
 
 public:
+    typedef uint8_t Percentage;
+
     /**
      * @brief Construct a new Packet Communication object.
      * @param lowLevelComm pointer to the low level communication instance.
@@ -72,7 +74,7 @@ public:
      * Method from IConnectionStatus interface.
      * @return connection stability in range from 0 (no connection) to 100 (uninterrupted connection).
      */
-    uint8_t getConnectionStability() override;
+    Percentage getConnectionStability() override;
 
 
 
@@ -87,7 +89,7 @@ public:
     /**
      * @brief Receive all available data and automatically update previously added
      * receive data packets (added through addReceiveDataPacketPointer() method).
-     * Method from Task class extension.
+     * Method overrided from Task class.
      * Have to be overriden.
      */
     virtual void execute() override = 0;
@@ -100,7 +102,7 @@ protected:
      * @param receivedPercent assessment of received data [0 <= receivedPercent <= 100]
      * (0 - no data received, 100 - all data received).
      */
-    void updateConnectionStability(uint8_t receivedPercent);
+    void updateConnectionStability(Percentage receivedPercent);
 
     /**
      * @brief Copy contents of one array to another.

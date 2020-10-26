@@ -60,7 +60,7 @@ public:
     virtual void setPacketEvent(IExecutable& packetEvent) = 0;
 
     /**
-     * @return Pointer to the previously attached event, or nullptr if any event was attached. 
+     * @return Pointer to the previously set event, or nullptr if any event was set. 
      */
     virtual IExecutable* getPacketEventPtr() const = 0;
 };

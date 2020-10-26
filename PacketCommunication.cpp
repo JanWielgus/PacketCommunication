@@ -49,7 +49,7 @@ bool PacketCommunication::addReceiveDataPacketPointer(IDataPacket* receiveDataPa
 }
 
 
-uint8_t PacketCommunication::getConnectionStability()
+PacketCommunication::Percentage PacketCommunication::getConnectionStability()
 {
     return uint8_t(connectionStabilityFilter.getFilteredValue() + 0.5f);
 }
@@ -57,7 +57,7 @@ uint8_t PacketCommunication::getConnectionStability()
 
 
 
-void PacketCommunication::updateConnectionStability(uint8_t receivedPercent)
+void PacketCommunication::updateConnectionStability(Percentage receivedPercent)
 {
     receivedPercent = constrain(receivedPercent, 0, 100);
     connectionStabilityFilter.update(receivedPercent);
