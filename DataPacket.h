@@ -33,6 +33,9 @@ public:
     DataPacket(uint8_t packetID, IArray<uint8_t*>* arrayPointer);
     virtual ~DataPacket();
 
+    DataPacket(const DataPacket& other) = delete;
+    DataPacket& operator=(const DataPacket& other) = delete;
+
     void addByteType(IByteType& toAdd) override;
     uint8_t getPacketID() const override;
     size_t getPacketSize() const override;

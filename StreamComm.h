@@ -45,7 +45,7 @@ public:
     StreamComm(Stream* streamPtr, size_t bufferSize = 255);
     ~StreamComm();
 
-    StreamComm(const StreamComm& other) = delete; // TODO: think about allowing copying instances of this class
+    StreamComm(const StreamComm& other) = delete;
     StreamComm& operator=(const StreamComm& other) = delete;
 
     // public interface

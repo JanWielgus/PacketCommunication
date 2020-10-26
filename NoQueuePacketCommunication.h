@@ -29,6 +29,10 @@ public:
     virtual void execute() override;
 
 
+    NoQueuePacketCommunication(const NoQueuePacketCommunication& other) = delete;
+    NoQueuePacketCommunication& operator=(const NoQueuePacketCommunication& other) = delete;
+
+
 protected:
     /**
      * @brief If sendingBuffer size is less than minimumSize,
