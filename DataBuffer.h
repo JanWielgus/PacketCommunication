@@ -13,6 +13,8 @@
 /**
  * @brief This class is used to store buffer pointer and it's used
  * size in pair. size contain the size of the allocated buffer.
+ * This is just a container: don't allocate and don't release memory,
+ * buffer is nullptr by default. REMEMBER to allocate memory!
  */
 class DataBuffer
 {
