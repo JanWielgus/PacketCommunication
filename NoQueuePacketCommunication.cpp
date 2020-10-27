@@ -60,7 +60,7 @@ void NoQueuePacketCommunication::receiveDataAndUpdateReceiveDataPackets()
 
     while (LowLevelComm->available() && failureCounter <= MaxReceivingFailures)
     {
-        DataBuffer receivedBuffer = LowLevelComm->receiveNextData();
+        const DataBuffer receivedBuffer = LowLevelComm->receiveNextData();
         if (receivedBuffer.size == 0)
         {
             failureCounter++;

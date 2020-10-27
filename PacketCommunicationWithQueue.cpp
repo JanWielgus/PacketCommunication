@@ -6,20 +6,17 @@
  */
 
 #include "PacketCommunicationWithQueue.h"
-#include <StaticSinkingQueue.h> // TODO: change queue to linked list (the same todo is in .h file)
 
 
-PacketCommunicationWithQueue::PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers)
-    : NoQueuePacketCommunication(lowLevelComm)
+PacketCommunicationWithQueue::PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers, uint8_t maxReceivingFailures)
+    : NoQueuePacketCommunication(lowLevelComm, maxReceivingFailures), MaxQueuedBuffers(maxQueuedBuffers)
 {
-    queuedBuffers = new SinkingQueue(maxQueuedBuffers);
 }
 
 
 PacketCommunicationWithQueue::~PacketCommunicationWithQueue()
 {
-    clearQueueAndFreeBuffersMemory();
-    delete queuedBuffers;
+    deleteAllQueuedBuffers();
 }
 
 
@@ -33,18 +30,28 @@ void PacketCommunicationWithQueue::execute()
 
 void PacketCommunicationWithQueue::receiveIncomingBuffersToQueue()
 {
-    while (LowLevelComm->available())
-    {
-        DataBuffer receivedBuffer = LowLevelComm->receiveNextData();
-        if (receivedBuffer.size == 0)
-            continue;
+    uint8_t failureCounter = 0;
 
-        // Check if packet of this id and size exist on the receive packets pointers list
-        if (getReceiveDataPacketPointer(receivedBuffer.buffer[0], receivedBuffer.size - 1) == nullptr)
+    while (LowLevelComm->available() && failureCounter <= MaxReceivingFailures)
+    {
+        const DataBuffer receivedBuffer = LowLevelComm->receiveNextData();
+        if (receivedBuffer.size == 0)
+        {
+            failureCounter++;
             continue;
+        }
+
+        IDataPacket* destinationDataPacket = getReceiveDataPacketPointer(receivedBuffer.buffer[0], receivedBuffer.size - 1);
+        if (destinationDataPacket == nullptr) // Check if packet of this id and size exist on the receive packets pointers list
+        {
+            failureCounter++;
+            continue;
+        }
         
-        DataBuffer receivedBufferCopy = createNewBufferAndAllocateMemory(receivedBuffer.size);
-        copyBufferContents(receivedBuffer, receivedBufferCopy);
+        DataBuffer receivedBufferCopy;
+        receivedBufferCopy.buffer = new uint8_t[receivedBuffer.size];
+        receivedBufferCopy.size = receivedBuffer.size;
+        copyBufferData(receivedBufferCopy, receivedBuffer);
         enqueueBuffer(receivedBufferCopy);
     }
 }
@@ -61,15 +68,22 @@ void PacketCommunicationWithQueue::updateReceiveDataPacketsWithOldestBuffers()
 
 void PacketCommunicationWithQueue::enqueueBuffer(DataBuffer buffer)
 {
-    if (queuedBuffers->isFull())
-        delete[] queuedBuffers->dequeue().buffer;
-    
-    queuedBuffers->enqueue(buffer);
+    if (queuedBuffersList.getSize() >= MaxQueuedBuffers)
+        deleteOldestBuffer();
+
+    queuedBuffersList.add(buffer);
 }
 
 
-void PacketCommunicationWithQueue::clearQueueAndFreeBuffersMemory()
+void PacketCommunicationWithQueue::deleteAllQueuedBuffers()
 {
-    while (queuedBuffers->getQueueLength() > 0)
-        delete[] queuedBuffers->dequeue().buffer;
+    while (queuedBuffersList.getSize() > 0)
+        deleteOldestBuffer();
+}
+
+
+void PacketCommunicationWithQueue::deleteOldestBuffer()
+{
+    delete[] queuedBuffersList.get(0).buffer;
+    queuedBuffersList.remove(0);
 }

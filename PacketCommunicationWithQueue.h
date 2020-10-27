@@ -17,16 +17,19 @@
 #define PACKETCOMMUNICATIONWITHQUEUE_H
 
 #include "NoQueuePacketCommunication.h"
-#include <IQueue.h> // FIXME: change queue probably to linked list (linked list has iterator)
+#include <LinkedList.h>
 
 
 class PacketCommunicationWithQueue : public NoQueuePacketCommunication
 {
 protected:
-    IQueue<DataBuffer>* queuedBuffers; // Buffers on the queue are dynamically allocated and need to be deleted after dequeue
+    /// Buffers on the queue are dynamically allocated and need to be deleted after dequeue.
+    /// At index 0 is the oldest buffer (first to receive).
+    LinkedList<DataBuffer> queuedBuffersList;
+    const size_t MaxQueuedBuffers;
 
 public:
-    PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers);
+    PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers, uint8_t maxReceivingFailures = DefaultMaxReceivingFailures);
     ~PacketCommunicationWithQueue();
     void execute() override;
 
@@ -46,7 +49,12 @@ private:
     /**
      * @brief Dequeue all elements in the queue and release dynamically allocated memory for stored buffers.
      */
-    void clearQueueAndFreeBuffersMemory();
+    void deleteAllQueuedBuffers();
+
+    /**
+     * @brief Removes from queue and deletes the oldest buffer memory.
+     */
+    void deleteOldestBuffer();
 };
 
 
