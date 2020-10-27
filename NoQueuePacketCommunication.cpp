@@ -8,6 +8,9 @@
 #include "NoQueuePacketCommunication.h"
 
 
+const uint8_t NoQueuePacketCommunication::DefaultMaxReceivingFailures = 3;
+
+
 NoQueuePacketCommunication::NoQueuePacketCommunication(ITransceiver* lowLevelComm, uint8_t maxReceivingFailures)
     : PacketCommunication(lowLevelComm), MaxReceivingFailures(maxReceivingFailures)
 {

@@ -25,11 +25,12 @@ protected:
     /// Maximum amount of data packets with size = 0 received despite available() method returned true.
     /// Prevent from an infinite loop.
     const uint8_t MaxReceivingFailures;
+    static const uint8_t DefaultMaxReceivingFailures;
 
 public:
-    NoQueuePacketCommunication(ITransceiver* lowLevelComm, uint8_t maxReceivingFailures = 3);
+    NoQueuePacketCommunication(ITransceiver* lowLevelComm, uint8_t maxReceivingFailures = DefaultMaxReceivingFailures);
     virtual ~NoQueuePacketCommunication();
-    virtual bool sendDataPacket(const IDataPacket* packetToSend) override;
+    bool sendDataPacket(const IDataPacket* packetToSend) override;
     virtual void execute() override;
 
 
@@ -37,7 +38,7 @@ public:
     NoQueuePacketCommunication& operator=(const NoQueuePacketCommunication& other) = delete;
 
 
-protected:
+private:
     /**
      * @brief If sendingBuffer size is less than minimumSize,
      * deallocate sendingBuffer and allocate new one with the minimumSize
