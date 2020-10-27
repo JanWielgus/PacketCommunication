@@ -18,12 +18,16 @@
 class NoQueuePacketCommunication : public PacketCommunication
 {
 protected:
-    // Size of this buffer is size of the biggest sent packet (increased gradually).
-    // If any packet was sent its size is 0 and buffer is nullptr. Used in sendDataPacket() method.
+    /// Size of this buffer is size of the biggest sent packet (increased gradually).
+    /// If any packet was sent its size is 0 and buffer is nullptr. Used in sendDataPacket() method.
     DataBuffer sendingBuffer;
 
+    /// Maximum amount of data packets with size = 0 received despite available() method returned true.
+    /// Prevent from an infinite loop.
+    const uint8_t MaxReceivingFailures;
+
 public:
-    NoQueuePacketCommunication(ITransceiver* lowLevelComm);
+    NoQueuePacketCommunication(ITransceiver* lowLevelComm, uint8_t maxReceivingFailures = 3);
     virtual ~NoQueuePacketCommunication();
     virtual bool sendDataPacket(const IDataPacket* packetToSend) override;
     virtual void execute() override;
@@ -42,6 +46,10 @@ protected:
      */
     void ensureSendingBufferCapacity(size_t minimumSize); // this method could be made general for any buffer, but there is no need
 
+    /**
+     * @brief Updates data packets using all data available to receive.
+     * Has protection against infinite loop.
+     */
     void receiveDataAndUpdateReceiveDataPackets();
 };
 

@@ -5,13 +5,11 @@
  * 
  */
 
-// FIXME: REVIEW THIS FILE
-
 #include "NoQueuePacketCommunication.h"
 
 
-NoQueuePacketCommunication::NoQueuePacketCommunication(ITransceiver* lowLevelComm)
-    : PacketCommunication(lowLevelComm)
+NoQueuePacketCommunication::NoQueuePacketCommunication(ITransceiver* lowLevelComm, uint8_t maxReceivingFailures)
+    : PacketCommunication(lowLevelComm), MaxReceivingFailures(maxReceivingFailures)
 {
 }
 
@@ -52,20 +50,26 @@ void NoQueuePacketCommunication::ensureSendingBufferCapacity(size_t minimumSize)
 }
 
 
-// XXX: the last method to review
 void NoQueuePacketCommunication::receiveDataAndUpdateReceiveDataPackets()
 {
     bool someDataReceivedFlag = false;
+    uint8_t failureCounter = 0;
 
-    while (LowLevelComm->available())
+    while (LowLevelComm->available() && failureCounter <= MaxReceivingFailures)
     {
         DataBuffer receivedBuffer = LowLevelComm->receiveNextData();
         if (receivedBuffer.size == 0)
+        {
+            failureCounter++;
             continue;
+        }
         
         IDataPacket* destinationDataPacket = getReceiveDataPacketPointer(receivedBuffer.buffer[0], receivedBuffer.size - 1);
-        if (destinationDataPacket == nullptr)
-            continue; // any previously added receive data packets match received data
+        if (destinationDataPacket == nullptr) // any previously added receive data packets match received data
+        {
+            failureCounter++;
+            continue;
+        }
 
         updateDataPacketFromBuffer(destinationDataPacket, receivedBuffer);
         callPacketEvent(destinationDataPacket);
@@ -73,5 +77,5 @@ void NoQueuePacketCommunication::receiveDataAndUpdateReceiveDataPackets()
         someDataReceivedFlag = true;
     }
 
-    updateConnectionStability(someDataReceivedFlag * 100); // 100 when true, 0 when false
+    updateConnectionStability((uint8_t)someDataReceivedFlag * 100); // 100 when true, 0 when false
 }

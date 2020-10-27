@@ -167,7 +167,7 @@ protected:
      * @brief Search for data packet in the receiveDataPacketsPointers array
      * by packet id and size.
      * @param packetID ID of packet to be found.
-     * @param packetSize Size of packet to be found.
+     * @param packetSize Size of packet to be found (size of data, without ID).
      * @return pointer to one of the data packets in receiveDataPacketsPointers array,
      * or nullptr if any matching packet was found.
      */
