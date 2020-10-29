@@ -14,8 +14,8 @@
 const uint8_t StreamComm::PacketMarker = 0;
 
 
-StreamComm::StreamComm(Stream* streamPtr, size_t bufferSize)
-    : MaxBufferSize(bufferSize), decodedData(MaxBufferSize)
+StreamComm::StreamComm(Stream* streamPtr, size_t maxBufferSize)
+    : MaxBufferSize(maxBufferSize), decodedData(MaxBufferSize)
 {
     this->stream = streamPtr;
 

@@ -15,6 +15,8 @@
 #include <EVAFilter.h>
 #include "IDataPacket.h"
 #include <IArray.h>
+#include <GrowingArray.h>
+#include "utils/utils.h"
 
 // buffer[0] - packet ID
 // buffer[1, 2, ...] - data
@@ -29,7 +31,9 @@ private:
 
 protected:
     ITransceiver* const LowLevelComm;
-    IArray<IDataPacket*>& receiveDataPacketsPointers;
+
+    GrowingArray<IDataPacket*> recPktsPtrsContainer; // can be changed to different data structure (but keep the name to don't change code)
+    IArray<IDataPacket*>& receiveDataPacketsPointers = recPktsPtrsContainer;
 
 public:
     typedef uint8_t Percentage;
@@ -103,14 +107,6 @@ protected:
      * (0 - no data received, 100 - all data received).
      */
     void updateConnectionStability(Percentage receivedPercent);
-
-    /**
-     * @brief Copy contents of one array to another.
-     * @param destination Pointer to the destination array.
-     * @param source Pointer to the source array.
-     * @param size Amount of bytes to copy.
-     */
-    void copyUint8Array(uint8_t* destination, const uint8_t* source, size_t size);
 
     /**
      * @brief Copy contents of source buffer to the destination buffer.

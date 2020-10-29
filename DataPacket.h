@@ -13,6 +13,10 @@
 #include "IDataPacket.h"
 #include <IArray.h>
 
+#ifdef ARDUINO
+    #include <arduino.h>
+#endif
+
 
 class DataPacket : public IDataPacket
 {

@@ -11,6 +11,10 @@
 
 #include "DataBuffer.h"
 
+#ifdef ARDUINO
+    #include <arduino.h>
+#endif
+
 
 /**
  * @brief // TODO: make a brief

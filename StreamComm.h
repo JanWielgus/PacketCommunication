@@ -15,6 +15,7 @@
 #include <arduino.h>
 #include "ITransceiver.h"
 #include "DataBuffer.h"
+#include "utils/utils.h"
 
 
 class StreamComm : public ITransceiver
@@ -42,7 +43,7 @@ public:
      * @param bufSize Maximum size of one data packet in bytes (don't forget about place for packet ID).
      * Default size is 255.
      */
-    StreamComm(Stream* streamPtr, size_t bufferSize = 255);
+    StreamComm(Stream* streamPtr, size_t maxBufferSize = 255);
     ~StreamComm();
 
     StreamComm(const StreamComm& other) = delete;

@@ -8,6 +8,10 @@
 #ifndef ICONNECTIONSTATUS_H
 #define ICONNECTIONSTATUS_H
 
+#ifdef ARDUINO
+    #include <arduino.h>
+#endif
+
 
 /**
  * @brief // TODO: fill the brief

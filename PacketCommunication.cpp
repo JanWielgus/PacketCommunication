@@ -6,11 +6,10 @@
  */
 
 #include "PacketCommunication.h"
-#include <GrowingArray.h>
 
 
 PacketCommunication::PacketCommunication(ITransceiver* lowLevelComm)
-    : LowLevelComm(lowLevelComm), receiveDataPacketsPointers(GrowingArray<IDataPacket*>())
+    : LowLevelComm(lowLevelComm)
 {
 }
 
@@ -61,13 +60,6 @@ void PacketCommunication::updateConnectionStability(Percentage receivedPercent)
 {
     receivedPercent = constrain(receivedPercent, 0, 100);
     connectionStabilityFilter.update(receivedPercent);
-}
-
-
-void PacketCommunication::copyUint8Array(uint8_t* destination, const uint8_t* source, size_t size)
-{
-    for (size_t i = 0; i < size; i++)
-        destination[i] = source[i];
 }
 
 

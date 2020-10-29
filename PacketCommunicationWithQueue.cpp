@@ -70,7 +70,7 @@ void PacketCommunicationWithQueue::updateReceiveDataPacketsWithOldestBuffers()
     bool someDataReceivedFlag = false;
 
     for (size_t i = 0; i < recPktPtrsSize; i++)
-        packetUpdatedFlags = false;
+        packetUpdatedFlags[i] = false;
 
     RemovingIterator<DataBuffer>* buffersIterator = queuedBuffersList.getRemovingIterator();
     while (buffersIterator->hasNext())
