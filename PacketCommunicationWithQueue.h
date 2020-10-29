@@ -7,6 +7,8 @@
  * send data packets to this library more often or in larger packs once
  * than this library receives it, data will be gradually received
  * (oldest data may be lost if queue will overflow).
+ * 
+ * //FIXME: this explanation is shitty and explains nothing. Correct it!
  * @date 2020-08-19
  * 
  */
