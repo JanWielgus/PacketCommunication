@@ -57,11 +57,64 @@ void PacketCommunicationWithQueue::receiveIncomingBuffersToQueue()
 }
 
 
+// TODO: this method can be coded bette for sure, review it
 void PacketCommunicationWithQueue::updateReceiveDataPacketsWithOldestBuffers()
 {
-    // TODO: implement this method
+    if (queuedBuffersList.isEmpty())
+        return;
 
-    // remember to release dynamically allocated memory !!
+
+    size_t recPktPtrsSize = receiveDataPacketsPointers.getSize();
+    bool* packetUpdatedFlags = new bool[recPktPtrsSize]; // If a place is true, packet of this ID was updated
+    size_t updatedPackets = 0; // amount of true values in the packetUpdatedFlags array
+    bool someDataReceivedFlag = false;
+
+    for (size_t i = 0; i < recPktPtrsSize; i++)
+        packetUpdatedFlags = false;
+
+    RemovingIterator<DataBuffer>* buffersIterator = queuedBuffersList.getRemovingIterator();
+    while (buffersIterator->hasNext())
+    {
+        DataBuffer& checkedBuffer = buffersIterator->next();
+        size_t destinationDataPacketIndex;
+        IDataPacket* destinationDataPacket = getReceiveDataPacketPointer(checkedBuffer.buffer[0], checkedBuffer.size - 1, &destinationDataPacketIndex);
+
+
+        // If this buffer don't match any dataPacket.
+        // Theoretically this is unnecessary, because before putting packet on the list
+        // it is checked if proper receive data packet exists.
+        // So this block should never execute.
+        if (destinationDataPacket == nullptr)
+        {
+            delete[] checkedBuffer.buffer;
+            buffersIterator->remove();
+            continue;
+        }
+
+        // if this dataPacket was already updated with new data in this loop (leave that data for another receiving)
+        if (packetUpdatedFlags[destinationDataPacketIndex] == true)
+            continue;
+
+
+        updateDataPacketFromBuffer(destinationDataPacket, checkedBuffer);
+        callPacketEvent(destinationDataPacket);
+
+        delete[] checkedBuffer.buffer;
+        buffersIterator->remove();
+
+        packetUpdatedFlags[destinationDataPacketIndex] = true;
+        updatedPackets++;
+
+        someDataReceivedFlag = true;
+        
+        // If all packets was updated
+        if (updatedPackets == recPktPtrsSize)
+            break;
+    }
+
+    delete[] packetUpdatedFlags;
+
+    updateConnectionStability((uint8_t)someDataReceivedFlag * 100);
 }
 
 
@@ -84,6 +137,10 @@ void PacketCommunicationWithQueue::deleteAllQueuedBuffers()
 
 void PacketCommunicationWithQueue::deleteOldestBuffer()
 {
+    if (queuedBuffersList.getSize() == 0)
+        return;
+
     delete[] queuedBuffersList.get(0).buffer;
     queuedBuffersList.remove(0);
 }
+
