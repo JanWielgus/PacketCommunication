@@ -147,14 +147,18 @@ bool PacketCommunication::checkIfAlreadyAdded(IDataPacket* toCheck)
 }
 
 
-IDataPacket* PacketCommunication::getReceiveDataPacketPointer(uint8_t packetID, size_t packetSize)
+IDataPacket* PacketCommunication::getReceiveDataPacketPointer(uint8_t packetID, size_t packetSize, size_t* indexOutput)
 {
     for (int i = 0; i < receiveDataPacketsPointers.getSize(); i++)
     {
         IDataPacket* currentlyCheckedPacket = receiveDataPacketsPointers[i];
         if (currentlyCheckedPacket->getPacketID() == packetID &&
             currentlyCheckedPacket->getPacketSize() == packetSize)
+        {
+            if (indexOutput != nullptr)
+                *indexOutput = i;
             return currentlyCheckedPacket;
+        }
     }
 
     return nullptr;
