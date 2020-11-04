@@ -2,6 +2,8 @@
  * @file SerialLowLevelComm_example.ino
  * @author Jan Wielgus
  * @brief This is example that show how to use only lower level part of this library.
+ * Upload the same code on two devices and connect them using software serial
+ * on pins 10, 11 (RX, TX), or change communication library that extends ITransceiver interface.
  * You can send and receive array of uint8_ts (bytes).
  * ITransceiver interface is the base for all low-level communication ways.
  * You can write your own and it will work with data packet based communication.
