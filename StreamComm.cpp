@@ -6,6 +6,7 @@
  */
 
 #include "StreamComm.h"
+#include "commUtils.h"
 
 #include "Encoding/COBS.h"
 //#include "Encoding/SLIP.h" // alternative
@@ -43,7 +44,7 @@ bool StreamComm::send(const uint8_t* buffer, size_t size)
     
     static ExtendedDataBuffer bufferWithChecksum(MaxBufferSize + 1);
 
-    copyUint8Array(bufferWithChecksum.buffer, buffer, size);
+    commUtils::copyUint8Array(bufferWithChecksum.buffer, buffer, size);
     bufferWithChecksum.buffer[size] = calculateChecksum(buffer, size); // add checksum after the last byte
 
     size_t numEncoded = COBS::encode(bufferWithChecksum.buffer, size + 1, encodeBuffer);
@@ -155,14 +156,5 @@ uint8_t StreamComm::calculateChecksum(const uint8_t* buffer, size_t size)
         checksum ^= buffer[i]; // xor'owanie kolejnych bajtow
     
     return checksum;
-}
-
-
-
-
-void copyUint8Array(uint8_t* destination, const uint8_t* source, size_t size)
-{
-    for (size_t i = 0; i < size; i++)
-        destination[i] = source[i];
 }
 

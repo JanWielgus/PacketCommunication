@@ -15,7 +15,6 @@
 #include <arduino.h>
 #include "ITransceiver.h"
 #include "DataBuffer.h"
-#include "utils/utils.h"
 
 
 class StreamComm : public ITransceiver

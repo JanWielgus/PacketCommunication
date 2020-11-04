@@ -16,7 +16,6 @@
 #include "IDataPacket.h"
 #include <IArray.h>
 #include <GrowingArray.h>
-#include "utils/utils.h"
 
 // buffer[0] - packet ID
 // buffer[1, 2, ...] - data

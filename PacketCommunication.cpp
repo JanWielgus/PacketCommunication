@@ -6,6 +6,7 @@
  */
 
 #include "PacketCommunication.h"
+#include "commUtils.h"
 
 
 PacketCommunication::PacketCommunication(ITransceiver* lowLevelComm)
@@ -68,7 +69,7 @@ bool PacketCommunication::copyBufferData(DataBuffer& destination, const DataBuff
     if (source.size != destination.size)
         return false;
     
-    copyUint8Array(source.buffer, destination.buffer, source.size);
+    commUtils::copyUint8Array(destination.buffer, source.buffer, source.size);
     return true;
 }
 
