@@ -2,13 +2,10 @@
  * @file PacketCommunicationWithQueue.h
  * @author Jan Wielgus
  * @brief Concrete class that extend NoQueuePacketCommunication class.
- * This class differs from NoQueuePacketCommunication class only in receiving (execute() method)
- * Adds queue for receiving data packets, hence there is an option to
- * send data packets to this library more often or in larger packs once
- * than this library receives it, data will be gradually received
- * (oldest data may be lost if queue will overflow).
- * 
- * //FIXME: this explanation is shitty and explains nothing. Correct it!
+ * This class differs from NoQueuePacketCommunication class only in receiving.
+ * Extends it with a queue for received data packets. In this class in one receiving session
+ * at most one data packet of each type can be received (other are queued
+ * and received one by one in next sessions).
  * @date 2020-08-19
  * 
  */
@@ -22,6 +19,12 @@
 #include <LinkedList.h>
 
 
+/**
+ * @brief This class differs from NoQueuePacketCommunication class only in receiving.
+ * Extends it with a queue for received data packets. In this class in one receiving session
+ * at most one data packet of each type can be received (other are queued
+ * and received one by one in next sessions).
+ */
 class PacketCommunicationWithQueue : public NoQueuePacketCommunication
 {
 protected:

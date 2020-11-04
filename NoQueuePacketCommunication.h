@@ -3,8 +3,8 @@
  * @author Jan Wielgus
  * @brief Concrete packet communication class that during
  * receiving automatically updates data in receive data packets.
- * (eg. when arrived two packets of the same type, only the newest
- * will be stored).
+ * All incoming data available is received in each receiving session
+ * (execute() method call).
  * @date 2020-08-19
  * 
  */
@@ -15,6 +15,10 @@
 #include "PacketCommunication.h"
 
 
+/**
+ * @brief All incoming data available is received in each receiving session
+ * (execute() method call).
+ */
 class NoQueuePacketCommunication : public PacketCommunication
 {
 protected:
