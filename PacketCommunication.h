@@ -21,7 +21,10 @@
 // buffer[1, 2, ...] - data
 
 /**
- * @brief // TODO: fill the brief
+ * @brief Base class for all packet based communication ways.
+ * Provide lots of basic methods for copying and updating buffers and packets.
+ * Derived classes have to implement sendDataPacket() method (for sending) and
+ * execute() method (for receiving).
  */
 class PacketCommunication : public IConnectionStatus, public Task
 {

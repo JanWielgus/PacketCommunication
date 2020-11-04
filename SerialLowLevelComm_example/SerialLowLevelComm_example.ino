@@ -14,8 +14,6 @@
 #include <StreamComm.h>
 #include <SoftwareSerial.h>
 
-// FIXME: change everywhere Serial1 to Serial
-
 void send();
 void receive();
 

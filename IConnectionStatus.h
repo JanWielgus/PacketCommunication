@@ -14,7 +14,8 @@
 
 
 /**
- * @brief // TODO: fill the brief
+ * @brief Interface for classes that enables to check
+ * connection status.
  */
 class IConnectionStatus
 {

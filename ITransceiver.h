@@ -17,7 +17,10 @@
 
 
 /**
- * @brief // TODO: make a brief
+ * @brief Iterface (abstract base class) for classes that enables
+ * sending and receiving array of uint8_t values.
+ * Classes that implements this interface are used in packet based
+ * communication as low-level.
  */
 class ITransceiver
 {
