@@ -40,7 +40,7 @@ public:
     DataPacket(const DataPacket& other) = delete;
     DataPacket& operator=(const DataPacket& other) = delete;
 
-    void addByteType(IByteType& toAdd) override;
+    void addByteType(const IByteType& toAdd) override;
     uint8_t getPacketID() const override;
     size_t getPacketSize() const override;
     uint8_t** getBytePointersArray() override;

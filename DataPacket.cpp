@@ -31,7 +31,7 @@ DataPacket::~DataPacket()
 }
 
 
-void DataPacket::addByteType(IByteType& toAdd)
+void DataPacket::addByteType(const IByteType& toAdd)
 {
     for (int i = 0; i < toAdd.byteSize(); i++)
         bytePointersArray->add(&(toAdd.byteArray()[i]));
