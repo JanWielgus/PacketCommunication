@@ -24,7 +24,7 @@ private:
     const uint8_t PacketID;
     IArray<uint8_t*>* bytePointersArray = nullptr;
     bool useExternalArray = false; // true if used parametrized constructor (do not delete in destructor)
-    IExecutable* packetReceivedEvent = nullptr; // TODO: change name to packetReceivedEvent (or think if this will be used to other purposes, for example when sending)
+    IExecutable* packetReceivedEvent = nullptr;
 
 
 public:
