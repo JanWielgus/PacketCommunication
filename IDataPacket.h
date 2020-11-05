@@ -58,10 +58,10 @@ public:
     virtual const uint8_t** getBytePointersArray() const = 0;
 
     /**
-     * @brief packetEvent will be called just after when this data packet will be received.
-     * @param packetEvent Object that implements IExecutable interface.
+     * @brief packetReceivedEvent will be called just after when this data packet will be received.
+     * @param packetReceivedEvent Object that implements IExecutable interface.
      */
-    virtual void setPacketEvent(IExecutable& packetEvent) = 0;
+    virtual void setPacketReceivedEvent(IExecutable& packetReceivedEvent) = 0;
 
     /**
      * @return Pointer to the previously set event, or nullptr if any event was set. 

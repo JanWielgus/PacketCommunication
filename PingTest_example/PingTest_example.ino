@@ -79,10 +79,10 @@ void setup()
     Serial.println("Program has just started!");
 
     pingRequestPacket.addByteType(startTime);
-    pingRequestPacket.setPacketEvent(pingRequestReceivedEvent);
+    pingRequestPacket.setPacketReceivedEvent(pingRequestReceivedEvent);
 
     pingReplyPacket.addByteType(respondTime);
-    pingReplyPacket.setPacketEvent(pingReplyReceivedEvent);
+    pingReplyPacket.setPacketReceivedEvent(pingReplyReceivedEvent);
 
     tasker.addTask(&pingRequestTask, 0.5f, 0); // 0.5Hz ping request
 

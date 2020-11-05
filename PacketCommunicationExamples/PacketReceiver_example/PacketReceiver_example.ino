@@ -94,7 +94,7 @@ class DataReceivedEvent : public IExecutable
 
 
 // This event will be called right after data packet of this type
-// will be received (if was added as packetEvent to the data packet).
+// will be received (if was added as packetReceivedEvent to the data packet).
 DataReceivedEvent dataReceivedEvent;
 
 
@@ -115,14 +115,14 @@ void setup()
     // Add main communication class to the tasker and
     // set it's update frequency. It will periodically check
     // if there are any new data ready to receive,
-    // and if data packet was received, it's packetEvent will be called.
+    // and if data packet was received, it's packetReceivedEvent will be called.
     tasker.addTask(&comm, 1.f, 0);
     comm.adaptConnectionStabilityToInterval(); // use after adding to tasker if you are going to measure connection stability
 
 
-    // Add packetEvent to all received data packets.
-    // packetEvent is called always when specific data packet is received.
-    testPacket.setPacketEvent(dataReceivedEvent);
+    // Add packetReceivedEvent to all received data packets.
+    // packetReceivedEvent is called always when specific data packet is received.
+    testPacket.setPacketReceivedEvent(dataReceivedEvent);
 }
 
 

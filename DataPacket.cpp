@@ -62,13 +62,13 @@ const uint8_t** DataPacket::getBytePointersArray() const
 }
 
 
-void DataPacket::setPacketEvent(IExecutable& packetEvent)
+void DataPacket::setPacketReceivedEvent(IExecutable& packetReceivedEvent)
 {
-    this->packetEvent = &packetEvent;
+    this->packetReceivedEvent = &packetReceivedEvent;
 }
 
 
 IExecutable* DataPacket::getPacketEventPtr() const
 {
-    return packetEvent;
+    return packetReceivedEvent;
 }
