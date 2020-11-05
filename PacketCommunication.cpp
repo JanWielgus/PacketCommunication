@@ -122,7 +122,7 @@ bool PacketCommunication::updateBufferFromDataPacket(DataBuffer& bufferToUpdate,
 
 void PacketCommunication::callPacketEvent(IDataPacket* dataPacket)
 {
-    IExecutable* packetReceivedEvent = dataPacket->getPacketEventPtr();
+    IExecutable* packetReceivedEvent = dataPacket->getPacketReceivedEventPtr();
     if (packetReceivedEvent != nullptr)
         packetReceivedEvent->execute();
 }

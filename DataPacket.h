@@ -46,7 +46,7 @@ public:
     uint8_t** getBytePointersArray() override;
     const uint8_t** getBytePointersArray() const override;
     void setPacketReceivedEvent(IExecutable& packetReceivedEvent) override;
-    IExecutable* getPacketEventPtr() const override;
+    IExecutable* getPacketReceivedEventPtr() const override;
 };
 
 

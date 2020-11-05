@@ -66,7 +66,7 @@ public:
     /**
      * @return Pointer to the previously set event, or nullptr if any event was set. 
      */
-    virtual IExecutable* getPacketEventPtr() const = 0;
+    virtual IExecutable* getPacketReceivedEventPtr() const = 0;
 };
 
 

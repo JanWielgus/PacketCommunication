@@ -68,7 +68,7 @@ void DataPacket::setPacketReceivedEvent(IExecutable& packetReceivedEvent)
 }
 
 
-IExecutable* DataPacket::getPacketEventPtr() const
+IExecutable* DataPacket::getPacketReceivedEventPtr() const
 {
     return packetReceivedEvent;
 }
