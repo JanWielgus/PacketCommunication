@@ -75,7 +75,7 @@ void NoQueuePacketCommunication::receiveDataAndUpdateReceiveDataPackets()
         }
 
         updateDataPacketFromBuffer(destinationDataPacket, receivedBuffer);
-        callPacketEvent(destinationDataPacket);
+        callPacketReceivedEvent(destinationDataPacket);
 
         someDataReceivedFlag = true;
     }

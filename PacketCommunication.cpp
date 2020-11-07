@@ -120,7 +120,7 @@ bool PacketCommunication::updateBufferFromDataPacket(DataBuffer& bufferToUpdate,
 }
 
 
-void PacketCommunication::callPacketEvent(IDataPacket* dataPacket)
+void PacketCommunication::callPacketReceivedEvent(IDataPacket* dataPacket)
 {
     IExecutable* packetReceivedEvent = dataPacket->getPacketReceivedEventPtr();
     if (packetReceivedEvent != nullptr)

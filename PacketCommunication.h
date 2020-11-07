@@ -159,7 +159,7 @@ protected:
      * @brief Calls packet event if exist.
      * @param dataPacket Pointer to data packet which packet event need to be called.
      */
-    void callPacketEvent(IDataPacket* dataPacket);
+    void callPacketReceivedEvent(IDataPacket* dataPacket);
 
     /**
      * @brief Search for data packet in the receiveDataPacketsPointers array

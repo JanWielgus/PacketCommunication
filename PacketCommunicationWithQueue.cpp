@@ -97,7 +97,7 @@ void PacketCommunicationWithQueue::updateReceiveDataPacketsWithOldestBuffers()
 
 
         updateDataPacketFromBuffer(destinationDataPacket, checkedBuffer);
-        callPacketEvent(destinationDataPacket);
+        callPacketReceivedEvent(destinationDataPacket);
 
         delete[] checkedBuffer.buffer;
         buffersIterator->remove();
