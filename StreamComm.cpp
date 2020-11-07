@@ -79,6 +79,8 @@ bool StreamComm::send(const ExtendedDataBuffer& buffer)
 
     stream->write(encodeBuffer, numEncoded);
     stream->write(PacketMarker);
+
+    return true;
 }
 
 
