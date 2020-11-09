@@ -34,6 +34,17 @@ protected:
     const size_t MaxQueuedBuffers;
 
 public:
+    /**
+     * @brief Creates a new packet communication instance with queue for received packets
+     * (at most one data packet of each ID could be received in one receiving session).
+     * @param lowLevelComm Pointer to the low-level communication instance
+     * (have to extend ITransceiver interface).
+     * @param maxQueuedBuffers Maximum size of the queue for incoming packets. Should be
+     * at least amount of different data packets (for sending or receiving).
+     * Queue is dynamically created using linked list, so memory is not occupied when queue is empty.
+     * @param maxReceivingFailures (optional) Number of attempts to receive data when available() method
+     * returns true, but receiveNextData() retuns empty data packet (prevent from the infinite loop).
+     */
     PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers, uint8_t maxReceivingFailures = DefaultMaxReceivingFailures);
     ~PacketCommunicationWithQueue();
     void execute() override;
