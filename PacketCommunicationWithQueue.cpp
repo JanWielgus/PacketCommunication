@@ -47,6 +47,13 @@ void PacketCommunicationWithQueue::receiveIncomingBuffersToQueue()
             failureCounter++;
             continue;
         }
+
+        // if this buffer has no data (only ID - event buffer), just execute its event
+        if (receivedBuffer.size == 1)
+        {
+            callPacketReceivedEvent(destinationDataPacket);
+            continue;
+        }
         
         DataBuffer receivedBufferCopy = getDynamicallyAllocatedBufferCopy(receivedBuffer);
         enqueueBuffer(receivedBufferCopy);
