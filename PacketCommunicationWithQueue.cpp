@@ -48,10 +48,7 @@ void PacketCommunicationWithQueue::receiveIncomingBuffersToQueue()
             continue;
         }
         
-        DataBuffer receivedBufferCopy;
-        receivedBufferCopy.buffer = new uint8_t[receivedBuffer.size];
-        receivedBufferCopy.size = receivedBuffer.size;
-        copyBufferData(receivedBufferCopy, receivedBuffer);
+        DataBuffer receivedBufferCopy = getDynamicallyAllocatedBufferCopy(receivedBuffer);
         enqueueBuffer(receivedBufferCopy);
     }
 }
@@ -117,6 +114,16 @@ void PacketCommunicationWithQueue::updateReceiveDataPacketsWithOldestBuffers()
     updateConnectionStability((uint8_t)someDataReceivedFlag * 100);
 }
 
+
+
+DataBuffer PacketCommunicationWithQueue::getDynamicallyAllocatedBufferCopy(const DataBuffer& bufferToCopy)
+{
+    DataBuffer bufferCopy;
+    bufferCopy.buffer = new uint8_t[bufferToCopy.size];
+    bufferCopy.size = bufferToCopy.size;
+    copyBufferData(bufferCopy, bufferToCopy);
+    return bufferCopy;
+}
 
 
 void PacketCommunicationWithQueue::enqueueBuffer(DataBuffer buffer)

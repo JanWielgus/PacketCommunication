@@ -55,6 +55,13 @@ protected:
 
 private:
     /**
+     * @brief Create new dynamically allocated buffer and copy there data
+     * from provided data buffer. REMEMBER TO DEALLOCATE THIS MEMORY!
+     * @param bufferToCopy buffer to make dynamically allocated copy of
+     */
+    DataBuffer getDynamicallyAllocatedBufferCopy(const DataBuffer& bufferToCopy);
+
+    /**
      * @brief Add buffer to the queuedBuffers queue.
      * Do not allocate memory. Just store the pointer.
      * 
