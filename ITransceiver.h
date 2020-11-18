@@ -71,7 +71,7 @@ public:
      * Make your own copy of data in the buffer or just use returned buffer.
      * After calling this method, some data could still wait for receiving.
      */
-    virtual DataBuffer receiveNextData() = 0;
+    virtual DataBuffer receiveNextData() = 0; // TODO: think if this name is good enough (maybe better will be something like nextData or similar)
 };
 
 

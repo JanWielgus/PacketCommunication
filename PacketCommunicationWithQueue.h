@@ -12,6 +12,8 @@
 
 // FIXME: figure out better name that show, that this class has queue only for received data!!!
 
+// TODO: ! merge queue and no queue classes and decision if packet goes to the queue will be made by the packet itself (some flags to set)
+
 #ifndef PACKETCOMMUNICATIONWITHQUEUE_H
 #define PACKETCOMMUNICATIONWITHQUEUE_H
 

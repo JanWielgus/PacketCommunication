@@ -43,6 +43,7 @@ bool StreamComm::send(const uint8_t* buffer, size_t size)
         return false;
     
     static ExtendedDataBuffer bufferWithChecksum(MaxBufferSize + 1);
+    // TODO: this can be removed, just send checksum like packetmarker // TO rethink
 
     commUtils::copyUint8Array(bufferWithChecksum.buffer, buffer, size);
     bufferWithChecksum.buffer[size] = calculateChecksum(buffer, size); // add checksum after the last byte
@@ -151,7 +152,7 @@ bool StreamComm::checkChecksum(const uint8_t* buffer, size_t size, uint8_t check
 }
 
 
-uint8_t StreamComm::calculateChecksum(const uint8_t* buffer, size_t size)
+inline uint8_t StreamComm::calculateChecksum(const uint8_t* buffer, size_t size)
 {
     uint8_t checksum = buffer[0];
     for (size_t i = 1; i < size; i++)
