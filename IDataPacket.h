@@ -30,7 +30,7 @@ public:
      * @param toAdd Variable that take part in this data packet
      * that implements IByteType interface.
      */
-    virtual void addByteType(const IByteType& toAdd) = 0;
+    virtual void addByteType(IByteType& toAdd) = 0;
 
     /**
      * @return ID od this data packet.

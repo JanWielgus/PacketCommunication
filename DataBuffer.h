@@ -22,6 +22,9 @@ public:
 	// public access to components for faseter use
 	uint8_t* buffer = nullptr;
 	size_t size = 0;
+	
+	// To compile with my LinkedList class
+	bool operator==(const DataBuffer& other) { return buffer == other.buffer && size == other.size; }
 };
 
 
