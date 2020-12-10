@@ -9,6 +9,10 @@
 #ifndef _DATABUFFER_h
 #define _DATABUFFER_h
 
+#ifdef ARDUINO
+	#include "Arduino.h"
+#endif
+
 
 /**
  * @brief This class is used to store buffer pointer and it's used
