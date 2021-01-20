@@ -12,7 +12,6 @@
 #ifndef STREAMCOMM_H
 #define STREAMCOMM_H
 
-#include <arduino.h>
 #include "ITransceiver.h"
 #include "DataBuffer.h"
 

@@ -14,10 +14,6 @@
 #include <IByteType.h>
 #include <IExecutable.h>
 
-#ifdef ARDUINO
-    #include <arduino.h>
-#endif
-
 
 class IDataPacket
 {

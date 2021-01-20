@@ -11,10 +11,6 @@
 
 #include "DataBuffer.h"
 
-#ifdef ARDUINO
-    #include <arduino.h>
-#endif
-
 
 /**
  * @brief Iterface (abstract base class) for classes that enables
