@@ -54,6 +54,12 @@ public:
     {
         return nullptr;
     }
+
+    // always return nullptr
+    const uint8_t** getBytePointersArray() const override
+    {
+        return nullptr;
+    }
 };
 
 
