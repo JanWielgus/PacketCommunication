@@ -27,7 +27,7 @@ public:
 	uint8_t* buffer = nullptr;
 	size_t size = 0;
 	
-	// To compile with my LinkedList class
+	// To compile with my LinkedList class // TODO: make a good comment here instead of this shit
 	bool operator==(const DataBuffer& other) { return buffer == other.buffer && size == other.size; }
 };
 
@@ -41,39 +41,35 @@ public:
  * Cannot publicly extend DataBuffer, because will epose for many accidental bugs (
  * but there is toDataBuffer() method)
  */
-class ExtendedDataBuffer
+class ExtendedDataBuffer : DataBuffer
 {
-private:
-	DataBuffer dataBuffer;
-
 public:
-	uint8_t*& buffer;
-	size_t& size; // contain amount of used bytes in the array (at most AllocatedSize)
-	
+	// size contain amount of used bytes in the array (at most AllocatedSize)
+
 	const size_t AllocatedSize; // size of the allocated buffer array
 
 	explicit ExtendedDataBuffer(size_t bytesToAllocate)
-		: AllocatedSize(bytesToAllocate), buffer(dataBuffer.buffer), size(dataBuffer.size)
+		: AllocatedSize(bytesToAllocate)
 	{
-		dataBuffer.buffer = new uint8_t[bytesToAllocate];
-		dataBuffer.size = 0;
+		buffer = new uint8_t[bytesToAllocate];
+		size = 0;
 	}
 
 
 	ExtendedDataBuffer(const ExtendedDataBuffer& other)
-		: AllocatedSize(other.AllocatedSize), buffer(dataBuffer.buffer), size(dataBuffer.size)
+		: AllocatedSize(other.AllocatedSize)
 	{
-		dataBuffer.buffer = new uint8_t[other.AllocatedSize];
-		for (size_t i = 0; i < other.dataBuffer.size; i++) // copy only used part
-			dataBuffer.buffer[i] = other.dataBuffer.buffer[i];
+		buffer = new uint8_t[other.AllocatedSize];
+		for (size_t i = 0; i < other.size; i++) // copy only used part
+			buffer[i] = other.buffer[i];
 		
-		dataBuffer.size = other.dataBuffer.size;
+		size = other.size;
 	}
 
 
 	~ExtendedDataBuffer()
 	{
-		delete[] dataBuffer.buffer;
+		delete[] buffer;
 	}
 
 
@@ -85,7 +81,7 @@ public:
 	 */
 	DataBuffer toDataBuffer()
 	{
-		return dataBuffer;
+		return *this;
 	}
 };
 
