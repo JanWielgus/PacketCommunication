@@ -12,22 +12,22 @@ const uint8_t NoQueuePacketCommunication::DefaultMaxReceivingFailures = 3;
 
 
 NoQueuePacketCommunication::NoQueuePacketCommunication(ITransceiver* lowLevelComm, uint8_t maxReceivingFailures)
-    : PacketCommunication(lowLevelComm), MaxReceivingFailures(maxReceivingFailures)
+    : PacketCommunication(lowLevelComm),
+    MaxReceivingFailures(maxReceivingFailures),
+    sendingBuffer(0)
 {
 }
 
 
 NoQueuePacketCommunication::~NoQueuePacketCommunication()
 {
-    if (sendingBuffer.buffer != nullptr)
-        delete[] sendingBuffer.buffer;
 }
 
 
 bool NoQueuePacketCommunication::sendDataPacket(const IDataPacket* packetToSend)
 {
-    ensureSendingBufferCapacity(packetToSend->getPacketSize() + 1);
-    updateBufferFromDataPacket(sendingBuffer, packetToSend); // FIXME: !!! <<< Probably only always only the biggest buffer will be sent. Use ExtendedDataBuffer !!! <<<<<<<<<
+    sendingBuffer.ensureCapacity(packetToSend->getPacketSize() + 1); // Data + PacketID
+    updateBufferFromDataPacket(sendingBuffer, packetToSend);
     return LowLevelComm->send(sendingBuffer);
 }
 
@@ -60,17 +60,4 @@ void NoQueuePacketCommunication::receiveAndUpdatePackets()
     }
 
     updateConnectionStability((uint8_t)someDataReceivedFlag * 100); // 100 when true, 0 when false
-}
-
-
-
-
-void NoQueuePacketCommunication::ensureSendingBufferCapacity(size_t minimumSize)
-{
-    if (minimumSize <= sendingBuffer.size)
-        return;
-
-    delete[] sendingBuffer.buffer;
-    sendingBuffer.buffer = new uint8_t[minimumSize];
-    sendingBuffer.size = minimumSize;
 }

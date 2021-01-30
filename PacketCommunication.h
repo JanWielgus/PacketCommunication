@@ -132,7 +132,7 @@ protected:
     /**
      * @brief Updates data in buffer from data in data packet.
      * Buffer AllocatedSize have to be at least data packet size + 1 (for packet ID)!
-     * If AllocatedSize is sufficient, buffer size will be set to the DataBuffer + 1 quantity,
+     * If AllocatedSize is sufficient, buffer size variable will be set to DataBuffer + 1 value,
      * first element in array will be packetID, next all data will be copied to the buffer array.
      * @param bufferToUpdate Buffer that will be filled with data from data packet byte pointers.
      * Buffer AllocatedSize have to be at least dataPacket size + 1.
