@@ -52,7 +52,8 @@ class ExtendedDataBuffer : DataBuffer
 	size_t allocatedSize = 0; // size of the allocated buffer array
 
 public:
-	// size - amount of used bytes in the array (at most allocatedSize)
+	using DataBuffer::buffer;
+	using DataBuffer::size; // amount of used bytes in the array (at most allocatedSize)
 	const size_t& AllocatedSize; // read-only public getter of the allocated size
 
 
