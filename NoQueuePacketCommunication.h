@@ -19,7 +19,7 @@
  * @brief All incoming data available is received in each receiving session
  * (execute() method call).
  */
-class NoQueuePacketCommunication : public PacketCommunication
+class NoQueuePacketCommunication : public PacketCommunication // TODO: change name of this class
 {
 protected:
     /// AllocatedSize of this buffer is size of the biggest sent packet.
