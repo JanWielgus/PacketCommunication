@@ -20,7 +20,7 @@ PacketCommunicationWithQueue::~PacketCommunicationWithQueue()
 }
 
 
-void PacketCommunicationWithQueue::execute()
+void PacketCommunicationWithQueue::receiveAndUpdatePackets()
 {
     receiveIncomingBuffersToQueue();
     updateReceiveDataPacketsWithOldestBuffers();
@@ -100,7 +100,7 @@ void PacketCommunicationWithQueue::updateReceiveDataPacketsWithOldestBuffers()
             continue;
 
 
-        updateDataPacketFromBuffer(destinationDataPacket, checkedBuffer);
+        updateDataPacketFromBuffer(destinationDataPacket, checkedBuffer); // TODO: maybe use result of this method in some way
         callPacketReceivedEvent(destinationDataPacket);
 
         delete[] checkedBuffer.buffer;

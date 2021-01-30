@@ -10,10 +10,9 @@
 #define PACKETCOMMUNICATION_H
 
 #include "IConnectionStatus.h"
-#include <Task.h>
 #include "ITransceiver.h"
-#include <EVAFilter.h>
 #include "IDataPacket.h"
+#include <EVAFilter.h>
 #include <IArray.h>
 #include <GrowingArray.h>
 
@@ -26,7 +25,7 @@
  * Derived classes have to implement sendDataPacket() method (for sending) and
  * execute() method (for receiving).
  */
-class PacketCommunication : public IConnectionStatus, public Task
+class PacketCommunication : public IConnectionStatus
 {
 private:
     EVAFilter connectionStabilityFilter;
@@ -49,12 +48,13 @@ public:
     virtual ~PacketCommunication();
 
     /**
-     * @brief Use after adding this object to the Tasker!
-     * Configure filters automatically to give smooth changes in
-     * connection stability return value
-     * (to make changes to be not too fast and not too slow).
+     * @brief Configure filters automatically to give smooth changes in
+     * connection stability return value (to make changes to be not too rapid
+     * and not too slow).
+     * @param frequency_Hz Receiving frequency (how many times per second
+     * receiveAndUpdatePackets() method is called).
      */
-    void adaptConnectionStabilityToInterval();
+    void adaptConnStabilityToFrequency(float frequency_Hz);
 
     /**
      * @brief Alternative to adaptConnectionStabilityToInterval() method.
@@ -95,10 +95,9 @@ public:
     /**
      * @brief Receive all available data and automatically update previously added
      * receive data packets (added through addReceiveDataPacketPointer() method).
-     * Method overrided from Task class.
      * Have to be overriden.
      */
-    virtual void execute() override = 0;
+    virtual void receiveAndUpdatePackets() = 0;
 
 
 

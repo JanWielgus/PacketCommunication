@@ -49,7 +49,7 @@ public:
      */
     PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers, uint8_t maxReceivingFailures = DefaultMaxReceivingFailures);
     ~PacketCommunicationWithQueue();
-    void execute() override;
+    void receiveAndUpdatePackets() override;
 
 protected:
     void receiveIncomingBuffersToQueue();

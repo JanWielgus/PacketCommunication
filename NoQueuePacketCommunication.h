@@ -35,7 +35,7 @@ public:
     NoQueuePacketCommunication(ITransceiver* lowLevelComm, uint8_t maxReceivingFailures = DefaultMaxReceivingFailures);
     virtual ~NoQueuePacketCommunication();
     bool sendDataPacket(const IDataPacket* packetToSend) override;
-    virtual void execute() override;
+    virtual void receiveAndUpdatePackets() override;
 
 
     NoQueuePacketCommunication(const NoQueuePacketCommunication& other) = delete;
@@ -48,14 +48,8 @@ private:
      * deallocate sendingBuffer and allocate new one with the minimumSize
      * (don't copy data from old array to new one).
      * @param minimumSize Minimum size of the sendingBuffer.
-     */
+     */ // FIXME: change DataBuffer to ExtendedDataBuffer, and it have ensure capacity method inside, so this method is no longer needed
     void ensureSendingBufferCapacity(size_t minimumSize); // this method could be made general for any buffer, but there is no need
-
-    /**
-     * @brief Updates data packets using all data available to receive.
-     * Has protection against infinite loop.
-     */
-    void receiveDataAndUpdateReceiveDataPackets();
 };
 
 

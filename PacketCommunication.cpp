@@ -20,13 +20,14 @@ PacketCommunication::~PacketCommunication()
 }
 
 
-void PacketCommunication::adaptConnectionStabilityToInterval()
+void PacketCommunication::adaptConnStabilityToFrequency(float frequency_Hz)
 {
     // Thanks to this, filtering is not dependent of receiving time interval
     // Just a linear funciton that for 20000 interval return 0.85 and for 500000 return 0.5 and so on
     // Calculated using reglinp function in Excel for this two points
-    float filterBeta = -7.3e-7 * (float)getInterval_us() + 0.86f;
-    filterBeta = constrain(filterBeta, 0.2f, 0.95f);
+    float interval_us = 1000000.f / frequency_Hz;
+    float filterBeta = -7.3e-7 * (float)interval_us + 0.86f;
+    filterBeta = constrain(filterBeta, 0.1f, 0.97f);
     connectionStabilityFilter.setFilterBeta(filterBeta);
 }
 
