@@ -21,7 +21,7 @@ private:
     IPAddress localIPAddress;
     IPAddress targetIPAddress;
 
-    bool sendAlwaysToLastSender_flag = false;
+    bool sendAlwaysToLastSender_flag = true; // by default
     bool updBeginned_flag = false;
 
     // initial config

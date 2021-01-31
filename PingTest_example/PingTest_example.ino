@@ -36,7 +36,7 @@ SimpleTasker tasker(5);
 
 
 
-class PingRequestTask : public Task
+class : public Task
 {
     void execute() override
     {
@@ -47,7 +47,7 @@ class PingRequestTask : public Task
 } pingRequestTask;
 
 
-class PingRequestReceivedEvent : public IExecutable
+class : public IExecutable
 {
     void execute() override
     {
@@ -57,7 +57,7 @@ class PingRequestReceivedEvent : public IExecutable
 } pingRequestReceivedEvent;
 
 
-class PingReplyReceivedEvent : public IExecutable
+class : public IExecutable
 {
     void execute() override
     {
