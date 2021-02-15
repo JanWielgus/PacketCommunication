@@ -69,7 +69,7 @@ public:
     /**
      * @return IP address of this device.
      */
-    IPAddress getDeviceIPAddress() const;
+    IPAddress getLocalIP() const;
 
 
 private:

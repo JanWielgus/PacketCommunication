@@ -102,7 +102,7 @@ bool ESP8266WiFiComm::isConnected() const
 }
 
 
-IPAddress ESP8266WiFiComm::getDeviceIPAddress() const
+IPAddress ESP8266WiFiComm::getLocalIP() const
 {
     return WiFi.localIP();
 }
