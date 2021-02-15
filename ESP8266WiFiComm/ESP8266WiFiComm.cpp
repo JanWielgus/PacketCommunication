@@ -102,6 +102,12 @@ bool ESP8266WiFiComm::isConnected() const
 }
 
 
+IPAddress ESP8266WiFiComm::getDeviceIPAddress() const
+{
+    return WiFi.localIP();
+}
+
+
 bool ESP8266WiFiComm::beginUDP()
 {
     if (updBeginned_flag || isConnected())

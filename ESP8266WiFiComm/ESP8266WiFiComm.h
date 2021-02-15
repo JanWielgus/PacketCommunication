@@ -66,6 +66,11 @@ public:
      */
     bool isConnected() const;
 
+    /**
+     * @return IP address of this device.
+     */
+    IPAddress getDeviceIPAddress() const;
+
 
 private:
     /**
