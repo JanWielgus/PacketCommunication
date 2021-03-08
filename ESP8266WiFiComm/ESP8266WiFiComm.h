@@ -40,8 +40,8 @@ public:
     bool send(const uint8_t* buffer, size_t size) override;
     bool send(const DataBuffer& buffer) override;
     bool send(const ExtendedDataBuffer& buffer) override;
-    size_t available() override;
-    DataBuffer receiveNextData() override;
+    bool receiveData() override;
+    DataBuffer getReceivedData() override;
 
     /**
      * @brief Set the IP address that all next packets will be send to.

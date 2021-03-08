@@ -49,19 +49,12 @@ bool ESP8266WiFiComm::send(const ExtendedDataBuffer& buffer)
 }
 
 
-size_t ESP8266WiFiComm::available()
+bool ESP8266WiFiComm::receiveData()
 {
-    //return udp.available(); // FIXME: something is wrong with that (maybe put there udp.parsePacket(), test it)
-    return true;
-}
-
-
-DataBuffer ESP8266WiFiComm::receiveNextData()
-{
-    if (checkIfBeginnedUDP() == false && beginUDP() == false)
+    if (checkIfBeginnedUDP() == false && beginUDP() == false) // FIXME: probably there should be || (or) statement
     {
         receiveBuffer.size = 0;
-        return receiveBuffer.toDataBuffer();
+        return false;
     }
 
     int packetSize = udp.parsePacket();
@@ -71,6 +64,12 @@ DataBuffer ESP8266WiFiComm::receiveNextData()
     else
         receiveBuffer.size = 0;
 
+    return receiveBuffer.size == 0 ? false : true;
+}
+
+
+DataBuffer ESP8266WiFiComm::getReceivedData()
+{
     return receiveBuffer.toDataBuffer();
 }
 
