@@ -8,12 +8,8 @@
 #include "NoQueuePacketCommunication.h"
 
 
-const uint8_t NoQueuePacketCommunication::DefaultMaxReceivingFailures = 3;
-
-
-NoQueuePacketCommunication::NoQueuePacketCommunication(ITransceiver* lowLevelComm, uint8_t maxReceivingFailures)
+NoQueuePacketCommunication::NoQueuePacketCommunication(ITransceiver* lowLevelComm)
     : PacketCommunication(lowLevelComm),
-    MaxReceivingFailures(maxReceivingFailures),
     sendingBuffer(0)
 {
 }
@@ -35,23 +31,16 @@ bool NoQueuePacketCommunication::sendDataPacket(const IDataPacket* packetToSend)
 void NoQueuePacketCommunication::receiveAndUpdatePackets()
 {
     bool someDataReceivedFlag = false;
-    uint8_t failureCounter = 0;
 
-    while (LowLevelComm->available() && failureCounter <= MaxReceivingFailures)
+    while (LowLevelComm->receiveData())
     {
-        const DataBuffer receivedBuffer = LowLevelComm->receiveNextData();
+        const DataBuffer receivedBuffer = LowLevelComm->getReceivedData();
         if (receivedBuffer.size == 0)
-        {
-            failureCounter++;
             continue;
-        }
         
         IDataPacket* destinationDataPacket = getReceiveDataPacketPointer(receivedBuffer.buffer[0], receivedBuffer.size - 1);
         if (destinationDataPacket == nullptr) // any previously added receive data packets match received data
-        {
-            failureCounter++;
             continue;
-        }
 
         updateDataPacketFromBuffer(destinationDataPacket, receivedBuffer); // TODO: maybe use result of this method in some way
         callPacketReceivedEvent(destinationDataPacket);

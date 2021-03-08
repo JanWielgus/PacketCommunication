@@ -25,14 +25,11 @@ protected:
     /// AllocatedSize of this buffer is size of the biggest sent packet.
     ExtendedDataBuffer sendingBuffer;
 
-    /// Maximum amount of data packets with size = 0 received despite available() method returned true.
-    /// Prevent from an infinite loop.
-    const uint8_t MaxReceivingFailures;
-    static const uint8_t DefaultMaxReceivingFailures;
 
 public:
-    NoQueuePacketCommunication(ITransceiver* lowLevelComm, uint8_t maxReceivingFailures = DefaultMaxReceivingFailures);
+    NoQueuePacketCommunication(ITransceiver* lowLevelComm);
     virtual ~NoQueuePacketCommunication();
+    
     bool sendDataPacket(const IDataPacket* packetToSend) override;
     virtual void receiveAndUpdatePackets() override;
 

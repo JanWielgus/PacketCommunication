@@ -57,7 +57,7 @@ public:
     /**
      * @brief Receive next available data buffer. Call before getReceivedData() method
      * to get new data packet each time.
-     * @return true if a data packet was available to receive;
+     * @return true if a data packet with size greater than zero was received;
      * false if there were no data (getReceivedData() method will return an empty buffer).
      */
     virtual bool receiveData() = 0;
