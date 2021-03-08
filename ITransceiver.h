@@ -55,19 +55,20 @@ public:
     virtual bool send(const ExtendedDataBuffer& buffer) = 0;
 
     /**
-     * @return amount of bytes that are waiting to receive
-     * (or just positive value indicate, that there are some data to receive).
-     * This don't assure that receiveNextData() method will return new packet -
-     * data waiting at the input buffer may be corrupted.
+     * @brief Receive next available data buffer. Call before getReceivedData() method
+     * to get new data packet each time.
+     * @return true if a data packet was available to receive;
+     * false if there were no data (getReceivedData() method will return an empty buffer).
      */
-    virtual size_t available() = 0;
+    virtual bool receiveData() = 0;
 
     /**
-     * @return DataBuffer with received data or empty buffer if no data were received.
+     * @brief Call receiveData() method before to get the newest buffer. Can be called
+     * multiple times in a row (to get the same buffer).
+     * @return DataBuffer with received data or empty buffer if no data was received.
      * Make your own copy of data in the buffer or just use returned buffer.
-     * After calling this method, some data could still wait for receiving.
      */
-    virtual DataBuffer receiveNextData() = 0; // TODO: think if this name is good enough (maybe better will be something like nextData or similar)
+    virtual DataBuffer getReceivedData() = 0;
 };
 
 
