@@ -8,8 +8,8 @@
 #include "PacketCommunicationWithQueue.h"
 
 
-PacketCommunicationWithQueue::PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers, uint8_t maxReceivingFailures)
-    : NoQueuePacketCommunication(lowLevelComm, maxReceivingFailures), MaxQueuedBuffers(maxQueuedBuffers)
+PacketCommunicationWithQueue::PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers)
+    : NoQueuePacketCommunication(lowLevelComm), MaxQueuedBuffers(maxQueuedBuffers)
 {
 }
 
@@ -30,23 +30,16 @@ void PacketCommunicationWithQueue::receiveAndUpdatePackets()
 
 void PacketCommunicationWithQueue::receiveIncomingBuffersToQueue()
 {
-    uint8_t failureCounter = 0;
-
-    while (LowLevelComm->available() && failureCounter <= MaxReceivingFailures)
+    while (LowLevelComm->receiveData())
     {
-        const DataBuffer receivedBuffer = LowLevelComm->receiveNextData();
+        const DataBuffer receivedBuffer = LowLevelComm->getReceivedData();
+        
         if (receivedBuffer.size == 0)
-        {
-            failureCounter++;
             continue;
-        }
 
         IDataPacket* destinationDataPacket = getReceiveDataPacketPointer(receivedBuffer.buffer[0], receivedBuffer.size - 1);
         if (destinationDataPacket == nullptr) // Check if packet of this id and size exist on the receive packets pointers list
-        {
-            failureCounter++;
             continue;
-        }
 
         // if this buffer has no data (only ID - event buffer), just execute its event
         if (receivedBuffer.size == 1)

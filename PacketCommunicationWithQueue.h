@@ -47,7 +47,7 @@ public:
      * @param maxReceivingFailures (optional) Number of attempts to receive data when available() method
      * returns true, but receiveNextData() retuns empty data packet (prevent from the infinite loop).
      */
-    PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers, uint8_t maxReceivingFailures = DefaultMaxReceivingFailures);
+    PacketCommunicationWithQueue(ITransceiver* lowLevelComm, size_t maxQueuedBuffers);
     ~PacketCommunicationWithQueue();
     void receiveAndUpdatePackets() override;
 

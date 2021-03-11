@@ -85,15 +85,9 @@ bool StreamComm::send(const ExtendedDataBuffer& buffer)
 }
 
 
-size_t StreamComm::available()
+bool StreamComm::receiveData()
 {
-    return stream->available();
-}
-
-
-DataBuffer StreamComm::receiveNextData()
-{
-    while (available() > 0)
+    while (stream->available() > 0)
     {
         uint8_t data = stream->read();
 
@@ -113,7 +107,7 @@ DataBuffer StreamComm::receiveNextData()
                 decodedData.size = 0; // checksum failed, received buffer size is set to 0
             
             // Return decoded data packet (with zero size if checksum failed)
-            return decodedData.toDataBuffer();
+            return decodedData.size == 0 ? false : true;
         }
         else
         {
@@ -126,10 +120,10 @@ DataBuffer StreamComm::receiveNextData()
                 
                 // Finnish receiving this packet and reset the receiveBuffer
                 receiveBufferIndex = 0;
-                while (available() && stream->read() != PacketMarker);
+                while (stream->available() && stream->read() != PacketMarker);
 
                 decodedData.size = 0;
-                return decodedData.toDataBuffer();
+                return false;
             }
             
         }
@@ -138,6 +132,12 @@ DataBuffer StreamComm::receiveNextData()
 
     // Any complete data packet was received
     decodedData.size = 0;
+    return false;
+}
+
+
+DataBuffer StreamComm::getReceivedData()
+{
     return decodedData.toDataBuffer();
 }
 
