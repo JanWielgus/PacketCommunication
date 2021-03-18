@@ -50,7 +50,6 @@ public:
     // public interface
     void begin() override;
     bool send(const uint8_t* buffer, size_t size) override;
-    bool send(const DataBuffer& buffer) override;
     bool send(const ExtendedDataBuffer& buffer) override;
     bool receiveData() override;
     DataBuffer getReceivedData() override;

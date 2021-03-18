@@ -37,18 +37,6 @@ bool ESP8266WiFiComm::send(const uint8_t* buffer, size_t size)
 }
 
 
-bool ESP8266WiFiComm::send(const DataBuffer& buffer)
-{
-    return send(buffer.buffer, buffer.size);
-}
-
-
-bool ESP8266WiFiComm::send(const ExtendedDataBuffer& buffer)
-{
-    return send(buffer.buffer, buffer.size);
-}
-
-
 bool ESP8266WiFiComm::receiveData()
 {
     if (checkIfBeginnedUDP() == false && beginUDP() == false) // FIXME: probably there should be || (or) statement
