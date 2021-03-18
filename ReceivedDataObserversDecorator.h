@@ -40,27 +40,17 @@ public:
     {
     }
 
-    void begin()
+    void begin() override
     {
         baseTransceiver.begin();
     }
 
-    bool send(const uint8_t* buffer, size_t size)
+    bool send(const uint8_t* buffer, size_t size) override
     {
         return baseTransceiver.send(buffer, size);
     }
 
-    bool send(const DataBuffer& buffer)
-    {
-        return baseTransceiver.send(buffer);
-    }
-
-    bool send(const ExtendedDataBuffer& buffer)
-    {
-        return baseTransceiver.send(buffer);
-    }
-
-    bool receiveData()
+    bool receiveData() override
     {
         bool successul_flag = baseTransceiver.receiveData();
 
@@ -70,7 +60,7 @@ public:
         return successul_flag;
     }
 
-    DataBuffer getReceivedData()
+    DataBuffer getReceivedData() override
     {
         return baseTransceiver.getReceivedData();
     }
