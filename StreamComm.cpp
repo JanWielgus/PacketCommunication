@@ -57,12 +57,6 @@ bool StreamComm::send(const uint8_t* buffer, size_t size)
 }
 
 
-bool StreamComm::send(const DataBuffer& buffer)
-{
-    return send(buffer.buffer, buffer.size);
-}
-
-
 bool StreamComm::send(const ExtendedDataBuffer& buffer)
 {
     if (buffer.size == 0 || buffer.size > MaxBufferSize)
