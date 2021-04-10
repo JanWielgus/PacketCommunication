@@ -102,7 +102,6 @@ void setup()
 {
     Serial.begin(9600);
     softSerial.begin(9600);
-    streamComm.begin();
 
     Serial.println("Program has just started!");
 

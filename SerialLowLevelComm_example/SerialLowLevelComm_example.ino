@@ -43,7 +43,6 @@ void setup()
 {
     Serial.begin(9600); // used for showing results
     softSerial.begin(9600); // used for communication
-    comm.begin();
 }
 
 
