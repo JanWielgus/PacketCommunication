@@ -24,19 +24,16 @@ private:
     bool sendAlwaysToLastSender_flag = true; // by default
     bool updBeginned_flag = false;
 
-    // initial config
-	const char* const SSID;
-	const char* const Password;
+    // config
 	const uint16_t Port;
 
     ExtendedDataBuffer receiveBuffer;
 
 
 public:
-    ESP8266WiFiComm(const char* ssid, const char* password, uint16_t port, size_t maxPacketSize);
+    ESP8266WiFiComm(uint16_t port, size_t maxPacketSize);
 
     // interface
-    void begin() override;
     bool send(const uint8_t* buffer, size_t size) override;
     bool receiveData() override;
     DataBuffer getReceivedData() override;

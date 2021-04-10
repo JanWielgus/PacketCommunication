@@ -32,11 +32,6 @@ StreamComm::~StreamComm()
 }
 
 
-void StreamComm::begin()
-{
-}
-
-
 bool StreamComm::send(const uint8_t* buffer, size_t size)
 {
     if (buffer == nullptr || size == 0 || size > MaxBufferSize)
