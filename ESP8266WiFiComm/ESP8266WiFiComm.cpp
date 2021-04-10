@@ -8,16 +8,9 @@
 #include "ESP8266WiFiComm.h"
 
 
-ESP8266WiFiComm::ESP8266WiFiComm(const char* ssid, const char* password, uint16_t port, size_t maxPacketSize)
-    :SSID(ssid), Password(password), Port(port), receiveBuffer(maxPacketSize)
+ESP8266WiFiComm::ESP8266WiFiComm(uint16_t port, size_t maxPacketSize)
+    : Port(port), receiveBuffer(maxPacketSize)
 {
-}
-
-
-void ESP8266WiFiComm::begin()
-{
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(SSID, Password);
 }
 
 
