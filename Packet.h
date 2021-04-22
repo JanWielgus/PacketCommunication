@@ -2,7 +2,7 @@
  * @file Packet.h
  * @author Jan Wielgus
  * @brief Base class for all data packets.
- * @date 2020-08-06
+ * @date 2021-04-22
  * 
  */
 
