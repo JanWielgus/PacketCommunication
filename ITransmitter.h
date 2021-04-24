@@ -52,7 +52,7 @@ namespace PacketCommunication
          * @param buffer Buffer to send.
          * @return false if data was not sent for some reason (eg. buffer is nullptr or size is 0)
          */
-        virtual bool send(const ExtendedDataBuffer& buffer)
+        virtual bool send(const AutoDataBuffer& buffer)
         {
             return send(buffer.buffer, buffer.size);
         }
