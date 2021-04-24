@@ -42,8 +42,8 @@ namespace PacketCommunication
         }
 
         /**
-         * @return Size of this packet in bytes (amount of bytes that
-         * this packet consists of).
+         * @return Size of this packet in bytes (total amount of bytes that
+         * this packet consists of including packet ID).
          */
         virtual size_t getSize() const = 0;
 
@@ -51,11 +51,13 @@ namespace PacketCommunication
          * @brief Fill the outputBuffer with packet's internal data.
          * outputBuffer size have to be at least packet size!
          * @param outputBuffer Pointer to the array where data will be stored.
+         * @return Size of this packet in bytes so number of values changed
+         * in the outputBuffer (same value that getSize() method would return).
          */
-        virtual void getBuffer(uint8_t* outputBuffer) const = 0;
+        virtual size_t getBuffer(uint8_t* outputBuffer) const = 0;
 
         /**
-         * @brief Update internal data with a inputBuffer.
+         * @brief Update packet internal buffer with an inputBuffer.
          * inputBuffer size have to be at least packet size!
          * @param inputBuffer Pointer to the array of data to update this packet.
          * @return  
