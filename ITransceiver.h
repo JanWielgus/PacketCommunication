@@ -13,17 +13,20 @@
 #include "IReceiver.h"
 
 
-/**
- * @brief Iterface for classes that enables
- * sending and receiving array of uint8_t values.
- * Classes that implements this interface are used in packet based
- * communication as low-level.
- */
-class ITransceiver : public ITransmitter, public IReceiver
+namespace PacketCommunication
 {
-public:
-    virtual ~ITransceiver() {}
-};
+    /**
+     * @brief Iterface for classes that enables
+     * sending and receiving array of uint8_t values.
+     * Classes that implements this interface are used in packet based
+     * communication as low-level.
+     */
+    class ITransceiver : public ITransmitter, public IReceiver
+    {
+    public:
+        virtual ~ITransceiver() {}
+    };
+}
 
 
 #endif
