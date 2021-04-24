@@ -6,23 +6,27 @@
  * 
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef COMMMUTILS_H
+#define COMMMUTILS_H
 
 #ifdef ARDUINO
     #include <Arduino.h>
 #endif
 
 
-namespace commUtils
+namespace PacketCommunication
 {
-    /**
-     * @brief Copy contents of one array to another.
-     * @param destination Pointer to the destination array.
-     * @param source Pointer to the source array.
-     * @param size Amount of bytes to copy.
-     */
-    void copyUint8Array(uint8_t* destination, const uint8_t* source, size_t size);
+    namespace Utils
+    {
+        /**
+         * @brief Copy contents of one array to another.
+         * @param destination Pointer to the destination array.
+         * @param source Pointer to the source array.
+         * @param size Amount of bytes to copy.
+         */
+        void copyBuffer(uint8_t* destination, const uint8_t* source, size_t size);
+    }
 }
+
 
 #endif
