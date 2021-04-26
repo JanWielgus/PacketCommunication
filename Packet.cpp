@@ -11,8 +11,8 @@
 using namespace PacketComm;
 
 
-Packet::Packet(uint16_t packetID)
-    : PacketID(packetID)
+Packet::Packet(uint16_t packetID, Callback callback)
+    : PacketID(packetID), receivedCallback(callback)
 {
 }
 
@@ -34,15 +34,22 @@ inline size_t Packet::getSize() const
 }
 
 
-void Packet::setPacketReceivedEvent(IExecutable& packetReceivedEvent)
+void Packet::setReceivedCallback(Callback callback)
 {
-    this->packetReceivedEvent = &packetReceivedEvent;
+    receivedCallback = callback;
 }
 
 
-inline IExecutable* Packet::getPacketReceivedEvent() const
+inline Packet::Callback Packet::getReceivedCallback() const
 {
-    return packetReceivedEvent;
+    return receivedCallback;
+}
+
+
+inline void Packet::executeReceivedCallback()
+{
+    if (receivedCallback != nullptr)
+        receivedCallback();
 }
 
 

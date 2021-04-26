@@ -9,7 +9,6 @@
 #ifndef PACKET_H
 #define PACKET_H
 
-#include <IExecutable.h> // TODO: if the rest of the library is not dependent on Tasker, try to remove that dependency
 #include <byteType.h>
 
 
@@ -17,17 +16,25 @@ namespace PacketComm
 {
     class Packet
     {
+    public:
+        typedef void (*Callback)();
+
+    private:
         const uint16Byte PacketID;
-        IExecutable* packetReceivedEvent = nullptr;
+        Callback receivedCallback;
 
 
     public:
-        explicit Packet(uint16_t packetID);
+        /**
+         * @param packetID Unique ID for this packet.
+         * @param receivedCallback Optional. Void function that will be called
+         * when this packet will be received.
+         */
+        explicit Packet(uint16_t packetID, Callback receivedCallback = nullptr);
         virtual ~Packet();
 
         Packet(const Packet&) = delete;
         Packet& operator=(const Packet&) = delete;
-
 
         /**
          * @return ID of this packet.
@@ -41,15 +48,21 @@ namespace PacketComm
         size_t getSize() const;
 
         /**
-         * @brief packetReceivedEvent will be called just after when this data packet will be received.
-         * @param packetReceivedEvent Object that implements IExecutable interface.
+         * @brief Set action that will be triggered after receiving this packet.
+         * @param callback Void function that will be called after receiving new data.
          */
-        void setPacketReceivedEvent(IExecutable& packetReceivedEvent);
+        void setReceivedCallback(Callback callback);
 
         /**
-         * @return Pointer to the previously set event, or nullptr if any event was set. 
+         * @return Pointer to the previously set void method, or nullptr if was not set.
          */
-        IExecutable* getPacketReceivedEvent() const;
+        Callback getReceivedCallback() const; // TODO: is it necessary?
+
+        /**
+         * @brief Execute received callback. If callback was not set,this method takes no action.
+         */
+        void executeReceivedCallback(); // TODO: how to make that method visible only to PacketCommunication without making it a friend class?
+
 
         /**
          * @brief Fill the outputBuffer with packet's internal data (includes PacketID).
