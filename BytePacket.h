@@ -15,7 +15,7 @@
 #include <GrowingArray.h>
 
 
-namespace PacketCommunication
+namespace PacketComm
 {
     class BytePacket : public Packet
     {
@@ -23,13 +23,14 @@ namespace PacketCommunication
 
 
     public:
-        BytePacket(uint8_t packetID);
+        BytePacket(uint16_t packetID);
 
         void addByteType(IByteType& toAdd);
 
-        size_t getSize() const override;
-        size_t getBuffer(uint8_t* outputBuffer) const override;
-        void updateBuffer(const uint8_t* inputBuffer) override;
+    protected:
+        size_t getDataOnly(uint8_t* outputBuffer) const override;
+        size_t getDataOnlySize() const override;
+        void updateDataOnly(const uint8_t* inputBuffer) override;
     };
 }
 

@@ -8,10 +8,10 @@
 #include "BytePacket.h"
 
 
-using namespace PacketCommunication;
+using namespace PacketComm;
 
 
-BytePacket::BytePacket(uint8_t packetID)
+BytePacket::BytePacket(uint16_t packetID)
     : Packet(packetID)
 {
 }
@@ -23,19 +23,9 @@ void BytePacket::addByteType(IByteType& toAdd)
 }
 
 
-size_t BytePacket::getSize() const
+size_t BytePacket::getDataOnly(uint8_t* outputBuffer) const
 {
-    size_t packetSize = sizeof(PacketID);
-    for (size_t i = 0; i < byteTypeArray.size(); ++i)
-        packetSize += byteTypeArray.get(i)->byteSize();
-    
-    return packetSize;
-}
-
-
-size_t BytePacket::getBuffer(uint8_t* outputBuffer) const
-{
-    size_t outputBufferIndex = 0; // packet size at the end
+    size_t outputBufferIndex = 0; // at the end, data making up this packet
     
     for (size_t i = 0; i < byteTypeArray.size(); ++i)
     {
@@ -50,9 +40,19 @@ size_t BytePacket::getBuffer(uint8_t* outputBuffer) const
 }
 
 
-void BytePacket::updateBuffer(const uint8_t* inputBuffer)
+size_t BytePacket::getDataOnlySize() const
 {
-    size_t inputBufferIndex = 0; // packet size at the end
+    size_t dataOnlySize = 0;
+    for (size_t i = 0; i < byteTypeArray.size(); ++i)
+        dataOnlySize += byteTypeArray.get(i)->byteSize();
+    
+    return dataOnlySize;
+}
+
+
+void BytePacket::updateDataOnly(const uint8_t* inputBuffer)
+{
+    size_t inputBufferIndex = 0; // at the end, data making up this packet
     
     for (size_t i = 0; i < byteTypeArray.size(); ++i)
     {
