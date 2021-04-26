@@ -6,7 +6,8 @@
  */
 
 #include "PacketCommunication.h"
-#include "commUtils.h"
+
+using namespace PacketComm;
 
 
 PacketCommunication::PacketCommunication(ITransceiver* lowLevelComm)
@@ -17,6 +18,21 @@ PacketCommunication::PacketCommunication(ITransceiver* lowLevelComm)
 
 PacketCommunication::~PacketCommunication()
 {
+}
+
+
+bool PacketCommunication::registerReceivePacket(Packet* receivePacket)
+{
+    if (checkIfIDAlreadyRegistered(receivePacket->getID()))
+        return false;
+
+    return registeredReceivePackets.add(receivePacket);
+}
+
+
+PacketCommunication::Percentage PacketCommunication::getConnectionStability()
+{
+    return uint8_t(connectionStabilityFilter.getFilteredValue() + 0.5f);
 }
 
 
@@ -39,40 +55,40 @@ void PacketCommunication::setConnectionStabilityChangeRate(float changeRate)
 }
 
 
-bool PacketCommunication::addReceiveDataPacketPointer(IDataPacket* receiveDataPacketPtr)
+void PacketCommunication::receive()
 {
-    if (checkIfAlreadyAdded(receiveDataPacketPtr))
-        return false;
-    
-    if (!receiveDataPacketsPointers.add(receiveDataPacketPtr))
-        return false;
-    return true;
+    Percentage receivingResult = receiveAndUpdatePackets();
+    updateConnectionStability(receivingResult);
 }
-
-
-PacketCommunication::Percentage PacketCommunication::getConnectionStability()
-{
-    return uint8_t(connectionStabilityFilter.getFilteredValue() + 0.5f);
-}
-
 
 
 
 void PacketCommunication::updateConnectionStability(Percentage receivedPercent)
 {
-    receivedPercent = constrain(receivedPercent, 0, 100);
-    connectionStabilityFilter.update(receivedPercent);
+    // Constrain the value and update filter
+    connectionStabilityFilter.update(receivedPercent > 100 ? 100 : receivedPercent);
 }
 
 
-bool PacketCommunication::copyBufferData(DataBuffer& destination, const DataBuffer& source)
+bool PacketCommunication::checkIfIDAlreadyRegistered(Packet::PacketIDType id)
 {
-    if (source.size != destination.size)
-        return false;
-    
-    commUtils::copyUint8Array(destination.buffer, source.buffer, source.size);
-    return true;
+    for (size_t i = 0; i < registeredReceivePackets.size(); ++i)
+        if (registeredReceivePackets[i]->getID() == id)
+            return true;
+
+    return false;
 }
+
+
+
+
+
+
+
+
+
+
+/*
 
 
 bool PacketCommunication::updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBuffer& sourceDataBuffer)
@@ -121,25 +137,6 @@ bool PacketCommunication::updateBufferFromDataPacket(DataBuffer& bufferToUpdate,
 }
 
 
-void PacketCommunication::callPacketReceivedEvent(IDataPacket* dataPacket)
-{
-    IExecutable* packetReceivedEvent = dataPacket->getPacketReceivedEventPtr();
-    if (packetReceivedEvent != nullptr)
-        packetReceivedEvent->execute();
-}
-
-
-
-
-bool PacketCommunication::checkIfAlreadyAdded(IDataPacket* toCheck)
-{
-    uint8_t toCheckID = toCheck->getPacketID();
-    for (int i = 0; i < receiveDataPacketsPointers.getSize(); i++)
-        if (receiveDataPacketsPointers[i]->getPacketID() == toCheckID)
-            return true;
-    return false;
-}
-
 
 IDataPacket* PacketCommunication::getReceiveDataPacketPointer(uint8_t packetID, size_t packetSize, size_t* indexOutput)
 {
@@ -157,3 +154,5 @@ IDataPacket* PacketCommunication::getReceiveDataPacketPointer(uint8_t packetID, 
 
     return nullptr;
 }
+
+*/
