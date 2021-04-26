@@ -9,12 +9,14 @@
 #ifndef COMMMUTILS_H
 #define COMMMUTILS_H
 
+#include "DataBuffer.h"
+
 #ifdef ARDUINO
     #include <Arduino.h>
 #endif
 
 
-namespace PacketCommunication
+namespace PacketComm
 {
     namespace Utils
     {
@@ -25,6 +27,15 @@ namespace PacketCommunication
          * @param size Amount of bytes to copy.
          */
         void copyBuffer(uint8_t* destination, const uint8_t* source, size_t size);
+
+        /**
+         * @brief Copy contents of source buffer to the destination buffer.
+         * Buffers have to have the same size!
+         * @param destination Data will be copied to this buffer.
+         * @param source Data will be copied from this buffer.
+         * @return false if buffers are not the same size, true otherwise.
+         */
+        bool copyBuffer(DataBuffer& destination, const DataBuffer& source);
 
         /**
          * @brief Check if passed buffer checksum is correct.
