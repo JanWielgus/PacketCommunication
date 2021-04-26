@@ -17,12 +17,11 @@
 #include "AutoDataBuffer.h"
 #include "Encoding/COBS.h" // SLIP.h is alternative
 #include "commUtils.h"
-#include <etl/memory.h>
 
 
-namespace PacketCommunication
+namespace PacketComm
 {
-    template <size_t MaxBufferSize>
+    template <const size_t MaxBufferSize>
     class StreamComm : public ITransceiver
     {
         static const uint8_t PacketMarker;
@@ -57,24 +56,24 @@ namespace PacketCommunication
 
 
 
-    template <size_t MaxBufferSize>
+    template <const size_t MaxBufferSize>
     const uint8_t StreamComm<MaxBufferSize>::PacketMarker = 0;
 
 
-    template <size_t MaxBufferSize>
+    template <const size_t MaxBufferSize>
     StreamComm<MaxBufferSize>::StreamComm(Stream* stream)
     {
         this->stream = stream;
     }
 
 
-    template <size_t MaxBufferSize>
+    template <const size_t MaxBufferSize>
     bool StreamComm<MaxBufferSize>::send(const uint8_t* buffer, size_t size)
     {
         if (buffer == nullptr || size == 0 || size > MaxBufferSize)
             return false;
 
-        etl::unique_ptr<uint8_t[]> bufferWithChecksum(new uint8_t[MaxBufferSize + 1]);
+        uint8_t* bufferWithChecksum = new uint8_t[MaxBufferSize + 1];
         Utils::copyBuffer(bufferWithChecksum, buffer, size);
         bufferWithChecksum[size] = Utils::calculateChecksum(buffer, size); // add checksum after the last byte
 
@@ -83,11 +82,13 @@ namespace PacketCommunication
         stream->write(encodeBuffer, numEncoded);
         stream->write(PacketMarker);
 
+        delete[] bufferWithChecksum;
+
         return true;
     }
 
 
-    template <size_t MaxBufferSize>
+    template <const size_t MaxBufferSize>
     bool StreamComm<MaxBufferSize>::send(const AutoDataBuffer& buffer)
     {
         if (buffer.size == 0 || buffer.size > MaxBufferSize)
@@ -111,7 +112,7 @@ namespace PacketCommunication
     }
 
 
-    template <size_t MaxBufferSize>
+    template <const size_t MaxBufferSize>
     bool StreamComm<MaxBufferSize>::receive()
     {
         while (stream->available() > 0)
@@ -157,7 +158,7 @@ namespace PacketCommunication
     }
 
 
-    template <size_t MaxBufferSize>
+    template <const size_t MaxBufferSize>
     DataBuffer StreamComm<MaxBufferSize>::getReceived()
     {
         return DataBuffer(decodedData, decodedDataSize);
