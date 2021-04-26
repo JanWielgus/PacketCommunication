@@ -12,7 +12,7 @@
 #include "DataBuffer.h"
 
 
-namespace PacketCommunication
+namespace PacketComm
 {
     /**
 	 * @brief This class is DataBuffer with built-in dynamic memory allocation.
