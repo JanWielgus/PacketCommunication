@@ -11,7 +11,7 @@
 using namespace PacketComm;
 
 
-Packet::Packet(uint16_t packetID, Callback callback)
+Packet::Packet(PacketIDType packetID, Callback callback)
     : PacketID(packetID), receivedCallback(callback)
 {
 }
@@ -22,9 +22,9 @@ Packet::~Packet()
 }
 
 
-inline uint16_t Packet::getID() const
+inline Packet::PacketIDType Packet::getID() const
 {
-    return (uint16_t)PacketID;
+    return (PacketIDType)PacketID;
 }
 
 

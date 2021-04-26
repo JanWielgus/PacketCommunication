@@ -18,6 +18,7 @@ namespace PacketComm
     {
     public:
         typedef void (*Callback)();
+        typedef uint16_t PacketIDType;
 
     private:
         const uint16Byte PacketID;
@@ -30,7 +31,7 @@ namespace PacketComm
          * @param receivedCallback Optional. Void function that will be called
          * when this packet will be received.
          */
-        explicit Packet(uint16_t packetID, Callback receivedCallback = nullptr);
+        explicit Packet(PacketIDType packetID, Callback receivedCallback = nullptr);
         virtual ~Packet();
 
         Packet(const Packet&) = delete;
@@ -39,7 +40,7 @@ namespace PacketComm
         /**
          * @return ID of this packet.
          */
-        uint16_t getID() const;
+        PacketIDType getID() const;
 
         /**
          * @return Size of this packet in bytes (total amount of bytes that
