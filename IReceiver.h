@@ -13,7 +13,7 @@
 #include "DataBuffer.h"
 
 
-namespace PacketCommunication
+namespace PacketComm
 {
     /**
      * @brief Interface for classes that enables receiving

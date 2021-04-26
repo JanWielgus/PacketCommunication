@@ -14,7 +14,7 @@
 #endif
 
 
-namespace PacketCommunication
+namespace PacketComm
 {
 	/**
 	 * @brief This class is used to store buffer pointer and it's used

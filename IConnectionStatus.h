@@ -13,7 +13,7 @@
 #endif
 
 
-namespace PacketCommunication
+namespace PacketComm
 {
     /**
      * @brief Interface for classes that enables to check

@@ -13,7 +13,7 @@
 #include "IReceiver.h"
 
 
-namespace PacketCommunication
+namespace PacketComm
 {
     /**
      * @brief Iterface for classes that enables

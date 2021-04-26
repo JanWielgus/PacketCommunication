@@ -14,7 +14,7 @@
 #include "AutoDataBuffer.h"
 
 
-namespace PacketCommunication
+namespace PacketComm
 {
     /**
      * @brief Interface for classes that enables transmitting
