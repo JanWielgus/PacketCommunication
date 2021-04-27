@@ -83,6 +83,13 @@ namespace PacketComm
          */
         bool updateBuffer(const uint8_t* inputBuffer);
 
+        /**
+         * @brief Enables to check ID of buffer (if that buffer was inside a packet,
+         * what would be its ID).
+         * @param buffer Buffer to chech its ID.
+         */
+        static PacketIDType getIDFromBuffer(const uint8_t* buffer);
+
 
     protected:
         /**

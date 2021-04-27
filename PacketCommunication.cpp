@@ -6,12 +6,14 @@
  */
 
 #include "PacketCommunication.h"
+#include "commUtils.h"
 
 using namespace PacketComm;
 
 
 PacketCommunication::PacketCommunication(ITransceiver* lowLevelComm)
-    : LowLevelComm(lowLevelComm)
+    : LowLevelComm(lowLevelComm),
+      sendingBuffer(0)
 {
 }
 
@@ -23,7 +25,7 @@ PacketCommunication::~PacketCommunication()
 
 bool PacketCommunication::registerReceivePacket(Packet* receivePacket)
 {
-    if (checkIfIDAlreadyRegistered(receivePacket->getID()))
+    if (getRegisterdReceiveDataPacket(receivePacket->getID()) != nullptr)
         return false;
 
     return registeredReceivePackets.add(receivePacket);
@@ -62,6 +64,57 @@ void PacketCommunication::receive()
 }
 
 
+bool PacketCommunication::send(const Packet* packetToSend)
+{
+    // Make buffer packetSize + 1 (low level comm don't have to make separate bigger buffer to add checksum)
+    sendingBuffer.ensureCapacity(packetToSend->getSize() + 1, false);
+    packetToSend->getBuffer(sendingBuffer.buffer);
+    return LowLevelComm->send(sendingBuffer);
+}
+
+
+PacketCommunication::Percentage PacketCommunication::receiveAndUpdatePackets()
+{
+    uint16_t receivedPacketsTotal = 0;
+    uint16_t successfullyReceivedPackets = 0;
+
+    while (LowLevelComm->receive())
+    {
+        const DataBuffer receivedBuffer = LowLevelComm->getReceived();
+        receivedPacketsTotal++;
+
+        Packet::PacketIDType idFromBuffer = Packet::getIDFromBuffer(receivedBuffer.buffer);
+        Packet* destinationPacket = getRegisterdReceivePacket(idFromBuffer);
+
+        if (destinationPacket == nullptr || destinationPacket->getSize() != receivedBuffer.size)
+            continue;
+
+        destinationPacket->updateBuffer(receivedBuffer.buffer);
+        destinationPacket->executeReceivedCallback();
+
+        successfullyReceivedPackets++;
+    }
+
+    // Assess receiving
+    if (receivedPacketsTotal != 0)
+        return ((float)successfullyReceivedPackets / receivedPacketsTotal) * 100.f;
+    return 0;
+}
+
+
+Packet* PacketCommunication::getRegisterdReceivePacket(Packet::PacketIDType packetID)
+{
+    for (size_t i = 0; i < registeredReceivePackets.size(); ++i)
+    {
+        Packet* curPacket = registeredReceivePackets[i];
+        if (curPacket->getID() == packetID)
+            return curPacket;
+    }
+
+    return nullptr;
+}
+
+
 
 void PacketCommunication::updateConnectionStability(Percentage receivedPercent)
 {
@@ -70,74 +123,11 @@ void PacketCommunication::updateConnectionStability(Percentage receivedPercent)
 }
 
 
-bool PacketCommunication::checkIfIDAlreadyRegistered(Packet::PacketIDType id)
-{
-    for (size_t i = 0; i < registeredReceivePackets.size(); ++i)
-        if (registeredReceivePackets[i]->getID() == id)
-            return true;
-
-    return false;
-}
-
-
-
-
-
-
 
 
 
 
 /*
-
-
-bool PacketCommunication::updateDataPacketFromBuffer(IDataPacket* dataPacket, const DataBuffer& sourceDataBuffer)
-{
-    if (dataPacket->getPacketID() != sourceDataBuffer.buffer[0] ||
-        dataPacket->getPacketSize() + 1 != sourceDataBuffer.size) // buffer include packet ID, but dataPacket array don't
-        return false;
-
-    uint8_t** destinationBytePointers = dataPacket->getBytePointersArray();
-    for (int i = 1; i < sourceDataBuffer.size; i++)
-        *(destinationBytePointers[i - 1]) = sourceDataBuffer.buffer[i];
-    
-    return true;
-}
-
-
-bool PacketCommunication::updateBufferFromDataPacket(ExtendedDataBuffer& bufferToUpdate, const IDataPacket* sourceDataPacket)
-{
-    if (bufferToUpdate.AllocatedSize < sourceDataPacket->getPacketSize() + 1)
-        return false;
-
-    bufferToUpdate.size = sourceDataPacket->getPacketSize() + 1;
-    bufferToUpdate.buffer[0] = sourceDataPacket->getPacketID();
-
-    const uint8_t** packetDataPointersArray = sourceDataPacket->getBytePointersArray();
-    for (int i = 1; i < bufferToUpdate.size; i++)
-        bufferToUpdate.buffer[i] = *(packetDataPointersArray[i - 1]);
-    
-    return true;
-}
-
-
-bool PacketCommunication::updateBufferFromDataPacket(DataBuffer& bufferToUpdate, const IDataPacket* sourceDataPacket)
-{
-    if (bufferToUpdate.size != sourceDataPacket->getPacketSize() + 1 ||
-        bufferToUpdate.buffer == nullptr)
-        return false;
-
-    bufferToUpdate.buffer[0] = sourceDataPacket->getPacketID();
-
-    const uint8_t** packetDataPointersArray = sourceDataPacket->getBytePointersArray();
-    for (int i = 1; i < bufferToUpdate.size; i++)
-        bufferToUpdate.buffer[i] = *(packetDataPointersArray[i - 1]);
-
-    return true;
-}
-
-
-
 IDataPacket* PacketCommunication::getReceiveDataPacketPointer(uint8_t packetID, size_t packetSize, size_t* indexOutput)
 {
     for (int i = 0; i < receiveDataPacketsPointers.getSize(); i++)

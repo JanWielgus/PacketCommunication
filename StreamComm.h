@@ -51,7 +51,7 @@ namespace PacketComm
         bool send(const uint8_t* buffer, size_t size) override;
         bool send(const AutoDataBuffer& buffer) override;
         bool receive() override;
-        DataBuffer getReceived() override;
+        const DataBuffer getReceived() override;
     };
 
 
@@ -159,7 +159,7 @@ namespace PacketComm
 
 
     template <const size_t MaxBufferSize>
-    DataBuffer StreamComm<MaxBufferSize>::getReceived()
+    const DataBuffer StreamComm<MaxBufferSize>::getReceived()
     {
         return DataBuffer(decodedData, decodedDataSize);
     }

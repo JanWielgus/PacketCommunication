@@ -73,6 +73,16 @@ bool Packet::updateBuffer(const uint8_t* inputBuffer)
 }
 
 
+Packet::PacketIDType Packet::getIDFromBuffer(const uint8_t* buffer)
+{
+    byteType<PacketIDType> id;
+    for (uint8_t i = 0; i < id.byteSize(); ++i)
+        id.byteArray()[i] = buffer[i];
+    
+    return (PacketIDType)id;
+}
+
+
 bool Packet::checkIfIDMatch(const uint8_t* buffer)
 {
     for (uint8_t i = 0; i < PacketID.byteSize(); i++)

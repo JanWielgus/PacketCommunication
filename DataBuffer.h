@@ -48,7 +48,7 @@ namespace PacketComm
 		 * @return true if buffers have the same pointer and same size,
 		 * otherwise false.
 		 */
-		bool operator==(const DataBuffer& other)
+		bool operator==(const DataBuffer& other) const
 		{
 			return buffer == other.buffer && size == other.size;
 		}

@@ -12,6 +12,7 @@
 #include "IConnectionStatus.h"
 #include "ITransceiver.h"
 #include "Packet.h"
+#include "AutoDataBuffer.h"
 #include <EVAFilter.h>
 #include <GrowingArray.h>
 
@@ -31,6 +32,7 @@ namespace PacketComm
     protected:
         ITransceiver* const LowLevelComm;
         SimpleDataStructures::GrowingArray<Packet*> registeredReceivePackets;
+        AutoDataBuffer sendingBuffer;
         
 
     public:
@@ -92,7 +94,7 @@ namespace PacketComm
          * @param packetToSend Pointer to the data packet that need to be sent.
          * @return false if data packet was not sent because of any reason.
          */
-        virtual bool send(const Packet* packetToSend) = 0;
+        virtual bool send(const Packet* packetToSend);
 
 
     protected:
@@ -102,7 +104,15 @@ namespace PacketComm
          * @return assessment of received data [0 <= receivedPercent <= 100]
          * (0 - no data received, 100 - all data received).
          */
-        virtual Percentage receiveAndUpdatePackets() = 0;
+        virtual Percentage receiveAndUpdatePackets();
+
+        /**
+         * @brief Search for packet in the registeredReceivePackets array by packet ID.
+         * @param packetID ID of packet to be found.
+         * @return Pointer to the previously registered packet of with provided ID,
+         * or nullptr if such packet was not found.
+         */
+        Packet* getRegisterdReceivePacket(Packet::PacketIDType packetID);
 
 
     private:
@@ -112,15 +122,6 @@ namespace PacketComm
          * (0 - no data received, 100 - all data received).
          */
         void updateConnectionStability(Percentage receivedPercent);
-
-        /**
-         * @brief Checks if data packet with this ID was already added
-         * to the packet communication.
-         * @param toCheck Pointer to the data packet to check.
-         * @return true if there was already registered a data packet with the same packet ID,
-         * false if this packet still can be registered.
-         */
-        bool checkIfIDAlreadyRegistered(Packet::PacketIDType id);
     };
 }
 
@@ -130,53 +131,6 @@ namespace PacketComm
 
 
 
-
-
-
-
-
-
-        // /**
-        //  * @brief 
-        //  * @param dataPacket Data packet which data will be updated.
-        //  * @param sourceDataBuffer Source of data to update data packet.
-        //  * Passed data buffer should have packet ID in the buffer[0].
-        //  * @return false if packet ID or size doesn't match buffer, or something else went wrong.
-        //  * Returns true otherwise.
-        //  */
-
-        // /**
-        //  * @brief Updates bytes in the packetToUpdate from sourceBuffer.
-        //  * @param packetToUpdate Packet which internal buffer will be updated.
-        //  * @param sourceBuffer Source of data to update packet.
-        //  * @return // TODO: finish in Packet
-        //  */
-        // bool updatePacketFromBuffer(Packet* packetToUpdate, const DataBuffer& sourceBuffer);
-
-        // /**
-        //  * @brief Updates data in buffer from data in data packet.
-        //  * Buffer AllocatedSize have to be at least data packet size + 1 (for packet ID)!
-        //  * If AllocatedSize is sufficient, buffer size variable will be set to DataBuffer + 1 value,
-        //  * first element in array will be packetID, next all data will be copied to the buffer array.
-        //  * @param bufferToUpdate Buffer that will be filled with data from data packet byte pointers.
-        //  * Buffer AllocatedSize have to be at least dataPacket size + 1.
-        //  * @param sourceDataPacket Pointer to data packet to copy data from.
-        //  * @return false if buffer AllocatedSize is too small (buffer AllocatedSize >= packetSize + 1),
-        //  * or something else went wrong. Returns true otherwise.
-        //  */
-        // bool updateBufferFromPacket(AutoDataBuffer& bufferToUpdate, const Packet* sourcePacket);
-
-        // /**
-        //  * @brief Updates data in buffer from data in data packet.
-        //  * bufferToUpdate have to has EXACTLY size of: data packet size + 1 (for packet ID)!
-        //  * First element in array will be packetID, next all data will be copied to the buffer array.
-        //  * @param bufferToUpdate Buffer that will be filled with data from data packet byte pointers.
-        //  * Buffer size have to be at least dataPacket size + 1.
-        //  * @param sourceDataPacket Pointer to data packet to copy data from.
-        //  * @return false if buffer size is not equal size of data packet + 1 (for packet ID).
-        //  * Returns true otherwise.
-        //  */
-        // bool updateBufferFromPacket(DataBuffer& bufferToUpdate, const Packet* sourcePacket);
 
         /**
          * @brief Search for data packet in the receiveDataPacketsPointers array

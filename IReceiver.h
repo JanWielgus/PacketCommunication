@@ -38,7 +38,7 @@ namespace PacketComm
          * @return DataBuffer with received data or empty buffer if no data was received.
          * Make your own copy of data in the buffer or just use returned buffer.
          */
-        virtual DataBuffer getReceived() = 0;
+        virtual const DataBuffer getReceived() = 0;
     };
 }
 
