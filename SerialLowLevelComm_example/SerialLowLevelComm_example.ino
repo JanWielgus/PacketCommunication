@@ -12,6 +12,7 @@
  */
 
 #include <StreamComm.h>
+#include <ITransceiver.h>
 #include <SoftwareSerial.h>
 
 void send();
@@ -19,7 +20,7 @@ void receive();
 
 
 // Config
-const uint16_t MaxPacketSize = 25;
+const uint16_t MaxBufferSize = 25;
 
 // Used variables and other
 uint8_t toSendBuffer[2];
@@ -32,10 +33,10 @@ SoftwareSerial softSerial(10, 11); // RX, TX
 
 
 // There is example for arduino stream communications using SoftwareSerial.
-// StreamComm class can be used for any way of communication that extends Stream class.
-// For example Serial.
-StreamComm streamComm(&softSerial, MaxPacketSize);
-ITransceiver& comm = streamComm;
+// StreamComm class can be used for any way of communication
+// that extends Stream class (for example HardwareSeial).
+PacketComm::StreamComm<MaxBufferSize> streamComm(&softSerial);
+PacketComm::ITransceiver& comm = streamComm; // you can use general interface
 
 
 
@@ -58,60 +59,49 @@ void loop()
 void send()
 {
     // Some value that will change and indicate that communication is working.
-    // You can send an array of size at most MaxPacketSize and put there
-    // whatever you want to send (bigger types can be divided using ByteTypes library
-    // https://github.com/JanWielgus/ByteTypes based on idea of Filip Depta)
+    // You can send an array of size at most MaxBufferSize and put there
+    // whatever you want to send (bigger types than bytes can be divided using
+    // ByteTypes library: https://github.com/JanWielgus/ByteTypes based on Filip Depta's idea)
     toSendBuffer[0] = (uint8_t)millis();
     toSendBuffer[1] = toSendBuffer[0] / 10;
 
-    comm.send(toSendBuffer, 2); // in this example maximum send size is 25 (because of MaxPacketSize)
-                                // but we will use only 2
+    comm.send(toSendBuffer, 2); // remember of the MaxBufferSize
 }
 
 
 
 void receive()
 {
-    bool receivedSomeDataFlag = false; // if this flag is false at the end, any data was received
     uint8_t var1;
     uint8_t var2;
 
-    // Check if there are any data ready to receive.
-    // But be aware that this data may be corrupted
-    // and data packet cannot be created, so receiveNextData()
-    // method will return empty buffer.
-    // If you expect more data, you can check it in a loop.
-    if (comm.available())
+    // Check if any data has been received.
+    if (comm.receive())
     {
-        DataBuffer receivedData = comm.receiveNextData();
+        PacketComm::DataBuffer receivedData = comm.getReceived();
 
-        // Check if received data buffer size is not zero
-        if (receivedData.size > 0)
-        {
-            var1 = receivedData.buffer[0];
-            var2 = receivedData.buffer[1];
-            // size indicate amount of received bytes.
-            // In this example we send only 2 bit buffers so I don't check.
+        // receivedData.size contains size of the received data,
+        // but we know that in this example will be always 2.
+        // Of course you can check it.
 
-            receivedSomeDataFlag = true;
-        }
-    }
+        // You can store data somewhere.
+        var1 = receivedData.buffer[0];
+        var2 = receivedData.buffer[1];
 
-    if (!receivedSomeDataFlag)
-        missedPackets++;
 
-    // Show receiving results
-    Serial.println("Receiving done");
-    Serial.print("Missed packets: ");
-    Serial.println(missedPackets);
-    if (receivedSomeDataFlag)
-    {
         Serial.print("Received some data: ");
         Serial.print(var1);
         Serial.print('\t');
         Serial.println(var2);
     }
     else
+    {
+        missedPackets++;
         Serial.println("No data was received");
+    }
+
+    Serial.println("Receiving done");
+    Serial.print("Total missed packets: ");
+    Serial.println(missedPackets);
 }
 

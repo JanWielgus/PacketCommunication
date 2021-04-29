@@ -29,7 +29,7 @@ namespace PacketComm
 
     protected:
         size_t getDataOnly(uint8_t* outputBuffer) const override;
-        size_t getDataOnlySize() const override;
+        size_t getDataOnlySize() const override; // TODO: maybe calculate size when adding and store it (O(1) access time)
         void updateDataOnly(const uint8_t* inputBuffer) override;
     };
 }

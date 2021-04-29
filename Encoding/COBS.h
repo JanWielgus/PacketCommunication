@@ -137,7 +137,7 @@ public:
     /// \brief Get the maximum encoded buffer size needed for a given source size.
     /// \param sourceSize The size of the buffer to be encoded.
     /// \returns the maximum size of the required encoded buffer.
-    static size_t getEncodedBufferSize(size_t sourceSize)
+    static constexpr size_t getEncodedBufferSize(size_t sourceSize)
     {
         return sourceSize + sourceSize / 254 + 1;
     }
