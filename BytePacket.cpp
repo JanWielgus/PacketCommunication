@@ -20,6 +20,7 @@ BytePacket::BytePacket(uint16_t packetID)
 void BytePacket::addByteType(IByteType& toAdd)
 {
     byteTypeArray.add(&toAdd);
+    dataOnlySize += toAdd.byteSize();
 }
 
 
@@ -42,10 +43,6 @@ size_t BytePacket::getDataOnly(uint8_t* outputBuffer) const
 
 size_t BytePacket::getDataOnlySize() const
 {
-    size_t dataOnlySize = 0;
-    for (size_t i = 0; i < byteTypeArray.size(); ++i)
-        dataOnlySize += byteTypeArray.get(i)->byteSize();
-    
     return dataOnlySize;
 }
 
