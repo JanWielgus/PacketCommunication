@@ -50,10 +50,10 @@ void PacketCommunication::adaptConnStabilityToFrequency(float frequency_Hz)
 }
 
 
-void PacketCommunication::setConnectionStabilityChangeRate(float changeRate)
+void PacketCommunication::setConnStabilitySmoothness(float smoothness)
 {
-    changeRate = constrain(changeRate, 0.0f, 0.995f);
-    connectionStabilityFilter.setFilterBeta(changeRate);
+    smoothness = constrain(smoothness, 0.0f, 0.995f);
+    connectionStabilityFilter.setFilterBeta(smoothness);
 }
 
 

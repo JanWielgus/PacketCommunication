@@ -64,7 +64,8 @@ namespace PacketComm
         Percentage getConnectionStability() override;
 
         /**
-         * @brief Configure filters automatically to give smooth changes in
+         * @brief Alternative to setConnStabilitySmoothness() method.
+         * Configure filters automatically to give smooth changes in
          * connection stability return value (to make changes to be not too rapid
          * and not too slow).
          * @param frequency_Hz Receiving frequency (how many times per second
@@ -73,14 +74,14 @@ namespace PacketComm
         void adaptConnStabilityToFrequency(float frequency_Hz);
 
         /**
-         * @brief Alternative to adaptConnectionStabilityToInterval() method.
+         * @brief Alternative to adaptConnStabilityToFrequency() method.
          * Used to set filters manually. This value depend on update frequency
          * (the bigger frequency the bigger changeRate value)
-         * @param changeRate [0.0 < changeRate < 1.0]
+         * @param changeRate [0.0 < smoothness < 1.0]
          * (close to 0 - connection stability value changes quickly,
          * close to 1 - connection stability value changes slowly)
          */
-        void setConnectionStabilityChangeRate(float changeRate);
+        void setConnStabilitySmoothness(float smoothness);
 
         /**
          * @brief Receive all available data and automatically update previously added
