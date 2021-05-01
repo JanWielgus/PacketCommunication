@@ -25,7 +25,7 @@ PacketCommunication::~PacketCommunication()
 
 bool PacketCommunication::registerReceivePacket(Packet* receivePacket)
 {
-    if (getRegisterdReceivePacket(receivePacket->getID()) != nullptr)
+    if (getRegisteredReceivePacket(receivePacket->getID()) != nullptr)
         return false;
 
     return registeredReceivePackets.add(receivePacket);
@@ -80,19 +80,11 @@ PacketCommunication::Percentage PacketCommunication::receiveAndUpdatePackets()
 
     while (LowLevelComm->receive())
     {
-        const DataBuffer receivedBuffer = LowLevelComm->getReceived();
         receivedPacketsTotal++;
 
-        Packet::PacketIDType idFromBuffer = Packet::getIDFromBuffer(receivedBuffer.buffer);
-        Packet* destinationPacket = getRegisterdReceivePacket(idFromBuffer);
-
-        if (destinationPacket == nullptr || destinationPacket->getSize() != receivedBuffer.size)
-            continue;
-
-        destinationPacket->updateBuffer(receivedBuffer.buffer);
-        destinationPacket->executeReceivedCallback();
-
-        successfullyReceivedPackets++;
+        const DataBuffer receivedBuffer = LowLevelComm->getReceived();
+        if (findPacketAndUpdateFromBuffer(receivedBuffer))
+            successfullyReceivedPackets++;
     }
 
     // Assess receiving
@@ -102,16 +94,44 @@ PacketCommunication::Percentage PacketCommunication::receiveAndUpdatePackets()
 }
 
 
-Packet* PacketCommunication::getRegisterdReceivePacket(Packet::PacketIDType packetID)
+bool PacketCommunication::findPacketAndUpdateFromBuffer(const DataBuffer& receivedBuffer)
 {
+    if (receivedBuffer.buffer == nullptr || receivedBuffer.size == 0)
+        return false;
+
+    Packet* packetToUpdate = getRegisteredReceivePacket(receivedBuffer);
+    if (packetToUpdate == nullptr)
+        return false;
+
+    packetToUpdate->updateBuffer(receivedBuffer.buffer); // this method returns bool, but should be always true
+    packetToUpdate->executeReceivedCallback();
+
+    return true;
+}
+
+
+Packet* PacketCommunication::getRegisteredReceivePacket(Packet::PacketIDType packetID, size_t packetSize)
+{
+    Packet* matchingPacket = nullptr;
     for (size_t i = 0; i < registeredReceivePackets.size(); ++i)
     {
         Packet* curPacket = registeredReceivePackets[i];
         if (curPacket->getID() == packetID)
-            return curPacket;
+            matchingPacket = curPacket;
     }
 
+    if (matchingPacket != nullptr)
+        if (packetSize == matchingPacket->getSize() || packetSize == (size_t)-1)
+            return matchingPacket;
+
     return nullptr;
+}
+
+
+Packet* PacketCommunication::getRegisteredReceivePacket(const DataBuffer& buffer)
+{
+    Packet::PacketIDType idFromBuffer = Packet::getIDFromBuffer(buffer.buffer);
+    return getRegisteredReceivePacket(idFromBuffer, buffer.size);
 }
 
 

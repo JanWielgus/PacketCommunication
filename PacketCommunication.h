@@ -107,12 +107,30 @@ namespace PacketComm
         virtual Percentage receiveAndUpdatePackets();
 
         /**
-         * @brief Search for packet in the registeredReceivePackets array by packet ID.
+         * @brief Updates matching registered receive packet with data in receivedBuffer
+         * and (if update was successful) executes this packet's callback.
+         * @param receivedBuffer Received buffer with data.
+         * @return false if matching packet for this buffer was not found (based on ID)
+         * or passed buffer was empty, true if updating packet data was successful.
+         */
+        bool findPacketAndUpdateFromBuffer(const DataBuffer& receivedBuffer);
+
+        /**
+         * @brief Search for packet in the registeredReceivePackets array by packet ID and size.
          * @param packetID ID of packet to be found.
-         * @return Pointer to the previously registered packet of with provided ID,
+         * @param packetSize (optional) Size of packet to be found.
+         * @return  Pointer to the previously registered packet with provided ID and size,
          * or nullptr if such packet was not found.
          */
-        Packet* getRegisterdReceivePacket(Packet::PacketIDType packetID);
+        Packet* getRegisteredReceivePacket(Packet::PacketIDType packetID, size_t packetSize = -1);
+
+        /**
+         * @brief Search for packet in the registeredReceivePackets array (based on ID and size)
+         * that could be updated with this buffer. This method don't modify neither buffer nor packet.
+         * @param buffer Buffer for which we want to have a packet.
+         * @return Pointer to the previously registered packet or nullptr if such packet was not found.
+         */
+        Packet* getRegisteredReceivePacket(const DataBuffer& buffer);
 
 
     private:
