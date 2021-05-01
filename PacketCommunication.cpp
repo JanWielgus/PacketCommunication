@@ -25,7 +25,7 @@ PacketCommunication::~PacketCommunication()
 
 bool PacketCommunication::registerReceivePacket(Packet* receivePacket)
 {
-    if (getRegisterdReceiveDataPacket(receivePacket->getID()) != nullptr)
+    if (getRegisterdReceivePacket(receivePacket->getID()) != nullptr)
         return false;
 
     return registeredReceivePackets.add(receivePacket);
@@ -121,28 +121,3 @@ void PacketCommunication::updateConnectionStability(Percentage receivedPercent)
     // Constrain the value and update filter
     connectionStabilityFilter.update(receivedPercent > 100 ? 100 : receivedPercent);
 }
-
-
-
-
-
-
-/*
-IDataPacket* PacketCommunication::getReceiveDataPacketPointer(uint8_t packetID, size_t packetSize, size_t* indexOutput)
-{
-    for (int i = 0; i < receiveDataPacketsPointers.getSize(); i++)
-    {
-        IDataPacket* currentlyCheckedPacket = receiveDataPacketsPointers[i];
-        if (currentlyCheckedPacket->getPacketID() == packetID &&
-            currentlyCheckedPacket->getPacketSize() == packetSize)
-        {
-            if (indexOutput != nullptr)
-                *indexOutput = i;
-            return currentlyCheckedPacket;
-        }
-    }
-
-    return nullptr;
-}
-
-*/

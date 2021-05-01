@@ -127,20 +127,3 @@ namespace PacketComm
 
 
 #endif
-
-
-
-
-
-        /**
-         * @brief Search for data packet in the receiveDataPacketsPointers array
-         * by packet id and size.
-         * @param packetID ID of packet to be found.
-         * @param packetSize Size of packet to be found.
-         * @param indexOutput (optional) You can add pointer to size_t variable to get also packet index in the array.
-         * If method return nullptr, indexOutput will remain untouched.
-         * @return pointer to one of the data packets in receiveDataPacketsPointers array,
-         * or nullptr if any matching packet was found.
-         */
-        // TODO: refactor this method structure during implementation
-        //Packet* getReceiveDataPacket(uint8_t packetID, size_t packetSize, size_t* indexOutput = nullptr);
