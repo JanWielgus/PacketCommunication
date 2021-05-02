@@ -34,6 +34,12 @@ inline size_t Packet::getSize() const
 }
 
 
+inline Packet::Type Packet::getType() const
+{
+    return packetType;
+}
+
+
 void Packet::setOnReceiveCallback(Callback callback)
 {
     onReceiveCallback = callback;
@@ -80,12 +86,6 @@ Packet::PacketIDType Packet::getIDFromBuffer(const uint8_t* buffer)
         id.byteArray()[i] = buffer[i];
     
     return (PacketIDType)id;
-}
-
-
-inline Packet::Type Packet::getType() const
-{
-    return packetType;
 }
 
 

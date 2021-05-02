@@ -20,7 +20,6 @@ namespace PacketComm
         typedef void (*Callback)();
         typedef uint16_t PacketIDType;
 
-    protected:
         enum class Type
         {
             DATA,
@@ -56,6 +55,11 @@ namespace PacketComm
          * this packet consists of including packet ID).
          */
         size_t getSize() const;
+
+        /**
+         * @return Type of this packet.
+         */
+        Type getType() const;
 
         /**
          * @brief Set action that will be triggered after receiving this packet.
@@ -101,8 +105,6 @@ namespace PacketComm
 
 
     protected:
-        Type getType() const;
-
         /**
          * @brief Fill the outputBuffer with packet's internal data only
          * (data that this packet consists of excluding the PacketID).
