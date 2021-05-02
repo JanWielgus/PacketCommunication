@@ -11,8 +11,8 @@
 using namespace PacketComm;
 
 
-BytePacket::BytePacket(uint16_t packetID)
-    : Packet(packetID)
+BytePacket::BytePacket(uint16_t packetID, Callback callback)
+    : Packet(packetID, Type::DATA, callback)
 {
 }
 

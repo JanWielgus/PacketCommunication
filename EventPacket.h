@@ -25,8 +25,8 @@ namespace PacketComm
     class EventPacket : public Packet
     {
     public:
-        EventPacket(PacketIDType packetID, Callback receivedCallback = nullptr)
-            : Packet(packetID, receivedCallback)
+        explicit EventPacket(PacketIDType packetID, Callback onReceiveCallback = nullptr)
+            : Packet(packetID, Type::EVENT, onReceiveCallback)
         {
         }
 

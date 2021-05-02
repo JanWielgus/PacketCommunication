@@ -11,8 +11,8 @@
 using namespace PacketComm;
 
 
-Packet::Packet(PacketIDType packetID, Callback callback)
-    : PacketID(packetID), receivedCallback(callback)
+Packet::Packet(PacketIDType packetID, Type type, Callback callback)
+    : PacketID(packetID), packetType(type), onReceiveCallback(callback)
 {
 }
 
@@ -34,22 +34,22 @@ inline size_t Packet::getSize() const
 }
 
 
-void Packet::setReceivedCallback(Callback callback)
+void Packet::setOnReceiveCallback(Callback callback)
 {
-    receivedCallback = callback;
+    onReceiveCallback = callback;
 }
 
 
-inline Packet::Callback Packet::getReceivedCallback() const
+inline Packet::Callback Packet::getOnReceiveCallback() const
 {
-    return receivedCallback;
+    return onReceiveCallback;
 }
 
 
-inline void Packet::executeReceivedCallback()
+inline void Packet::executeOnReceiveCallback()
 {
-    if (receivedCallback != nullptr)
-        receivedCallback();
+    if (onReceiveCallback != nullptr)
+        onReceiveCallback();
 }
 
 
@@ -80,6 +80,12 @@ Packet::PacketIDType Packet::getIDFromBuffer(const uint8_t* buffer)
         id.byteArray()[i] = buffer[i];
     
     return (PacketIDType)id;
+}
+
+
+inline Packet::Type Packet::getType() const
+{
+    return packetType;
 }
 
 

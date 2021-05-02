@@ -20,18 +20,27 @@ namespace PacketComm
         typedef void (*Callback)();
         typedef uint16_t PacketIDType;
 
+    protected:
+        enum class Type
+        {
+            DATA,
+            EVENT,
+            //STRING // TODO: implement string data packet
+        };
+
     private:
         const uint16Byte PacketID;
-        Callback receivedCallback;
+        const Type packetType;
+        Callback onReceiveCallback;
 
 
     public:
         /**
          * @param packetID Unique ID for this packet.
-         * @param receivedCallback Optional. Void function that will be called
+         * @param onReceiveCallback Optional. Void function that will be called
          * when this packet will be received.
          */
-        explicit Packet(PacketIDType packetID, Callback receivedCallback = nullptr);
+        explicit Packet(PacketIDType packetID, Type type, Callback onReceiveCallback = nullptr);
         virtual ~Packet();
 
         Packet(const Packet&) = delete;
@@ -52,17 +61,17 @@ namespace PacketComm
          * @brief Set action that will be triggered after receiving this packet.
          * @param callback Void function that will be called after receiving new data.
          */
-        void setReceivedCallback(Callback callback);
+        void setOnReceiveCallback(Callback callback);
 
         /**
          * @return Pointer to the previously set void method, or nullptr if was not set.
          */
-        Callback getReceivedCallback() const; // TODO: is it necessary?
+        Callback getOnReceiveCallback() const; // TODO: is it necessary?
 
         /**
          * @brief Execute received callback. If callback was not set,this method takes no action.
          */
-        void executeReceivedCallback(); // TODO: how to make that method visible only to PacketCommunication without making it a friend class?
+        void executeOnReceiveCallback(); // TODO: how to make that method visible only to PacketCommunication without making it a friend class?
 
 
         /**
@@ -92,6 +101,8 @@ namespace PacketComm
 
 
     protected:
+        Type getType() const;
+
         /**
          * @brief Fill the outputBuffer with packet's internal data only
          * (data that this packet consists of excluding the PacketID).

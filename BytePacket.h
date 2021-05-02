@@ -24,7 +24,7 @@ namespace PacketComm
 
 
     public:
-        BytePacket(uint16_t packetID);
+        explicit BytePacket(uint16_t packetID, Callback onReceiveCallback = nullptr);
 
         void addByteType(IByteType& toAdd);
 
