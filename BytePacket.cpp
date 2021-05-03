@@ -11,8 +11,8 @@
 using namespace PacketComm;
 
 
-BytePacket::BytePacket(uint16_t packetID, Callback callback)
-    : Packet(packetID, Type::DATA, callback)
+BytePacket::BytePacket(uint16_t packetID, Callback callback, bool sequentialFlag)
+    : Packet(packetID, sequentialFlag?Type::SEQUENTIAL_DATA:Type::DATA, callback)
 {
 }
 

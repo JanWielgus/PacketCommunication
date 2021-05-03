@@ -23,6 +23,7 @@ namespace PacketComm
         enum class Type
         {
             DATA,
+            SEQUENTIAL_DATA,
             EVENT,
             //STRING // TODO: implement string data packet
         };
