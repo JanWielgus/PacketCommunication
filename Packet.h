@@ -136,6 +136,39 @@ namespace PacketComm
          */
         bool checkIfIDMatch(const uint8_t* buffer);
     };
+
+
+
+
+    inline Packet::PacketIDType Packet::getID() const
+    {
+        return (PacketIDType)PacketID;
+    }
+
+
+    inline size_t Packet::getSize() const
+    {
+        return PacketID.byteSize() + getDataOnlySize();
+    }
+
+
+    inline Packet::Type Packet::getType() const
+    {
+        return packetType;
+    }
+
+
+    inline Packet::Callback Packet::getOnReceiveCallback() const
+    {
+        return onReceiveCallback;
+    }
+
+
+    inline void Packet::executeOnReceiveCallback()
+    {
+        if (onReceiveCallback != nullptr)
+            onReceiveCallback();
+    }
 }
 
 

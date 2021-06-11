@@ -22,40 +22,9 @@ Packet::~Packet()
 }
 
 
-inline Packet::PacketIDType Packet::getID() const
-{
-    return (PacketIDType)PacketID;
-}
-
-
-inline size_t Packet::getSize() const
-{
-    return PacketID.byteSize() + getDataOnlySize();
-}
-
-
-inline Packet::Type Packet::getType() const
-{
-    return packetType;
-}
-
-
 void Packet::setOnReceiveCallback(Callback callback)
 {
     onReceiveCallback = callback;
-}
-
-
-inline Packet::Callback Packet::getOnReceiveCallback() const
-{
-    return onReceiveCallback;
-}
-
-
-inline void Packet::executeOnReceiveCallback()
-{
-    if (onReceiveCallback != nullptr)
-        onReceiveCallback();
 }
 
 
