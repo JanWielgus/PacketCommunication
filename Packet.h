@@ -17,7 +17,7 @@ namespace PacketComm
     class Packet
     {
     public:
-        typedef void (*Callback)();
+        typedef void (*Callback)(); // void function pointer
         typedef uint16_t PacketIDType;
 
         enum class Type

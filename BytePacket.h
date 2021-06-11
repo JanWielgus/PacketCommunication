@@ -30,8 +30,7 @@ namespace PacketComm
          * @param onReceiveCallback (optional) pointer to void function
          * that will be called each time after receiving this packet.
          * @param sequentialFlag Indicate whether this packet can be updated
-         * several times during one receiving session (if true, decrease latency,
-         * but also could decrease frequency).
+         * several times during one receiving session.
          */
         explicit BytePacket(uint16_t packetID, Callback onReceiveCallback = nullptr, bool sequentialFlag = false);
 
