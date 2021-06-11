@@ -71,7 +71,7 @@ namespace PacketComm
         /**
          * @return Pointer to the previously set void method, or nullptr if was not set.
          */
-        Callback getOnReceiveCallback() const; // TODO: is it necessary?
+        Callback getOnReceiveCallback() const;
 
         /**
          * @brief Execute received callback. If callback was not set,this method takes no action.
