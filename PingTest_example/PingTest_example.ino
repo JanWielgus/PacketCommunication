@@ -32,7 +32,8 @@ class PingRequestPacket : public BytePacket
 public:
     uint32Byte pingRequestCounter = 0;
 
-    PingRequestPacket() : BytePacket(0, pingRequestReceivedCallback)
+    PingRequestPacket()
+        : BytePacket(0, pingRequestReceivedCallback)
     {
         addByteType(pingRequestCounter);
     }
@@ -44,7 +45,8 @@ class PingReplyCounter : public BytePacket
 public:
     uint32Byte pingReplyCounter;
 
-    PingReplyCounter() : BytePacket(1, pingReplyReceivedCallback)
+    PingReplyCounter()
+        : BytePacket(1, pingReplyReceivedCallback)
     {
         addByteType(pingReplyCounter);
     }
