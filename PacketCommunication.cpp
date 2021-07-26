@@ -83,30 +83,35 @@ PacketCommunication::Percentage PacketCommunication::receiveAndUpdatePackets()
         receivedPacketsTotal++;
 
         const DataBuffer receivedBuffer = LowLevelComm->getReceived();
-        if (findPacketAndUpdateFromBuffer(receivedBuffer))
-            successfullyReceivedPackets++;
+
+        Packet* matchingPacket = getRegisteredReceivePacket(receivedBuffer);
+        if (matchingPacket == nullptr)
+            continue;
+
+        switch (matchingPacket->getType())
+        {
+            case Packet::Type::DATA:
+                matchingPacket->updateBuffer(receivedBuffer.buffer); // this method returns bool, but should be always true
+                matchingPacket->executeOnReceiveCallback();
+                break;
+
+            case Packet::Type::EVENT:
+                matchingPacket->executeOnReceiveCallback();
+                break;
+
+            // other types...
+
+            default:
+                continue; // invalid type
+        }
+
+        successfullyReceivedPackets++;
     }
 
     // Assess receiving
     if (receivedPacketsTotal != 0)
         return ((float)successfullyReceivedPackets / receivedPacketsTotal) * 100.f;
     return 0;
-}
-
-
-bool PacketCommunication::findPacketAndUpdateFromBuffer(const DataBuffer& receivedBuffer)
-{
-    if (receivedBuffer.buffer == nullptr || receivedBuffer.size == 0)
-        return false;
-
-    Packet* packetToUpdate = getRegisteredReceivePacket(receivedBuffer);
-    if (packetToUpdate == nullptr)
-        return false;
-
-    packetToUpdate->updateBuffer(receivedBuffer.buffer); // this method returns bool, but should be always true
-    packetToUpdate->executeReceivedCallback();
-
-    return true;
 }
 
 
@@ -117,7 +122,10 @@ Packet* PacketCommunication::getRegisteredReceivePacket(Packet::PacketIDType pac
     {
         Packet* curPacket = registeredReceivePackets[i];
         if (curPacket->getID() == packetID)
+        {
             matchingPacket = curPacket;
+            break;
+        }
     }
 
     if (matchingPacket != nullptr)
