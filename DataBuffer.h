@@ -17,11 +17,9 @@
 namespace PacketComm
 {
 	/**
-	 * @brief This class is used to store buffer pointer and it's used
-	 * size. size variable contain the size of the allocated memory.
+	 * @brief This class is used to store buffer pointer and it's allocated size.
 	 * This class is just a container: it don't make any allocation or
 	 * deallocation inside! buffer is nullptr by default.
-	 * Remember to allocate memory before use.
 	 */
 	class DataBuffer
 	{
@@ -41,12 +39,10 @@ namespace PacketComm
 		}
 		
 		/**
-		 * @brief Shallow comparizon. Two DataBuffers are equal if
-		 * point to the same buffer (have the same pointer) and
-		 * have the same size.
+		 * @brief Shallow comparizon. Two DataBuffers are equal if point to the same buffer
+		 * (have the same pointer) and have the same size.
 		 * @param other DataBuffer to compare.
-		 * @return true if buffers have the same pointer and same size,
-		 * otherwise false.
+		 * @return true if buffers have the same pointer and same size, otherwise false.
 		 */
 		bool operator==(const DataBuffer& other) const
 		{

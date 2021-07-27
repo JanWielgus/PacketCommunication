@@ -16,10 +16,11 @@ namespace PacketComm
 {
     /**
 	 * @brief This class is DataBuffer with built-in dynamic memory allocation.
-	 * Allocated memory size can be change later (using ensureCapacity() method). There is additional variable to
-	 * store used size of the buffer. This enables zero cost buffer size changing.
+	 * Allocated memory size can be changed later (using ensureAllocatedSize() or
+	 * setAllocatedSize() methods). size variable store used size of the buffer
+	 * (real size if inside AllocatedSize variable). This enables zero cost buffer size changing.
 	 * Remember to set size variable (size is 0 by default)!
-	 * If need to use instance of this class as DataBuffer, use toDataBuffer() method.
+	 * Can be used as DataBuffer by using toDataBuffer() method.
 	 */
 	class AutoDataBuffer : private DataBuffer
 	{
@@ -165,30 +166,30 @@ namespace PacketComm
 
         /**
          * @brief Extends size of allocated array if AllocatedSize
-         * is smaller than minCapacity.
-         * @param minCapacity Minimum required size of the allocated buffer.
-         * @param copyData Flag, if true then after allocating new buffer
+         * is smaller than minSize.
+         * @param minSize Minimum required size of the allocated buffer.
+         * @param copyData_flag Flag, if true then after allocating new buffer
          * old data will be copied. Otherwise data could be lost.
          */
-		void ensureCapacity(size_t minCapacity, bool copyData = true)
+		void ensureAllocatedSize(size_t minSize, bool copyData_flag = true)
 		{
-			if (allocatedSize >= minCapacity)
+			if (allocatedSize >= minSize)
 				return;
 
-			uint8_t* newBuffer = new uint8_t[minCapacity];
+			uint8_t* newBuffer = new uint8_t[minSize];
 
-			if (copyData)
+			if (copyData_flag)
 				for (size_t i = 0; i < size; i++)
 					newBuffer[i] = buffer[i];
 
 			delete[] buffer;
 			buffer = newBuffer;
-			allocatedSize = minCapacity;
+			allocatedSize = minSize;
 		}
 
 
 		/**
-		 * @brief Used when need to store DataBuffer type
+		 * @brief Converts instance of AutoDataBuffer to DataBuffer class.
 		 */
 		DataBuffer toDataBuffer()
 		{
