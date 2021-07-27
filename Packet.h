@@ -29,9 +29,11 @@ namespace PacketComm
         };
 
     private:
-        const uint16Byte PacketID;
+        const byteType<PacketIDType> PacketID;
         const Type packetType;
         Callback onReceiveCallback;
+
+        friend class PacketCommunication;
 
 
     public:
@@ -69,19 +71,8 @@ namespace PacketComm
         void setOnReceiveCallback(Callback callback);
 
         /**
-         * @return Pointer to the previously set void method, or nullptr if was not set.
-         */
-        Callback getOnReceiveCallback() const;
-
-        /**
-         * @brief Execute received callback. If callback was not set,this method takes no action.
-         */
-        void executeOnReceiveCallback(); // TODO: how to make that method visible only to PacketCommunication without making it a friend class?
-
-
-        /**
          * @brief Fill the outputBuffer with packet's internal data (includes PacketID).
-         * outputBuffer size have to be at least packet size.
+         * outputBuffer size have to be at least packet size (check it using getSize() method).
          * @param outputBuffer Pointer to the array where data will be stored.
          * @return Size of this packet in bytes (same value that
          * getSize() method would return).
@@ -108,15 +99,15 @@ namespace PacketComm
     protected:
         /**
          * @brief Fill the outputBuffer with packet's internal data only
-         * (data that this packet consists of excluding the PacketID).
+         * (data that this packet consists of EXCLUDING PacketID).
          * @param outputBuffer Pointer to the array where data will be stored.
          * @return Amount of bytes that this packet consists of (excluding ID).
          */
         virtual size_t getDataOnly(uint8_t* outputBuffer) const = 0;
 
         /**
-         * @return Size of this packet in bytes (total amount of bytes that
-         * this packet consists of EXCLUDING packet ID).
+         * @return Size of this packet's data in bytes (total amount of bytes that
+         * this packet consists of EXCLUDING PacketID).
          */
         virtual size_t getDataOnlySize() const = 0;
 
@@ -130,11 +121,18 @@ namespace PacketComm
 
     private:
         /**
-         * @brief Check if beginning of the buffer contains ID of this packet.
-         * @param buffer Buffer which beginning is expected to contain this packet ID.
-         * @return true if buffer contain ID of this packet. False otherwise.
+         * @brief Execute received callback. If callback was not set,this method takes no action.
          */
-        bool checkIfIDMatch(const uint8_t* buffer);
+        void executeOnReceiveCallback();
+
+        /**
+         * @brief Check if buffer contains ID of this packet (and therefore
+         * can be used to update this packet's data).
+         * @param buffer Buffer which is expected to contain this packet ID.
+         * @return true if buffer contain ID of this packet.
+         * False otherwise.
+         */
+        bool checkIfBufferMatch(const uint8_t* buffer);
     };
 
 
@@ -155,12 +153,6 @@ namespace PacketComm
     inline Packet::Type Packet::getType() const
     {
         return packetType;
-    }
-
-
-    inline Packet::Callback Packet::getOnReceiveCallback() const
-    {
-        return onReceiveCallback;
     }
 
 

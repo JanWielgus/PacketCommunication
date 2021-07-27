@@ -31,8 +31,9 @@ void Packet::setOnReceiveCallback(Callback callback)
 size_t Packet::getBuffer(uint8_t* outputBuffer) const
 {
     uint8_t packetIDSize = PacketID.byteSize();
+    const uint8_t* packetIDArray = PacketID.byteArray();
     for (uint8_t i = 0; i < packetIDSize; ++i)
-        outputBuffer[i] = PacketID.byteArray()[i];
+        outputBuffer[i] = packetIDArray[i];
     
     return packetIDSize + getDataOnly(outputBuffer + packetIDSize);
 }
@@ -40,7 +41,7 @@ size_t Packet::getBuffer(uint8_t* outputBuffer) const
 
 bool Packet::updateBuffer(const uint8_t* inputBuffer)
 {
-    if (!checkIfIDMatch(inputBuffer))
+    if (!checkIfBufferMatch(inputBuffer))
         return false;
 
     updateDataOnly(inputBuffer + PacketID.byteSize());
@@ -58,9 +59,9 @@ Packet::PacketIDType Packet::getIDFromBuffer(const uint8_t* buffer)
 }
 
 
-bool Packet::checkIfIDMatch(const uint8_t* buffer)
+bool Packet::checkIfBufferMatch(const uint8_t* buffer)
 {
-    for (uint8_t i = 0; i < PacketID.byteSize(); i++)
+    for (uint8_t i = 0; i < PacketID.byteSize(); ++i)
         if (buffer[i] != PacketID.byteArray()[i])
             return false;
     return true;
