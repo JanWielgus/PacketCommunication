@@ -41,11 +41,11 @@ namespace PacketComm
          * @brief Check if passed buffer checksum is correct.
          * @param buffer pointer to the array of data (only data).
          * @param size size of the array with data (amount of bytes).
-         * @param checksum checksum that that array should have.
+         * @param expectedChecksum checksum that that array should have.
          * @return true if array has the same checksum as checksum in parameter,
          * false otherwise.
          */
-        bool checkChecksum(const uint8_t* buffer, size_t size, uint8_t checksum);
+        bool checkChecksum(const uint8_t* buffer, size_t size, uint8_t expectedChecksum);
 
         /**
          * @brief Calculate the checksum for passed data buffer.
@@ -54,6 +54,32 @@ namespace PacketComm
          * @return checksum for the passed data buffer.
          */
         uint8_t calculateChecksum(const uint8_t* buffer, size_t size);
+
+        /**
+         * @brief Constrains a number to be within a range.
+         * @tparam T Type of constrained value
+         * @return 
+         */
+
+        /**
+         * @brief Constrains a number to be within a range.
+         * @tparam T Type of constrained value
+         * @param value Value to be constrained
+         * @param min Minimum output value.
+         * @param max Maximum output value.
+         * @return value if it is between min and max,
+         * min if value is less than min,
+         * max if value is greater than max.
+         */
+        template <class T>
+        T constrain(T value, T min, T max)
+        {
+            if (value < min)
+                return min;
+            if (value > max)
+                return max;
+            return value;
+        }
     }
 }
 

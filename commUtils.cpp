@@ -25,12 +25,12 @@ bool PacketComm::Utils::copyBuffer(DataBuffer& destination, const DataBuffer& so
 }
 
 
-bool PacketComm::Utils::checkChecksum(const uint8_t* buffer, size_t size, uint8_t checksum)
+bool PacketComm::Utils::checkChecksum(const uint8_t* buffer, size_t size, uint8_t expectedChecksum)
 {
     if (size == 0)
         return false;
     
-    return calculateChecksum(buffer, size) == checksum;
+    return calculateChecksum(buffer, size) == expectedChecksum;
 }
 
 
