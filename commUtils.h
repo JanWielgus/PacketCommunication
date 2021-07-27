@@ -54,32 +54,6 @@ namespace PacketComm
          * @return checksum for the passed data buffer.
          */
         uint8_t calculateChecksum(const uint8_t* buffer, size_t size);
-
-        /**
-         * @brief Constrains a number to be within a range.
-         * @tparam T Type of constrained value
-         * @return 
-         */
-
-        /**
-         * @brief Constrains a number to be within a range.
-         * @tparam T Type of constrained value
-         * @param value Value to be constrained
-         * @param min Minimum output value.
-         * @param max Maximum output value.
-         * @return value if it is between min and max,
-         * min if value is less than min,
-         * max if value is greater than max.
-         */
-        template <class T>
-        T constrain(T value, T min, T max)
-        {
-            if (value < min)
-                return min;
-            if (value > max)
-                return max;
-            return value;
-        }
     }
 }
 
