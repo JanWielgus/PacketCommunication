@@ -18,7 +18,7 @@ namespace PacketComm
 {
     /**
      * @brief Interface for classes that enables transmitting
-     * arrays of bytes (buffers).
+     * uint8_t arrays (buffers).
      */
     class ITransmitter
     {
