@@ -28,7 +28,4 @@ public:
     bool write(uint8_t);
 };
 
-template <class T>
-T constrain(T, T, T);
-
 #endif
