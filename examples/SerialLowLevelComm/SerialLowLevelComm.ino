@@ -1,5 +1,5 @@
 /**
- * @file SerialLowLevelComm_example.ino
+ * @file SerialLowLevelComm.ino
  * @author Jan Wielgus
  * @brief This is example that show how to use only lower level part of this library.
  * Upload the same code on two devices and connect them using software serial

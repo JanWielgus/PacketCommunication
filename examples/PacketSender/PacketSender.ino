@@ -1,5 +1,5 @@
 /**
- * @file PacketSender_example.ino
+ * @file PacketSender.ino
  * @author Jan Wielgus
  * @brief Example sending program of data in form of data packets.
  * Second device have to use ExamplePacketReceiver program.
@@ -8,6 +8,8 @@
  * @date 2020-11-03
  * 
  */
+
+// FIXME: update this example code
 
 
 #include <PacketCommunicationWithQueue.h>

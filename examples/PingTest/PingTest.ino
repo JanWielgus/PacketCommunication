@@ -1,5 +1,5 @@
 /**
- * @file PingTest_example.ino
+ * @file PingTest.ino
  * @author your name (you@domain.com)
  * @brief Test connection between two devices.
  * Upload this code on both devices.
