@@ -45,14 +45,14 @@ void PacketCommunication::adaptConnStabilityToFrequency(float frequency_Hz)
     // Calculated using reglinp function in Excel for this two points
     float interval_us = 1000000.f / frequency_Hz;
     float filterBeta = -7.3e-7 * (float)interval_us + 0.86f;
-    filterBeta = constrain(filterBeta, 0.1f, 0.97f);
+    filterBeta = Utils::constrain(filterBeta, 0.1f, 0.97f);
     connectionStabilityFilter.setFilterBeta(filterBeta);
 }
 
 
 void PacketCommunication::setConnStabilitySmoothness(float smoothness)
 {
-    smoothness = constrain(smoothness, 0.0f, 0.995f);
+    smoothness = Utils::constrain(smoothness, 0.0f, 0.995f);
     connectionStabilityFilter.setFilterBeta(smoothness);
 }
 
@@ -66,8 +66,9 @@ void PacketCommunication::receive()
 
 bool PacketCommunication::send(const Packet* packetToSend)
 {
-    // Make buffer packetSize + 1 (low level comm don't have to make separate bigger buffer to add checksum)
-    sendingBuffer.ensureCapacity(packetToSend->getSize() + 1, false);
+    // Make sending buffer size at least packet to send size + 1.
+    // It saves time because low level comm don't have to make bigger buffer to add checksum.
+    sendingBuffer.ensureAllocatedSize(packetToSend->getSize() + 1, false);
     packetToSend->getBuffer(sendingBuffer.buffer);
     return LowLevelComm->send(sendingBuffer);
 }
@@ -100,6 +101,7 @@ PacketCommunication::Percentage PacketCommunication::receiveAndUpdatePackets()
                 break;
 
             // other types...
+            // TODO: string packet implementation
 
             default:
                 continue; // invalid type
