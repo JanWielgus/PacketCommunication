@@ -73,7 +73,7 @@ namespace PacketComm
         if (buffer == nullptr || size == 0 || size > MaxBufferSize)
             return false;
 
-        uint8_t* bufferWithChecksum = new uint8_t[MaxBufferSize + 1];
+        uint8_t* bufferWithChecksum = new uint8_t[size + 1];
         Utils::copyBuffer(bufferWithChecksum, buffer, size);
         bufferWithChecksum[size] = Utils::calculateChecksum(buffer, size); // add checksum after the last byte
 
@@ -121,18 +121,16 @@ namespace PacketComm
 
             if (data == PacketMarker)
             {
-                decodedDataSize = COBS::decode(receiveBuffer, receiveBufferIndex, decodedData);
-
                 receiveBufferIndex = 0; // reset index in the received data buffer
+
+                decodedDataSize = COBS::decode(receiveBuffer, receiveBufferIndex, decodedData);
 
                 uint8_t checksum = decodedData[decodedDataSize - 1];
                 bool checksumResult = Utils::checkChecksum(decodedData, decodedDataSize - 1, checksum);
-                if (checksumResult)
-                    decodedDataSize--; // 'remove' checksum from the output buffer
-                else
-                    decodedDataSize = 0; // checksum failed, corrupted buffer
+                decodedDataSize = checksumResult ? decodedDataSize-1 : 0; // if passed checksum test then "remove" checksum (decrease size), else buffer is corrupted
 
-                return decodedDataSize == 0 ? false : true;
+                if (decodedDataSize > 0) // Return true if packet has been received
+                    return true;
             }
             else
             {
@@ -147,12 +145,12 @@ namespace PacketComm
                     while (stream->available() && stream->read() != PacketMarker);
                     receiveBufferIndex = 0;
                     decodedDataSize = 0;
-                    return false;
+                    //return false;
                 }
             }
         }
 
-        // No complete buffer was received.
+        // Any complete buffer was received.
         decodedDataSize = 0;
         return false;
     }
