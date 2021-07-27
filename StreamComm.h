@@ -121,9 +121,11 @@ namespace PacketComm
 
             if (data == PacketMarker)
             {
-                receiveBufferIndex = 0; // reset index in the received data buffer
-
                 decodedDataSize = COBS::decode(receiveBuffer, receiveBufferIndex, decodedData);
+                if (decodedDataSize == 0)
+                    continue;
+
+                receiveBufferIndex = 0; // reset index in the received data buffer
 
                 uint8_t checksum = decodedData[decodedDataSize - 1];
                 bool checksumResult = Utils::checkChecksum(decodedData, decodedDataSize - 1, checksum);
