@@ -7,7 +7,7 @@
  * 
  */
 
-#include <BytePacket.h>
+#include <DataPacket.h>
 #include <StreamComm.h>
 #include <PacketCommunication.h>
 #include <SoftwareSerial.h>
