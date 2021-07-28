@@ -4,7 +4,6 @@
  * @brief Test connection between two devices.
  * Upload this code on both devices.
  * @date 2021-06-11
- * 
  */
 
 #include <DataPacket.h>
@@ -81,7 +80,6 @@ void loop()
 
 
 
-
 void sendPingRequest() 
 {
     pingCounter++;
@@ -112,5 +110,3 @@ void pingReplyReceivedCallback()
     Serial.print(ping);
     Serial.println("ms\n");
 }
-
-

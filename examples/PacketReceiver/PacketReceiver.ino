@@ -6,7 +6,6 @@
  * This are only examples but both devices could send and receive
  * data in the same time.
  * @date 2020-11-03
- * 
  */
 
 #include <DataPacket.h>
@@ -19,7 +18,7 @@
 using namespace PacketComm;
 
 const uint16_t MaxBufferSize = 20;
-const float commReceivingFrequency = 10.f;
+const float commReceivingFrequency = 1.f;
 
 void dataReceivedCallback();
 
