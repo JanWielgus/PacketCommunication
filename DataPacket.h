@@ -1,49 +1,49 @@
 /**
  * @file DataPacket.h
  * @author Jan Wielgus
- * @brief Concrete class that implement IDataPacket interface.
- * Can be used to create data packets instances.
- * @date 2020-08-05
- * 
+ * @brief Concrete class that is used to send multiple
+ * variables of different types in form of data packets.
+ * @date 2020-04-22
  */
 
-#ifndef DATAPACKET_H
-#define DATAPACKET_H
+#ifndef BYTEPACKET_H
+#define BYTEPACKET_H
 
-#include "IDataPacket.h"
-#include <IArray.h>
+#include "Packet.h"
+#include <IByteType.h>
+#include <GrowingArray.h>
 
 
-class DataPacket : public IDataPacket
+namespace PacketComm
 {
-private:
-    const uint8_t PacketID;
-    IArray<uint8_t*>* bytePointersArray = nullptr;
-    bool useExternalArray = false; // true if used parametrized constructor (do not delete in destructor)
-    IExecutable* packetReceivedEvent = nullptr;
+    class DataPacket : public Packet
+    {
+        SimpleDataStructures::GrowingArray<IByteType*> byteTypeArray;
+        size_t dataOnlySize = 0;
 
 
-public:
-    DataPacket(uint8_t packetID);
-    /**
-     * @param packetID ID of the packet.
-     * @param arrayPointer Pointer to external instance of IArray type.
-     * Don't forget to delete manually if this array is dynamically allocated.
-     */
-    DataPacket(uint8_t packetID, IArray<uint8_t*>* arrayPointer);
-    virtual ~DataPacket();
+    public:
+        /**
+         * @brief Ctor.
+         * @param packetID Unique ID of the packet.
+         * @param onReceiveCallback (optional) pointer to void function
+         * that will be called each time after receiving this packet.
+         */
+        explicit DataPacket(PacketIDType packetID, Callback onReceiveCallback = nullptr);
 
-    DataPacket(const DataPacket& other) = delete;
-    DataPacket& operator=(const DataPacket& other) = delete;
+        /**
+         * @brief Add next variable to this data packet (add all variables
+         * that this data packet consists on program setup).
+         * @param toAdd Object that extends IByteType
+         */
+        void addVar(IByteType& toAdd);
 
-    void addByteType(IByteType& toAdd) override;
-    uint8_t getPacketID() const override;
-    size_t getPacketSize() const override;
-    uint8_t** getBytePointersArray() override;
-    const uint8_t** getBytePointersArray() const override;
-    void setPacketReceivedEvent(IExecutable& packetReceivedEvent) override;
-    IExecutable* getPacketReceivedEventPtr() const override;
-};
+    protected:
+        size_t getDataOnly(uint8_t* outputBuffer) const override;
+        size_t getDataOnlySize() const override;
+        void updateDataOnly(const uint8_t* inputBuffer) override;
+    };
+}
 
 
 #endif

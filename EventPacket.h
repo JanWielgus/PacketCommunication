@@ -1,66 +1,54 @@
 /**
  * @file EventPacket.h
- * @author Jan Wielgus
+ * @author Jan Wielgus (jan.wielgus12@gmail.com)
  * @brief This is a data packet type that don't contain any data
- * but only a packet received event. Is used to
- * trigger some action on the receiver.
+ * and is used to trigger some action on receiving.
  * @date 2021-01-28
- * 
  */
 
 #ifndef EVENTPACKET_H
 #define EVENTPACKET_H
 
-#include "IDataPacket.h"
+#include "Packet.h"
 
 
-class EventPacket : public IDataPacket
+namespace PacketComm
 {
-    const uint8_t PacketID;
-    IExecutable* packetReceivedEvent = nullptr;
-
-public:
-    EventPacket(uint8_t packetID)
-        : PacketID(packetID)
+    /**
+     * @brief This is a data packet type that don't contain any data
+     * and is used to trigger some action on receiving.
+     */
+    class EventPacket : public Packet
     {
-    }
+    public:
+        /**
+         * @brief Ctor. Creaters EventPacket and sets it's ID and
+         * on receive callback (if don't know yet set nullptr).
+         * @param packetID ID of this packet.
+         * @param onReceiveCallback callback void method.
+         */
+        EventPacket(PacketIDType packetID, Callback onReceiveCallback)
+            : Packet(packetID, Type::EVENT, onReceiveCallback)
+        {
+        }
 
-    uint8_t getPacketID() const override
-    {
-        return PacketID;
-    }
 
-    // always return 0
-    size_t getPacketSize() const override
-    {
-        return 0;
-    }
+    protected:
+        size_t getDataOnly(uint8_t*) const override
+        {
+            return 0;
+        }
 
-    void setPacketReceivedEvent(IExecutable& packetReceivedEvent) override
-    {
-        this->packetReceivedEvent = &packetReceivedEvent;
-    }
+        size_t getDataOnlySize() const override
+        {
+            return 0;
+        }
 
-    IExecutable* getPacketReceivedEventPtr() const override
-    {
-        return packetReceivedEvent;
-    }
-
-    // no effect
-    void addByteType(IByteType& toAdd) override {}
-
-    // always return nullptr
-    uint8_t** getBytePointersArray() override
-    {
-        return nullptr;
-    }
-
-    // always return nullptr
-    const uint8_t** getBytePointersArray() const override
-    {
-        return nullptr;
-    }
-};
+        void updateDataOnly(const uint8_t*) override
+        {
+        }
+    };
+}
 
 
 #endif

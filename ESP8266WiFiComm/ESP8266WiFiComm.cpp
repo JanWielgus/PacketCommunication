@@ -2,10 +2,11 @@
  * @file ESP8266WiFiComm.cpp
  * @author Jan Wielgus
  * @date 2020-12-02
- * 
  */
 
 #include "ESP8266WiFiComm.h"
+
+using namespace PacketComm;
 
 
 ESP8266WiFiComm::ESP8266WiFiComm(uint16_t port, size_t maxPacketSize)
@@ -16,7 +17,7 @@ ESP8266WiFiComm::ESP8266WiFiComm(uint16_t port, size_t maxPacketSize)
 
 bool ESP8266WiFiComm::send(const uint8_t* buffer, size_t size)
 {
-    if (checkIfBeginnedUDP() == false && beginUDP() == false)
+    if (!beginnedUDP() && beginUDP() == false)
         return false;
     
     if (sendAlwaysToLastSender_flag)
@@ -30,9 +31,9 @@ bool ESP8266WiFiComm::send(const uint8_t* buffer, size_t size)
 }
 
 
-bool ESP8266WiFiComm::receiveData()
+bool ESP8266WiFiComm::receive()
 {
-    if (checkIfBeginnedUDP() == false && beginUDP() == false) // FIXME: probably there should be || (or) statement
+    if (!beginnedUDP() && beginUDP() == false)
     {
         receiveBuffer.size = 0;
         return false;
@@ -45,11 +46,11 @@ bool ESP8266WiFiComm::receiveData()
     else
         receiveBuffer.size = 0;
 
-    return receiveBuffer.size == 0 ? false : true;
+    return receiveBuffer.size > 0;
 }
 
 
-DataBuffer ESP8266WiFiComm::getReceivedData()
+DataBuffer ESP8266WiFiComm::getReceived()
 {
     return receiveBuffer.toDataBuffer();
 }
@@ -95,13 +96,6 @@ bool ESP8266WiFiComm::beginUDP()
 
     localIPAddress = WiFi.localIP();
     udp.begin(Port);
-
     updBeginned_flag = true;
     return true;
-}
-
-
-inline bool ESP8266WiFiComm::checkIfBeginnedUDP() const
-{
-    return updBeginned_flag;
 }

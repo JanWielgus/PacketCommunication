@@ -2,73 +2,59 @@
  * @file DataPacket.cpp
  * @author Jan Wielgus
  * @date 2020-08-06
- * 
  */
 
 #include "DataPacket.h"
-#include <GrowingArray.h>
+
+using namespace PacketComm;
 
 
-DataPacket::DataPacket(uint8_t packetID)
-    : PacketID(packetID)
+DataPacket::DataPacket(PacketIDType packetID, Callback callback)
+    : Packet(packetID, Type::DATA, callback)
 {
-    bytePointersArray = new GrowingArray<uint8_t*>(); // default array type
 }
 
 
-DataPacket::DataPacket(uint8_t packetID, IArray<uint8_t*>* arrayPointer)
-    : PacketID(packetID)
+void DataPacket::addVar(IByteType& toAdd)
 {
-    bytePointersArray = arrayPointer;
-    useExternalArray = true;
+    byteTypeArray.add(&toAdd);
+    dataOnlySize += toAdd.byteSize();
 }
 
 
-DataPacket::~DataPacket()
+size_t DataPacket::getDataOnly(uint8_t* outputBuffer) const
 {
-    if (!useExternalArray && bytePointersArray != nullptr)
-        delete bytePointersArray;
+    size_t outputBufferIndex = 0; // at the end, data making up this packet
+    
+    for (size_t i = 0; i < byteTypeArray.size(); ++i)
+    {
+        uint8_t* curByteArray = byteTypeArray.get(i)->byteArray();
+        uint8_t curByteArraySize = byteTypeArray.get(i)->byteSize();
+
+        for (uint8_t byteIndex = 0; byteIndex < curByteArraySize; ++byteIndex)
+            outputBuffer[outputBufferIndex++] = curByteArray[byteIndex];
+    }
+
+    return outputBufferIndex;
 }
 
 
-void DataPacket::addByteType(IByteType& toAdd)
+size_t DataPacket::getDataOnlySize() const
 {
-    for (int i = 0; i < toAdd.byteSize(); i++)
-        bytePointersArray->add(&(toAdd.byteArray()[i]));
+    return dataOnlySize;
 }
 
 
-uint8_t DataPacket::getPacketID() const
+void DataPacket::updateDataOnly(const uint8_t* inputBuffer)
 {
-    return PacketID;
-}
+    size_t inputBufferIndex = 0; // at the end, data making up this packet
+    
+    for (size_t i = 0; i < byteTypeArray.size(); ++i)
+    {
+        uint8_t* curByteArray = byteTypeArray.get(i)->byteArray();
+        uint8_t curByteArraySize = byteTypeArray.get(i)->byteSize();
 
-
-size_t DataPacket::getPacketSize() const
-{
-    return bytePointersArray->getSize();
-}
-
-
-uint8_t** DataPacket::getBytePointersArray()
-{
-    return bytePointersArray->toArray();
-}
-
-
-const uint8_t** DataPacket::getBytePointersArray() const
-{
-    return (const uint8_t**)bytePointersArray->toArray();
-}
-
-
-void DataPacket::setPacketReceivedEvent(IExecutable& packetReceivedEvent)
-{
-    this->packetReceivedEvent = &packetReceivedEvent;
-}
-
-
-IExecutable* DataPacket::getPacketReceivedEventPtr() const
-{
-    return packetReceivedEvent;
+        for (uint8_t byteIndex = 0; byteIndex < curByteArraySize; ++byteIndex)
+            curByteArray[byteIndex] = inputBuffer[inputBufferIndex++];
+    }
 }
