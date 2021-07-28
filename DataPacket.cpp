@@ -1,30 +1,30 @@
 /**
- * @file BytePacket.cpp
+ * @file DataPacket.cpp
  * @author Jan Wielgus
  * @date 2020-08-06
  * 
  */
 
-#include "BytePacket.h"
+#include "DataPacket.h"
 
 
 using namespace PacketComm;
 
 
-BytePacket::BytePacket(uint16_t packetID, Callback callback, bool sequentialFlag)
-    : Packet(packetID, sequentialFlag?Type::SEQUENTIAL_DATA:Type::DATA, callback)
+DataPacket::DataPacket(PacketIDType packetID, Callback callback)
+    : Packet(packetID, Type::DATA, callback)
 {
 }
 
 
-void BytePacket::addByteType(IByteType& toAdd)
+void DataPacket::addVar(IByteType& toAdd)
 {
     byteTypeArray.add(&toAdd);
     dataOnlySize += toAdd.byteSize();
 }
 
 
-size_t BytePacket::getDataOnly(uint8_t* outputBuffer) const
+size_t DataPacket::getDataOnly(uint8_t* outputBuffer) const
 {
     size_t outputBufferIndex = 0; // at the end, data making up this packet
     
@@ -41,13 +41,13 @@ size_t BytePacket::getDataOnly(uint8_t* outputBuffer) const
 }
 
 
-size_t BytePacket::getDataOnlySize() const
+size_t DataPacket::getDataOnlySize() const
 {
     return dataOnlySize;
 }
 
 
-void BytePacket::updateDataOnly(const uint8_t* inputBuffer)
+void DataPacket::updateDataOnly(const uint8_t* inputBuffer)
 {
     size_t inputBufferIndex = 0; // at the end, data making up this packet
     

@@ -1,8 +1,8 @@
 /**
- * @file BytePacket.h
+ * @file DataPacket.h
  * @author Jan Wielgus
- * @brief Concrete class that implement IDataPacket interface.
- * Can be used to create data packets instances.
+ * @brief Concrete class that is used to send multiple
+ * variables of different types in form of data packets.
  * @date 2020-04-22
  * 
  */
@@ -17,7 +17,7 @@
 
 namespace PacketComm
 {
-    class BytePacket : public Packet
+    class DataPacket : public Packet
     {
         SimpleDataStructures::GrowingArray<IByteType*> byteTypeArray;
         size_t dataOnlySize = 0;
@@ -29,12 +29,15 @@ namespace PacketComm
          * @param packetID Unique ID of the packet.
          * @param onReceiveCallback (optional) pointer to void function
          * that will be called each time after receiving this packet.
-         * @param sequentialFlag Indicate whether this packet can be updated
-         * several times during one receiving session.
          */
-        explicit BytePacket(uint16_t packetID, Callback onReceiveCallback = nullptr, bool sequentialFlag = false);
+        explicit DataPacket(PacketIDType packetID, Callback onReceiveCallback = nullptr);
 
-        void addByteType(IByteType& toAdd);
+        /**
+         * @brief Add next variable to this data packet (add all variables
+         * that this data packet consists on program setup).
+         * @param toAdd Object that extends IByteType
+         */
+        void addVar(IByteType& toAdd);
 
     protected:
         size_t getDataOnly(uint8_t* outputBuffer) const override;

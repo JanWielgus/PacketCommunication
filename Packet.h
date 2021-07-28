@@ -14,6 +14,9 @@
 
 namespace PacketComm
 {
+    /**
+     * @brief Base class for all data packets.
+     */
     class Packet
     {
     public:
@@ -23,7 +26,6 @@ namespace PacketComm
         enum class Type
         {
             DATA,
-            SEQUENTIAL_DATA,
             EVENT,
             //STRING // TODO: implement string data packet
         };
