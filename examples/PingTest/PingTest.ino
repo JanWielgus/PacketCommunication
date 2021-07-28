@@ -27,33 +27,32 @@ void pingRequestReceivedCallback();
 void pingReplyReceivedCallback();
 
 SoftwareSerial softSerial(10, 11); // RX, TX
-
 StreamComm<MaxBufferSize> streamComm(&softSerial);
 PacketCommunication comm(&streamComm);
 
 
-class PingRequestPacket : public BytePacket
+class PingRequestPacket : public DataPacket
 {
 public:
     uint32Byte pingRequestCounter = 0;
 
     PingRequestPacket()
-        : BytePacket(0, pingRequestReceivedCallback)
+        : DataPacket(0, pingRequestReceivedCallback)
     {
-        addByteType(pingRequestCounter);
+        addVar(pingRequestCounter);
     }
 } pingRequestPacket;
 
 
-class PingReplyPacket : public BytePacket
+class PingReplyPacket : public DataPacket
 {
 public:
     uint32Byte pingReplyCounter;
 
     PingReplyPacket()
-        : BytePacket(1, pingReplyReceivedCallback)
+        : DataPacket(1, pingReplyReceivedCallback)
     {
-        addByteType(pingReplyCounter);
+        addVar(pingReplyCounter);
     }
 } pingReplyPacket;
 
