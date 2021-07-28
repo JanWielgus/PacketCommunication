@@ -27,7 +27,7 @@ namespace PacketComm
          * @param packetID ID of this packet.
          * @param onReceiveCallback callback void method.
          */
-        EventPacket(PacketIDType packetID, Callback onReceiveCallback = nullptr)
+        explicit EventPacket(PacketIDType packetID, Callback onReceiveCallback = nullptr)
             : Packet(packetID, Type::EVENT, onReceiveCallback)
         {
         }
