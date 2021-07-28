@@ -2,7 +2,6 @@
  * @file utils.cpp
  * @author Jan Wielgus
  * @date 2020-10-29
- * 
  */
 
 #include "commUtils.h"

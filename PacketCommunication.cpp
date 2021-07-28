@@ -2,7 +2,6 @@
  * @file PacketCommunication.cpp
  * @author Jan Wielgus
  * @date 2020-08-18
- * 
  */
 
 #include "PacketCommunication.h"

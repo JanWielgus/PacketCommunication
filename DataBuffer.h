@@ -1,9 +1,7 @@
 /**
  * @file DataBuffer.h
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
- * @brief 
  * @date 2020-05-29
- * 
  */
 
 #ifndef _DATABUFFER_h

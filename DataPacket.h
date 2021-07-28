@@ -4,7 +4,6 @@
  * @brief Concrete class that is used to send multiple
  * variables of different types in form of data packets.
  * @date 2020-04-22
- * 
  */
 
 #ifndef BYTEPACKET_H

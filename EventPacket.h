@@ -2,12 +2,9 @@
  * @file EventPacket.h
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
  * @brief This is a data packet type that don't contain any data
- * but only a packet received event. Is used to
- * trigger some action.
+ * and is used to trigger some action on receiving.
  * @date 2021-01-28
- * 
  */
-
 
 #ifndef EVENTPACKET_H
 #define EVENTPACKET_H

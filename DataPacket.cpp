@@ -2,11 +2,9 @@
  * @file DataPacket.cpp
  * @author Jan Wielgus
  * @date 2020-08-06
- * 
  */
 
 #include "DataPacket.h"
-
 
 using namespace PacketComm;
 

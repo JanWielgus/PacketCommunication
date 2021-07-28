@@ -1,12 +1,11 @@
 /**
  * @file StreamComm.h
  * @author Jan Wielgus
- * @brief Low level communication library for all classes
- * that implement Arduino Stream interface.
- * This library is based on the work of Cristopher Baker PacketSerial library.
+ * @brief Low level communication library for all classes that
+ * extends Arduino Stream class.
+ * This file is based on the work of Cristopher Baker PacketSerial library.
  * https://github.com/bakercp/PacketSerial
  * @date 2020-08-18
- * 
  */
 
 #ifndef STREAMCOMM_H

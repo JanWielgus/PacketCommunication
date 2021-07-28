@@ -1,9 +1,8 @@
 /**
  * @file commUtils.h
  * @author Jan Wielgus
- * @brief Some functions used by several classes.
+ * @brief Some helpful functions.
  * @date 2020-10-29
- * 
  */
 
 #ifndef COMMMUTILS_H

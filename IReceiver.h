@@ -2,9 +2,8 @@
  * @file IReceiver.h
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
  * @brief Interface for classes that enables receiving
- * arrays of bytes (uint8_t).
+ * uint8_t arrays (buffers).
  * @date 2021-04-10
- * 
  */
 
 #ifndef IRECEIVER_H

@@ -1,10 +1,9 @@
 /**
  * @file ITransmitter.h
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
- * @brief Interface for classes that enables transmitting
- * arrays of bytes (buffers).
+ * @brief Interface for classes that enables sending
+ * uint8_t arrays (buffers).
  * @date 2021-04-10
- * 
  */
 
 #ifndef ITRANSMITTER_H
@@ -17,7 +16,7 @@
 namespace PacketComm
 {
     /**
-     * @brief Interface for classes that enables transmitting
+     * @brief Interface for classes that enables sending
      * uint8_t arrays (buffers).
      */
     class ITransmitter
@@ -29,14 +28,14 @@ namespace PacketComm
          * @brief Send data from the buffer with provided size.
          * @param buffer Pointer to the data buffer.
          * @param size Amount of data to send (size of the buffer).
-         * @return false if something went wrong and data were not sent, true otherwise.
+         * @return true if data were sent, false otherewise.
          */
         virtual bool send(const uint8_t* buffer, size_t size) = 0;
 
         /**
          * @brief Send data from provided data buffer.
-         * @param buffer Data buffer with data to send.
-         * @return false if something went wrong and data were not sent, true otherwise.
+         * @param buffer Buffer to send.
+         * @return true if data were sent, false otherewise.
          */
         bool send(const DataBuffer& buffer)
         {
@@ -46,11 +45,11 @@ namespace PacketComm
         /**
          * @brief Send data from provided data buffer.
          * This method could work faster than other send(..) methods
-         * if AllocatedSize will be at least bigger by one than size of the data in buffer
-         * (don't need to copy data to the bigger buffer to add checksum
-         * (faster only for libraries that use checksum)).
+         * if AllocatedSize will be bigger than size of the data in buffer
+         * (some low-level classes have to copy data to bigger buffers
+         * in order to add some information).
          * @param buffer Buffer to send.
-         * @return false if data was not sent for some reason (eg. buffer is nullptr or size is 0)
+         * @return true if data were sent, false otherewise.
          */
         virtual bool send(const AutoDataBuffer& buffer)
         {

@@ -3,7 +3,6 @@
  * @author Jan Wielgus
  * @brief Base class for all data packets.
  * @date 2021-04-22
- * 
  */
 
 #ifndef PACKET_H
@@ -45,7 +44,6 @@ namespace PacketComm
          * when this packet will be received.
          */
         explicit Packet(PacketIDType packetID, Type type, Callback onReceiveCallback = nullptr);
-        virtual ~Packet();
 
         Packet(const Packet&) = delete;
         Packet& operator=(const Packet&) = delete;

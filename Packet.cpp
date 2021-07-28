@@ -2,22 +2,15 @@
  * @file Packet.cpp
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
  * @date 2021-04-26
- * 
  */
 
 #include "Packet.h"
-
 
 using namespace PacketComm;
 
 
 Packet::Packet(PacketIDType packetID, Type type, Callback callback)
     : PacketID(packetID), packetType(type), onReceiveCallback(callback)
-{
-}
-
-
-Packet::~Packet()
 {
 }
 

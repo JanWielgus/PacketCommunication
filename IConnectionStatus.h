@@ -2,7 +2,6 @@
  * @file IConnectionStatus.h
  * @author Jan Wielgus
  * @date 2020-07-30
- * 
  */
 
 #ifndef ICONNECTIONSTATUS_H

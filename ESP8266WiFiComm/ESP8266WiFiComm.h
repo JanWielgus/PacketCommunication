@@ -3,7 +3,6 @@
  * @author Jan Wielgus
  * @brief WiFi communication using ESP8266.
  * @date 2020-12-02
- * 
  */
 
 #ifndef ESP8266WIFICOMM_H

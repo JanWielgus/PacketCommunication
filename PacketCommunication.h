@@ -3,7 +3,6 @@
  * @author Jan Wielgus
  * @brief Abstract base class for all packet communication concrete classes.
  * @date 2020-08-18
- * 
  */
 
 #ifndef PACKETCOMMUNICATION_H

@@ -1,9 +1,7 @@
 /**
  * @file AutoDataBuffer.h
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
- * @brief 
  * @date 2021-04-24
- * 
  */
 
 #ifndef AUTODATABUFFER_H

@@ -2,7 +2,6 @@
  * @file ESP8266WiFiComm.cpp
  * @author Jan Wielgus
  * @date 2020-12-02
- * 
  */
 
 #include "ESP8266WiFiComm.h"
