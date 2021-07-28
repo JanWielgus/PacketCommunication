@@ -9,9 +9,6 @@
  * 
  */
 
-// FIXME: update this example code
-
-
 #include <DataPacket.h>
 #include <StreamComm.h>
 #include <PacketCommunication.h>
