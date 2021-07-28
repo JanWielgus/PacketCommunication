@@ -11,7 +11,6 @@
 #include <StreamComm.h>
 #include <PacketCommunication.h>
 #include <SoftwareSerial.h>
-#include <SimpleTasker.h>
 #include <byteType.h>
 
 using namespace PacketComm;
@@ -21,10 +20,16 @@ const float PingInterval_s = 2;
 
 uint32_t pingRequestTime_us;
 uint32_t pingCounter = 0;
+uint32_t nextPingRequestTime_ms = 0;
 
-
+void sendPingRequest();
 void pingRequestReceivedCallback();
 void pingReplyReceivedCallback();
+
+SoftwareSerial softSerial(10, 11); // RX, TX
+
+StreamComm<MaxBufferSize> streamComm(&softSerial);
+PacketCommunication comm(&streamComm);
 
 
 class PingRequestPacket : public BytePacket
@@ -40,43 +45,17 @@ public:
 } pingRequestPacket;
 
 
-class PingReplyCounter : public BytePacket
+class PingReplyPacket : public BytePacket
 {
 public:
     uint32Byte pingReplyCounter;
 
-    PingReplyCounter()
+    PingReplyPacket()
         : BytePacket(1, pingReplyReceivedCallback)
     {
         addByteType(pingReplyCounter);
     }
 } pingReplyPacket;
-
-
-
-SoftwareSerial softSerial(10, 11); // RX, TX
-
-StreamComm<MaxBufferSize> streamComm(&softSerial);
-PacketCommunication comm(&streamComm);
-
-SimpleTasker tasker(5);
-
-
-class : public Task
-{
-    void execute() override
-    {
-        pingCounter++;
-        Serial.print("Sending ping request ");
-        Serial.print(pingCounter);
-        Serial.println("...");
-
-        pingRequestTime_us = micros();
-
-        pingRequestPacket.pingRequestCounter = pingCounter;
-        comm.send(&pingRequestPacket);
-    }
-} pingRequestTask;
 
 
 
@@ -89,20 +68,33 @@ void setup()
 
     comm.registerReceivePacket(&pingRequestPacket);
     comm.registerReceivePacket(&pingReplyPacket);
-
-    tasker.addTask(&pingRequestTask, 1.f / PingInterval_s);
-    // communication instance is not added to tasker, because it have to run
-    // as fast as possible (it's execute method is directly called in loop())
 }
 
 
 void loop()
 {
-    tasker.loop();
-    comm.receive();
+    while (millis() < nextPingRequestTime_ms) // Wait for ping reply between next ping requests
+        comm.receive();
+    
+    sendPingRequest();
+    nextPingRequestTime_ms += PingInterval_s * 1000.f;
 }
 
 
+
+
+void sendPingRequest() 
+{
+    pingCounter++;
+    Serial.print("Sending ping request ");
+    Serial.print(pingCounter);
+    Serial.println("...");
+
+    pingRequestTime_us = micros();
+
+    pingRequestPacket.pingRequestCounter = pingCounter;
+    comm.send(&pingRequestPacket);
+}
 
 
 void pingRequestReceivedCallback()
@@ -119,7 +111,7 @@ void pingReplyReceivedCallback()
     Serial.print(pingReplyPacket.pingReplyCounter);
     Serial.print(". Ping: ");
     Serial.print(ping);
-    Serial.println("ms");
+    Serial.println("ms\n");
 }
 
 
