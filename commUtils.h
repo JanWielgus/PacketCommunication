@@ -25,7 +25,12 @@ namespace PacketComm
          * @param source Pointer to the source array.
          * @param size Amount of bytes to copy.
          */
-        void copyBuffer(uint8_t* destination, const uint8_t* source, size_t size);
+        inline void copyBuffer(uint8_t* destination, const uint8_t* source, size_t size)
+        {
+            for (size_t i = 0; i < size; i++)
+                destination[i] = source[i];
+        }
+
 
         /**
          * @brief Copy contents of source buffer to the destination buffer.
@@ -34,7 +39,31 @@ namespace PacketComm
          * @param source Data will be copied from this buffer.
          * @return false if buffers are not the same size, true otherwise.
          */
-        bool copyBuffer(DataBuffer& destination, const DataBuffer& source);
+        inline bool copyBuffer(DataBuffer& destination, const DataBuffer& source)
+        {
+            if (source.size != destination.size)
+                return false;
+
+            copyBuffer(destination.buffer, source.buffer, source.size);
+            return true;
+        }
+
+
+        /**
+         * @brief Calculate the checksum for passed data buffer.
+         * @param buffer pointer to the array with data (only data).
+         * @param size size of the array with data.
+         * @return checksum for the passed data buffer.
+         */
+        inline uint8_t calculateChecksum(const uint8_t* buffer, size_t size)
+        {
+            uint8_t checksum = buffer[0];
+            for (size_t i = 1; i < size; i++)
+                checksum ^= buffer[i]; // xor'owanie kolejnych bajtow
+            
+            return checksum;
+        }
+        
 
         /**
          * @brief Check if passed buffer checksum is correct.
@@ -44,15 +73,13 @@ namespace PacketComm
          * @return true if array has the same checksum as checksum in parameter,
          * false otherwise.
          */
-        bool checkChecksum(const uint8_t* buffer, size_t size, uint8_t expectedChecksum);
-
-        /**
-         * @brief Calculate the checksum for passed data buffer.
-         * @param buffer pointer to the array with data (only data).
-         * @param size size of the array with data.
-         * @return checksum for the passed data buffer.
-         */
-        uint8_t calculateChecksum(const uint8_t* buffer, size_t size);
+        inline bool checkChecksum(const uint8_t* buffer, size_t size, uint8_t expectedChecksum)
+        {
+            if (size == 0)
+                return false;
+            
+            return calculateChecksum(buffer, size) == expectedChecksum;
+        }
     }
 }
 
