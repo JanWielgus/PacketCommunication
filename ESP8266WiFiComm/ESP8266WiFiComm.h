@@ -38,7 +38,7 @@ namespace PacketComm
 
         bool send(const uint8_t* buffer, size_t size) override;
         bool receive() override;
-        DataBuffer getReceived() override;
+        const DataBuffer getReceived() override;
 
         /**
          * @brief Set the IP address that all next packets will be send to.

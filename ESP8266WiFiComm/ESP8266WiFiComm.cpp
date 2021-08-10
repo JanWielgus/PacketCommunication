@@ -50,7 +50,7 @@ bool ESP8266WiFiComm::receive()
 }
 
 
-DataBuffer ESP8266WiFiComm::getReceived()
+const DataBuffer ESP8266WiFiComm::getReceived()
 {
     return receiveBuffer.toDataBuffer();
 }
