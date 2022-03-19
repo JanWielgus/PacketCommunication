@@ -8,6 +8,8 @@
 #ifndef ESP8266WIFICOMM_H
 #define ESP8266WIFICOMM_H
 
+#ifdef ESP8266
+
 #include "ITransceiver.h"
 #include "DataBuffer.h"
 #include "AutoDataBuffer.h"
@@ -95,4 +97,6 @@ namespace PacketComm
 }
 
 
-#endif
+#endif // ESP8266
+
+#endif // ESP8266WIFICOMM_H

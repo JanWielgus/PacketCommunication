@@ -4,6 +4,8 @@
  * @date 2020-12-02
  */
 
+#ifdef ESP8266
+
 #include "ESP8266WiFiComm.h"
 
 using namespace PacketComm;
@@ -99,3 +101,5 @@ bool ESP8266WiFiComm::beginUDP()
     updBeginned_flag = true;
     return true;
 }
+
+#endif // ESP8266
