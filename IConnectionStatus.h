@@ -7,7 +7,7 @@
 #ifndef ICONNECTIONSTATUS_H
 #define ICONNECTIONSTATUS_H
 
-#include <cstdint>
+#include <stdint.h>
 
 
 namespace PacketComm

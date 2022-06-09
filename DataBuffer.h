@@ -7,7 +7,8 @@
 #ifndef _DATABUFFER_h
 #define _DATABUFFER_h
 
-#include <cstddef>
+#include <stddef.h>
+#include <string.h>
 
 
 namespace PacketComm
@@ -42,6 +43,22 @@ namespace PacketComm
 		bool operator==(const DataBuffer& other) const
 		{
 			return buffer == other.buffer && size == other.size;
+		}
+
+		/**
+         * @brief Copy contents of source buffer to the destination buffer.
+         * Buffers have to have the same size!
+         * @param destination Data will be copied to this buffer.
+         * @param source Data will be copied from this buffer.
+         * @return true if buffers have the same size, false otherwise.
+         */
+		static bool copy(DataBuffer& destination, const DataBuffer& source)
+		{
+			if (source.size != destination.size)
+                return false;
+
+            memcpy(destination.buffer, source.buffer, source.size);
+            return true;
 		}
 	};
 

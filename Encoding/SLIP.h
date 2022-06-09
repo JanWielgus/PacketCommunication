@@ -32,8 +32,8 @@
 
 #pragma once
 
-#include <cstdint>
-#include <cstddef>
+#include <stdint.h>
+#include <stddef.h>
 
 
 /// \brief A Serial Line IP (SLIP) Encoder.
