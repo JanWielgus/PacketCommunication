@@ -20,7 +20,7 @@ namespace PacketComm
 	class DataBuffer
 	{
 	public:
-		uint8_t *buffer;
+		uint8_t* buffer;
 		size_t size;
 
 		DataBuffer()
@@ -39,7 +39,7 @@ namespace PacketComm
 		 * @param other DataBuffer to compare.
 		 * @return true if buffers have the same pointer and same size, otherwise false.
 		 */
-		bool operator==(const DataBuffer &other) const
+		bool operator==(const DataBuffer& other) const
 		{
 			return buffer == other.buffer && size == other.size;
 		}
@@ -51,7 +51,7 @@ namespace PacketComm
 		 * @param source Data will be copied from this buffer.
 		 * @return true if buffers have the same size, false otherwise.
 		 */
-		static bool copy(DataBuffer &destination, const DataBuffer &source)
+		static bool copy(DataBuffer& destination, const DataBuffer& source)
 		{
 			if (source.size != destination.size)
 				return false;
@@ -76,7 +76,7 @@ namespace PacketComm
 	public:
 		using DataBuffer::buffer;
 		using DataBuffer::size;		 // amount of used bytes in the array, can be changed (at most allocatedSize)
-		const size_t &AllocatedSize; // read-only public getter of the allocated size
+		const size_t& AllocatedSize; // read-only public getter of the allocated size
 
 		/**
 		 * @brief Ctor. Creates new buffer with size = 0 and
@@ -96,7 +96,7 @@ namespace PacketComm
 		 * only data indicated by size.
 		 * @param other Reference to AutoDataBuffer to be copied.
 		 */
-		AutoDataBuffer(const AutoDataBuffer &other)
+		AutoDataBuffer(const AutoDataBuffer& other)
 			: AllocatedSize(allocatedSize)
 		{
 			buffer = new uint8_t[other.allocatedSize];
@@ -111,7 +111,7 @@ namespace PacketComm
 		/**
 		 * @brief Moving ctor.
 		 */
-		AutoDataBuffer(AutoDataBuffer &&toMove) noexcept
+		AutoDataBuffer(AutoDataBuffer&& toMove) noexcept
 			: AllocatedSize(allocatedSize)
 		{
 			buffer = toMove.buffer;
@@ -135,7 +135,7 @@ namespace PacketComm
 		 * @param other Reference to AutoData buffer to be assigned.
 		 * @return Refernce to this object.
 		 */
-		AutoDataBuffer &operator=(const AutoDataBuffer &other)
+		AutoDataBuffer& operator=(const AutoDataBuffer& other)
 		{
 			if (this != &other)
 			{
@@ -158,7 +158,7 @@ namespace PacketComm
 		/**
 		 * @brief Moving assignment operator.
 		 */
-		AutoDataBuffer &operator=(AutoDataBuffer &&toMove) noexcept
+		AutoDataBuffer& operator=(AutoDataBuffer&& toMove) noexcept
 		{
 			if (this != &toMove)
 			{
@@ -215,7 +215,7 @@ namespace PacketComm
 			if (allocatedSize >= minSize)
 				return;
 
-			uint8_t *newBuffer = new uint8_t[minSize];
+			uint8_t* newBuffer = new uint8_t[minSize];
 
 			if (copyData_flag)
 				for (size_t i = 0; i < size; i++)
