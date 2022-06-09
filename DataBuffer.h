@@ -10,7 +10,6 @@
 #include <stddef.h>
 #include <string.h>
 
-
 namespace PacketComm
 {
 	/**
@@ -21,7 +20,7 @@ namespace PacketComm
 	class DataBuffer
 	{
 	public:
-		uint8_t* buffer;
+		uint8_t *buffer;
 		size_t size;
 
 		DataBuffer()
@@ -29,41 +28,38 @@ namespace PacketComm
 		{
 		}
 
-		DataBuffer(uint8_t* _buffer, size_t _size)
+		DataBuffer(uint8_t *_buffer, size_t _size)
 			: buffer(_buffer), size(_size)
 		{
 		}
-		
+
 		/**
 		 * @brief Shallow comparizon. Two DataBuffers are equal if point to the same buffer
 		 * (have the same pointer) and have the same size.
 		 * @param other DataBuffer to compare.
 		 * @return true if buffers have the same pointer and same size, otherwise false.
 		 */
-		bool operator==(const DataBuffer& other) const
+		bool operator==(const DataBuffer &other) const
 		{
 			return buffer == other.buffer && size == other.size;
 		}
 
 		/**
-         * @brief Copy contents of source buffer to the destination buffer.
-         * Buffers have to have the same size!
-         * @param destination Data will be copied to this buffer.
-         * @param source Data will be copied from this buffer.
-         * @return true if buffers have the same size, false otherwise.
-         */
-		static bool copy(DataBuffer& destination, const DataBuffer& source)
+		 * @brief Copy contents of source buffer to the destination buffer.
+		 * Buffers have to have the same size!
+		 * @param destination Data will be copied to this buffer.
+		 * @param source Data will be copied from this buffer.
+		 * @return true if buffers have the same size, false otherwise.
+		 */
+		static bool copy(DataBuffer &destination, const DataBuffer &source)
 		{
 			if (source.size != destination.size)
-                return false;
+				return false;
 
-            memcpy(destination.buffer, source.buffer, source.size);
-            return true;
+			memcpy(destination.buffer, source.buffer, source.size);
+			return true;
 		}
 	};
-
-
-
 
 	/**
 	 * @brief This class is DataBuffer with built-in dynamic memory allocation.
@@ -79,43 +75,43 @@ namespace PacketComm
 
 	public:
 		using DataBuffer::buffer;
-		using DataBuffer::size; // amount of used bytes in the array, can be changed (at most allocatedSize)
-		const size_t& AllocatedSize; // read-only public getter of the allocated size
+		using DataBuffer::size;		 // amount of used bytes in the array, can be changed (at most allocatedSize)
+		const size_t &AllocatedSize; // read-only public getter of the allocated size
 
-        /**
-         * @brief Ctor. Creates new buffer with size = 0 and
-         * AllocatedSize = bytesToAllocate.
-         * @param bytesToAllocate Size of the allocated memory.
-         */
+		/**
+		 * @brief Ctor. Creates new buffer with size = 0 and
+		 * AllocatedSize = bytesToAllocate.
+		 * @param bytesToAllocate Size of the allocated memory.
+		 */
 		explicit AutoDataBuffer(size_t bytesToAllocate)
 			: AllocatedSize(allocatedSize)
 		{
-            buffer = new uint8_t[bytesToAllocate];
-            allocatedSize = bytesToAllocate;
+			buffer = new uint8_t[bytesToAllocate];
+			allocatedSize = bytesToAllocate;
 			size = 0;
 		}
 
-        /**
-         * @brief Copy ctor. Allocate buffer of the same size as other and copy
-         * only data indicated by size.
-         * @param other Reference to AutoDataBuffer to be copied.
-         */
-		AutoDataBuffer(const AutoDataBuffer& other)
+		/**
+		 * @brief Copy ctor. Allocate buffer of the same size as other and copy
+		 * only data indicated by size.
+		 * @param other Reference to AutoDataBuffer to be copied.
+		 */
+		AutoDataBuffer(const AutoDataBuffer &other)
 			: AllocatedSize(allocatedSize)
 		{
 			buffer = new uint8_t[other.allocatedSize];
-            allocatedSize = other.allocatedSize;
+			allocatedSize = other.allocatedSize;
 
 			for (size_t i = 0; i < other.size; i++) // copy only used part
 				buffer[i] = other.buffer[i];
-			
+
 			size = other.size;
 		}
 
-        /**
-         * @brief Moving ctor.
-         */
-		AutoDataBuffer(AutoDataBuffer&& toMove) noexcept
+		/**
+		 * @brief Moving ctor.
+		 */
+		AutoDataBuffer(AutoDataBuffer &&toMove) noexcept
 			: AllocatedSize(allocatedSize)
 		{
 			buffer = toMove.buffer;
@@ -132,37 +128,37 @@ namespace PacketComm
 			delete[] buffer;
 		}
 
-        /**
-         * @brief Assignment operator. Deletes current allocated buffer.
-         * Then allocate buffer of the same size as other and copy only
-         * data indicated by size.
-         * @param other Reference to AutoData buffer to be assigned.
-         * @return Refernce to this object.
-         */
-		AutoDataBuffer& operator=(const AutoDataBuffer& other)
+		/**
+		 * @brief Assignment operator. Deletes current allocated buffer.
+		 * Then allocate buffer of the same size as other and copy only
+		 * data indicated by size.
+		 * @param other Reference to AutoData buffer to be assigned.
+		 * @return Refernce to this object.
+		 */
+		AutoDataBuffer &operator=(const AutoDataBuffer &other)
 		{
-            if (this != &other)
-            {
-                if (allocatedSize != other.allocatedSize)
-                {
-                    delete[] buffer;
-                    buffer = new uint8_t[other.allocatedSize];
-                    allocatedSize = other.allocatedSize;
-                }
+			if (this != &other)
+			{
+				if (allocatedSize != other.allocatedSize)
+				{
+					delete[] buffer;
+					buffer = new uint8_t[other.allocatedSize];
+					allocatedSize = other.allocatedSize;
+				}
 
-                for (size_t i = 0; i < other.size; i++)
-                    buffer[i] = other.buffer[i];
+				for (size_t i = 0; i < other.size; i++)
+					buffer[i] = other.buffer[i];
 
-                size = other.size;
-            }
+				size = other.size;
+			}
 
 			return *this;
 		}
 
-        /**
-         * @brief Moving assignment operator.
-         */
-		AutoDataBuffer& operator=(AutoDataBuffer&& toMove) noexcept
+		/**
+		 * @brief Moving assignment operator.
+		 */
+		AutoDataBuffer &operator=(AutoDataBuffer &&toMove) noexcept
 		{
 			if (this != &toMove)
 			{
@@ -180,46 +176,46 @@ namespace PacketComm
 			return *this;
 		}
 
-        /**
-         * @brief Sets the exact size of the allocated memory.
-         * Do not copy old buffer.
-         * @param newAllocatedSize New size of the allocated memory.
-         * If 0 then buffer is nullptr.
-         */
-        void setAllocatedSize(size_t newAllocatedSize)
-        {
-            if (allocatedSize == newAllocatedSize)
-                return;
+		/**
+		 * @brief Sets the exact size of the allocated memory.
+		 * Do not copy old buffer.
+		 * @param newAllocatedSize New size of the allocated memory.
+		 * If 0 then buffer is nullptr.
+		 */
+		void setAllocatedSize(size_t newAllocatedSize)
+		{
+			if (allocatedSize == newAllocatedSize)
+				return;
 
-            delete[] buffer;
+			delete[] buffer;
 
-            if (newAllocatedSize == 0)
-            {
-                buffer = nullptr;
-                size = 0;
-                allocatedSize = 0;
-            }
-            else
-            {
-                buffer = new uint8_t[newAllocatedSize];
-                size = size > newAllocatedSize ? 0 : size;
+			if (newAllocatedSize == 0)
+			{
+				buffer = nullptr;
+				size = 0;
+				allocatedSize = 0;
+			}
+			else
+			{
+				buffer = new uint8_t[newAllocatedSize];
+				size = size > newAllocatedSize ? 0 : size;
 				allocatedSize = newAllocatedSize;
-            }
-        }
+			}
+		}
 
-        /**
-         * @brief Extends size of allocated array if AllocatedSize
-         * is smaller than minSize.
-         * @param minSize Minimum required size of the allocated buffer.
-         * @param copyData_flag Flag, if true then after allocating new buffer
-         * old data will be copied. Otherwise data could be lost.
-         */
+		/**
+		 * @brief Extends size of allocated array if AllocatedSize
+		 * is smaller than minSize.
+		 * @param minSize Minimum required size of the allocated buffer.
+		 * @param copyData_flag Flag, if true then after allocating new buffer
+		 * old data will be copied. Otherwise data could be lost.
+		 */
 		void ensureAllocatedSize(size_t minSize, bool copyData_flag = true)
 		{
 			if (allocatedSize >= minSize)
 				return;
 
-			uint8_t* newBuffer = new uint8_t[minSize];
+			uint8_t *newBuffer = new uint8_t[minSize];
 
 			if (copyData_flag)
 				for (size_t i = 0; i < size; i++)
@@ -239,6 +235,5 @@ namespace PacketComm
 		}
 	};
 }
-
 
 #endif
