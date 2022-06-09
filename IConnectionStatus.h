@@ -7,9 +7,7 @@
 #ifndef ICONNECTIONSTATUS_H
 #define ICONNECTIONSTATUS_H
 
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
+#include <stdint.h>
 
 
 namespace PacketComm

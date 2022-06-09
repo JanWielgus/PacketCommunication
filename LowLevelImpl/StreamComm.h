@@ -13,9 +13,9 @@
 
 #include "ITransceiver.h"
 #include "DataBuffer.h"
-#include "AutoDataBuffer.h"
 #include "Encoding/COBS.h" // SLIP.h is alternative
-#include "commUtils.h"
+#include <Arduino.h>
+#include <string.h>
 
 
 namespace PacketComm
@@ -51,6 +51,38 @@ namespace PacketComm
         bool send(const AutoDataBuffer& buffer) override;
         bool receive() override;
         const DataBuffer getReceived() override;
+
+    private:
+        /**
+         * @brief Calculate the checksum for passed data buffer.
+         * @param buffer pointer to the array with data (only data).
+         * @param size size of the array with data.
+         * @return checksum for the passed data buffer.
+         */
+        uint8_t calculateChecksum(const uint8_t* buffer, size_t size)
+        {
+            uint8_t checksum = buffer[0];
+            for (size_t i = 1; i < size; i++)
+                checksum ^= buffer[i]; // xor'owanie kolejnych bajtow
+            
+            return checksum;
+        }
+
+        /**
+         * @brief Check if passed buffer checksum is correct.
+         * @param buffer pointer to the array of data (only data).
+         * @param size size of the array with data (amount of bytes).
+         * @param expectedChecksum checksum that that array should have.
+         * @return true if array has the same checksum as checksum in parameter,
+         * false otherwise.
+         */
+        bool checkChecksum(const uint8_t* buffer, size_t size, uint8_t expectedChecksum)
+        {
+            if (size == 0)
+                return false;
+            
+            return calculateChecksum(buffer, size) == expectedChecksum;
+        }
     };
 
 
@@ -73,8 +105,8 @@ namespace PacketComm
             return false;
 
         uint8_t* bufferWithChecksum = new uint8_t[size + 1];
-        Utils::copyBuffer(bufferWithChecksum, buffer, size);
-        bufferWithChecksum[size] = Utils::calculateChecksum(buffer, size); // add checksum after the last byte
+        memcpy(bufferWithChecksum, buffer, size);
+        bufferWithChecksum[size] = calculateChecksum(buffer, size); // add checksum after the last byte
 
         size_t numEncoded = COBS::encode(bufferWithChecksum, size + 1, encodeBuffer);
 
@@ -100,7 +132,7 @@ namespace PacketComm
             return false;
         
         // add checksum after the last byte
-        buffer.buffer[buffer.size] = Utils::calculateChecksum(buffer.buffer, buffer.size);
+        buffer.buffer[buffer.size] = calculateChecksum(buffer.buffer, buffer.size);
 
         size_t numEncoded = COBS::encode(buffer.buffer, buffer.size + 1, encodeBuffer);
 
@@ -127,7 +159,7 @@ namespace PacketComm
                 receiveBufferIndex = 0; // reset index in the received data buffer
 
                 uint8_t checksum = decodedData[decodedDataSize - 1];
-                bool checksumResult = Utils::checkChecksum(decodedData, decodedDataSize - 1, checksum);
+                bool checksumResult = checkChecksum(decodedData, decodedDataSize - 1, checksum);
                 decodedDataSize = checksumResult ? decodedDataSize-1 : 0; // if passed checksum test then "remove" checksum (decrease size), else buffer is corrupted
 
                 if (decodedDataSize > 0) // Return true if packet has been received

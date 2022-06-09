@@ -5,7 +5,6 @@
  */
 
 #include "PacketCommunication.h"
-#include "commUtils.h"
 
 using namespace PacketComm;
 
