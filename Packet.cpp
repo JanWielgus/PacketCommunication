@@ -23,7 +23,7 @@ void Packet::setOnReceiveCallback(Callback callback)
 
 size_t Packet::getBuffer(uint8_t* outputBuffer) const
 {
-    // MSB is first
+    // MSB is first (Big-endian)
     PacketIDType id = PacketID;
     // copy byte by byte from last to first
     for (uint8_t i = sizeof(PacketIDType) - 1; i >= 0; --i)
@@ -48,7 +48,7 @@ bool Packet::updateBuffer(const uint8_t* inputBuffer)
 
 Packet::PacketIDType Packet::getIDFromBuffer(const uint8_t* buffer)
 {
-    // MSB is first
+    // MSB is first (Big-endian)
     PacketIDType id = 0;
     for (uint8_t i = 0; i < sizeof(PacketIDType); ++i)
     {
