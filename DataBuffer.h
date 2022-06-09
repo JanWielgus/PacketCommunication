@@ -28,7 +28,7 @@ namespace PacketComm
 		{
 		}
 
-		DataBuffer(uint8_t *_buffer, size_t _size)
+		DataBuffer(uint8_t* _buffer, size_t _size)
 			: buffer(_buffer), size(_size)
 		{
 		}
