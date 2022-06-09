@@ -13,9 +13,9 @@
 
 #include "ITransceiver.h"
 #include "DataBuffer.h"
-#include "AutoDataBuffer.h"
 #include "Encoding/COBS.h" // SLIP.h is alternative
 #include "commUtils.h"
+#include <Arduino.h>
 
 
 namespace PacketComm

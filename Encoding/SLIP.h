@@ -32,8 +32,8 @@
 
 #pragma once
 
-
-#include "Arduino.h"
+#include <cstdint>
+#include <cstddef>
 
 
 /// \brief A Serial Line IP (SLIP) Encoder.

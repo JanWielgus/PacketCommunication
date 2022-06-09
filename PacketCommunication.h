@@ -11,7 +11,7 @@
 #include "IConnectionStatus.h"
 #include "ITransceiver.h"
 #include "Packet.h"
-#include "AutoDataBuffer.h"
+#include "DataBuffer.h"
 #include <EVAFilter.h>
 #include <GrowingArray.h>
 
