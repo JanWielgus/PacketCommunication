@@ -8,7 +8,8 @@
 #ifndef PACKET_H
 #define PACKET_H
 
-#include <byteType.h>
+#include <stdint.h>
+#include <stddef.h>
 
 
 namespace PacketComm
@@ -30,7 +31,7 @@ namespace PacketComm
         };
 
     private:
-        const byteType<PacketIDType> PacketID;
+        const PacketIDType PacketID;
         const Type packetType;
         Callback onReceiveCallback;
 
@@ -146,7 +147,7 @@ namespace PacketComm
 
     inline size_t Packet::getSize() const
     {
-        return PacketID.byteSize() + getDataOnlySize();
+        return sizeof(PacketIDType) + getDataOnlySize();
     }
 
 
@@ -160,6 +161,12 @@ namespace PacketComm
     {
         if (onReceiveCallback != nullptr)
             onReceiveCallback();
+    }
+
+
+    inline bool Packet::checkIfBufferMatch(const uint8_t* buffer)
+    {
+        return getIDFromBuffer(buffer) == PacketID;
     }
 }
 
