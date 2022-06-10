@@ -23,39 +23,37 @@ void Packet::setOnReceiveCallback(Callback callback)
 
 size_t Packet::getBuffer(uint8_t* outputBuffer) const
 {
-    uint8_t packetIDSize = PacketID.byteSize();
-    const uint8_t* packetIDArray = PacketID.byteArray();
-    for (uint8_t i = 0; i < packetIDSize; ++i)
-        outputBuffer[i] = packetIDArray[i];
-    
-    return packetIDSize + getDataOnly(outputBuffer + packetIDSize);
+    // MSB is first (Big-endian)
+    PacketIDType id = PacketID;
+    // copy byte by byte from last to first
+    for (uint8_t i = sizeof(PacketIDType) - 1; i >= 0; --i)
+    {
+        outputBuffer[i] = uint8_t(id & 0xff);
+        id >>= 8;
+    }
+
+    return sizeof(PacketIDType) + getDataOnly(outputBuffer + sizeof(PacketIDType));
 }
 
 
-bool Packet::updateBuffer(const uint8_t* inputBuffer)
+bool Packet::updatePacketBuffer(const uint8_t* inputBuffer)
 {
     if (!checkIfBufferMatch(inputBuffer))
         return false;
 
-    updateDataOnly(inputBuffer + PacketID.byteSize());
+    updateDataOnly(inputBuffer + sizeof(PacketIDType));
     return true;
 }
 
 
 Packet::PacketIDType Packet::getIDFromBuffer(const uint8_t* buffer)
 {
-    byteType<PacketIDType> id;
-    for (uint8_t i = 0; i < id.byteSize(); ++i)
-        id.byteArray()[i] = buffer[i];
-    
-    return (PacketIDType)id;
-}
-
-
-bool Packet::checkIfBufferMatch(const uint8_t* buffer)
-{
-    for (uint8_t i = 0; i < PacketID.byteSize(); ++i)
-        if (buffer[i] != PacketID.byteArray()[i])
-            return false;
-    return true;
+    // MSB is first (Big-endian)
+    PacketIDType id = 0;
+    for (uint8_t i = 0; i < sizeof(PacketIDType); ++i)
+    {
+        id <<= 8;
+        id |= buffer[i];
+    }
+    return id;
 }

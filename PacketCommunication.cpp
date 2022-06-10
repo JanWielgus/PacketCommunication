@@ -91,7 +91,7 @@ PacketCommunication::Percentage PacketCommunication::receiveAndUpdatePackets()
         switch (matchingPacket->getType())
         {
             case Packet::Type::DATA:
-                matchingPacket->updateBuffer(receivedBuffer.buffer); // this method returns bool, but should be always true
+                matchingPacket->updatePacketBuffer(receivedBuffer.buffer); // this method returns bool, but should be always true
                 matchingPacket->executeOnReceiveCallback();
                 break;
 

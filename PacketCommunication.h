@@ -26,7 +26,7 @@ namespace PacketComm
      */
     class PacketCommunication : public IConnectionStatus
     {
-        EVAFilter connectionStabilityFilter;
+        FL::EVAFilter connectionStabilityFilter;
 
     protected:
         ITransceiver* const LowLevelComm;
