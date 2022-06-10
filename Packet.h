@@ -73,7 +73,7 @@ namespace PacketComm
 
         /**
          * @brief Fill the outputBuffer with packet's internal data (includes PacketID).
-         * outputBuffer size have to be at least packet size (check it using getSize() method).
+         * outputBuffer size have to be at least packet size (check it with getSize() method).
          * @param outputBuffer Pointer to the array where data will be stored.
          * @return Size of this packet in bytes (same value that
          * getSize() method would return).
@@ -87,7 +87,7 @@ namespace PacketComm
          * @param inputBuffer Pointer to the array of data to update this packet.
          * @return false if inputBuffer dont match this packet ID. True otherwise.
          */
-        bool updateBuffer(const uint8_t* inputBuffer);
+        bool updatePacketBuffer(const uint8_t* inputBuffer);
 
         /**
          * @brief Enables to check ID of buffer (if that buffer was inside a packet,

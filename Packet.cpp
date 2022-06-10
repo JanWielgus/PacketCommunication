@@ -36,7 +36,7 @@ size_t Packet::getBuffer(uint8_t* outputBuffer) const
 }
 
 
-bool Packet::updateBuffer(const uint8_t* inputBuffer)
+bool Packet::updatePacketBuffer(const uint8_t* inputBuffer)
 {
     if (!checkIfBufferMatch(inputBuffer))
         return false;
