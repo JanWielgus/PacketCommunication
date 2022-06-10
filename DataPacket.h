@@ -10,33 +10,24 @@
 #define BYTEPACKET_H
 
 #include "Packet.h"
-#include <IByteType.h>
-#include <GrowingArray.h>
 
 
 namespace PacketComm
 {
     class DataPacket : public Packet
     {
-        SimpleDataStructures::GrowingArray<IByteType*> byteTypeArray;
-        size_t dataOnlySize = 0;
-
+        uint8_t* payload;
+        size_t payloadSize = 0;
 
     public:
         /**
-         * @brief Ctor.
          * @param packetID Unique ID of the packet.
+         * @param payload Pointer to the source/destination data.
+         * @param payloadSize Size of the source/destination data in bytes.
          * @param onReceiveCallback (optional) pointer to void function
          * that will be called each time after receiving this packet.
          */
-        explicit DataPacket(PacketIDType packetID, Callback onReceiveCallback = nullptr);
-
-        /**
-         * @brief Add next variable to this data packet (add all variables
-         * that this data packet consists on program setup).
-         * @param toAdd Object that extends IByteType
-         */
-        void addVar(IByteType& toAdd);
+        DataPacket(PacketIDType packetID, uint8_t* payload, size_t payloadSize, Callback onReceiveCallback = nullptr);
 
     protected:
         size_t getDataOnly(uint8_t* outputBuffer) const override;
